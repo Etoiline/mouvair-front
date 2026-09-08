@@ -1,5 +1,7 @@
 # Changelog
 
+- Display complete local forecast intervals across the dashboard, identify the city timezone, and distinguish repeated hours during daylight-saving transitions.
+
 - Align the TypeScript forecast contract with nested weather, air, and overall scores, nullable conditions, pollen data, hourly bounds, and cache freshness metadata.
 
 ## 0.2.0 - 2026-09-08

@@ -86,9 +86,10 @@ h1 { margin-bottom: 22px; font: 800 clamp(48px, 7vw, 82px)/.95 "Manrope", sans-s
 .dashboard { width: min(1180px, calc(100% - 48px)); margin: -38px auto 80px; position: relative; z-index: 3; }
 .dashboard__heading { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; padding: 46px 0 30px; }
 .dashboard h2 { margin-bottom: 0; font: 800 clamp(28px, 4vw, 46px)/1.05 "Manrope", sans-serif; letter-spacing: -.04em; }
+.timezone-label { margin: 9px 0 0; color: #738078; font-size: 13px; }
 .best-slot { display: grid; grid-template-columns: auto auto; gap: 2px 25px; padding: 14px 17px; border: 1px solid #d7d8cc; border-radius: 13px; background: transparent; text-align: left; cursor: pointer; }
 .best-slot span { color: #738078; font-size: 11px; text-transform: uppercase; letter-spacing: .09em; }
-.best-slot strong { grid-column: 1; }
+.best-slot strong { grid-column: 1; max-width: 230px; }
 .best-slot b { grid-column: 2; grid-row: 1 / 3; align-self: center; color: #3d6a56; font-size: 20px; }
 
 .sport-tabs { display: grid; grid-template-columns: repeat(4, 1fr); padding: 5px; margin-bottom: 14px; border: 1px solid #d7d8cc; border-radius: 16px; background: #eeece3; }
@@ -122,9 +123,9 @@ h1 { margin-bottom: 22px; font: 800 clamp(48px, 7vw, 82px)/.95 "Manrope", sans-s
 .timeline-wrap { margin-top: 34px; }
 .timeline-wrap h3 { font: 700 17px "Manrope", sans-serif; }
 .timeline { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: thin; }
-.timeline button { min-width: 90px; padding: 14px 10px; border: 1px solid #d7d8cc; border-radius: 13px; background: transparent; cursor: pointer; }
+.timeline button { min-width: 132px; padding: 14px 10px; border: 1px solid #d7d8cc; border-radius: 13px; background: transparent; cursor: pointer; }
 .timeline button.active { border-color: var(--ink); background: var(--ink); color: white; }
-.timeline span { display: block; margin-bottom: 7px; color: #718078; font-size: 11px; text-transform: capitalize; }
+.timeline span { display: block; min-height: 30px; margin-bottom: 7px; color: #718078; font-size: 11px; line-height: 1.35; text-transform: capitalize; }
 .timeline button.active span { color: rgba(255,255,255,.65); }
 .timeline strong { display: inline-block; font: 700 22px "Manrope", sans-serif; }
 .status-dot { display: inline-block; width: 7px; height: 7px; margin-left: 7px; border-radius: 50%; background: #e2bd4d; }
@@ -161,4 +162,3 @@ footer p { margin: 0; }
   .sport-tabs button { font-size: 12px; }
   .best-slot { width: 100%; }
 }
-
