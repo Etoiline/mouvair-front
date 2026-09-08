@@ -8,7 +8,14 @@ import {
   periodicRefreshDelay,
   shouldRefreshWhenVisible,
 } from "./refreshSchedule";
-import type { Forecast, ForecastHour, Location, SportId } from "./types";
+import type {
+  Forecast,
+  ForecastHour,
+  Location,
+  ScoreStatus,
+  SportId,
+  SportScore,
+} from "./types";
 
 const SPORTS: { id: SportId; shortLabel: string; icon: string }[] = [
   { id: "easy_run", shortLabel: "Course tranquille", icon: "↗" },
@@ -17,12 +24,22 @@ const SPORTS: { id: SportId; shortLabel: string; icon: string }[] = [
   { id: "walking", shortLabel: "Marche", icon: "•" },
 ];
 
-const STATUS_LABELS = {
+const STATUS_LABELS: Record<ScoreStatus, string> = {
   favorable: "Conditions favorables",
-  correct: "Bon créneau",
+  correct: "Conditions correctes",
   mitigé: "Conditions mitigées",
   défavorable: "Conditions défavorables",
+  "très défavorable": "Conditions très défavorables",
   incomplet: "Données incomplètes",
+};
+
+const STATUS_TONES: Record<ScoreStatus, string> = {
+  favorable: "favorable",
+  correct: "correct",
+  mitigé: "mitige",
+  défavorable: "defavorable",
+  "très défavorable": "tres-defavorable",
+  incomplet: "incomplet",
 };
 
 const STALE_AFTER_MS = 60 * 60 * 1000;
@@ -35,13 +52,48 @@ function ScoreGauge({ score }: { score: number | null }) {
   const value = score ?? 0;
   const style = { "--score": `${value * 3.6}deg` } as CSSProperties;
   return (
-    <div className="score-gauge" style={style}>
+    <div
+      className="score-gauge"
+      style={style}
+      aria-label={score === null ? "Note globale indisponible" : `Note globale ${score} sur 100`}
+    >
       <div className="score-gauge__inner">
         <strong>{score ?? "—"}</strong>
-        <span>sur 100</span>
+        <span>{score === null ? "Indisponible" : "sur 100"}</span>
       </div>
     </div>
   );
+}
+
+function ScoreSummary({
+  label,
+  score,
+  detail,
+}: {
+  label: string;
+  score: number | null;
+  detail: string;
+}) {
+  return (
+    <article className="score-summary">
+      <p>{label}</p>
+      <div
+        className={`score-summary__value${
+          score === null ? " score-summary__value--missing" : ""
+        }`}
+      >
+        <strong>{score ?? "Indisponible"}</strong>
+        {score !== null && <span>/ 100</span>}
+      </div>
+      <small>{detail}</small>
+    </article>
+  );
+}
+
+function mainExplanations(score: SportScore): string[] {
+  const explanations = [...score.weather.reasons];
+  if (score.air.reason) explanations.push(score.air.reason);
+  return explanations.slice(0, 2);
 }
 
 export default function App() {
@@ -61,6 +113,7 @@ export default function App() {
   const selectedHour =
     forecast?.hours.find((hour) => hour.time === selectedTime) ?? forecast?.hours[0] ?? null;
   const selectedScore = selectedHour?.scores[sport] ?? null;
+  const selectedExplanations = selectedScore ? mainExplanations(selectedScore) : [];
   const bestHour = useMemo(() => {
     if (!forecast?.recommendation_available) return null;
     return forecast.hours.reduce<ForecastHour | null>((best, hour) => {
@@ -332,34 +385,64 @@ export default function App() {
             ))}
           </div>
 
-          <div className={`score-card score-card--${selectedScore.status}`}>
-            <div className="score-card__primary">
-              <p className="eyebrow">
-                {formatSlot(selectedHour.time, selectedHour.end_time, forecast.timezone)}
-              </p>
-              <ScoreGauge score={selectedScore.score} />
+          <div className={`score-card score-card--${STATUS_TONES[selectedScore.overall.status]}`}>
+            <header className="score-card__context">
               <div>
-                <h3>{STATUS_LABELS[selectedScore.status]}</h3>
-                <p>{selectedScore.reasons.join(" ")}</p>
+                <p className="eyebrow">Créneau sélectionné</p>
+                <h3>{formatSlot(selectedHour.time, selectedHour.end_time, forecast.timezone)}</h3>
+              </div>
+              <span className="activity-chip">{selectedScore.label}</span>
+            </header>
+
+            <div className="score-card__notes">
+              <section className="score-card__overall" aria-label="Note globale">
+                <p className="score-card__label">Note globale</p>
+                <ScoreGauge score={selectedScore.overall.score} />
+                <div>
+                  <h3>{STATUS_LABELS[selectedScore.overall.status]}</h3>
+                  {selectedScore.overall.score === null && (
+                    <p>
+                      La météo et la qualité de l’air sont toutes deux nécessaires pour la calculer.
+                    </p>
+                  )}
+                </div>
+              </section>
+
+              <div className="score-card__secondary" aria-label="Notes détaillées">
+                <ScoreSummary
+                  label="Note météo"
+                  score={selectedScore.weather.score}
+                  detail={STATUS_LABELS[selectedScore.weather.status]}
+                />
+                <ScoreSummary
+                  label="Note qualité de l’air"
+                  score={selectedScore.air.score}
+                  detail={selectedScore.air.category ?? "Données incomplètes"}
+                />
               </div>
             </div>
 
-            <div className="factors">
-              {selectedScore.factors.map((factor) => (
-                <article key={factor.id}>
-                  <div>
-                    <span>{factor.label}</span>
-                    <strong>
-                      {factor.value.toFixed(factor.id === "rain" ? 1 : 0)} {factor.unit}
-                    </strong>
-                  </div>
-                  <div className="factor-bar" aria-label={`Sous-note ${factor.score} sur 100`}>
-                    <i style={{ width: `${factor.score}%` }} />
-                  </div>
-                  <small>{factor.score}/100</small>
-                </article>
-              ))}
-            </div>
+            {selectedScore.weather.alerts.length > 0 && (
+              <section className="weather-alerts" aria-label="Alertes météo">
+                <strong>Alertes météo</strong>
+                <ul>
+                  {selectedScore.weather.alerts.map((alert) => (
+                    <li key={alert}>{alert}</li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {selectedExplanations.length > 0 && (
+              <section className="score-reasons" aria-label="Explications principales">
+                <strong>À retenir</strong>
+                <ul>
+                  {selectedExplanations.map((explanation) => (
+                    <li key={explanation}>{explanation}</li>
+                  ))}
+                </ul>
+              </section>
+            )}
           </div>
 
           <div className="timeline-wrap">

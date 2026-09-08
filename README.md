@@ -9,6 +9,13 @@ pnpm dev
 
 Copier `.env.example` vers `.env` uniquement si l'API n'est pas lancée sur `http://localhost:8000`.
 
+## Résumé d’un créneau
+
+Le créneau sélectionné présente d’abord sa date, ses horaires locaux et l’activité choisie. La note
+globale apparaît avant les notes météo et qualité de l’air. Une donnée manquante est signalée sans
+masquer les notes disponibles ; les alertes météo restent visibles et deux explications principales
+au maximum résument les facteurs déterminants.
+
 ## Actualisation des prévisions
 
 Le bouton « Actualiser » conserve les résultats visibles pendant la récupération. Lorsque la page
