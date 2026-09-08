@@ -1,5 +1,7 @@
 # Changelog
 
+- Replace the legacy factor card with a selected-slot summary that separates overall, weather, and air scores, preserves partial results, and surfaces weather alerts and primary explanations.
+
 - Refresh visible forecasts automatically every 15 minutes and when the current hourly window expires, catch up after returning to the page, and prevent duplicate or looping requests.
 
 - Add non-blocking manual forecast refresh, show the real retrieval time and failure or stale-data notices, preserve displayed results, and suspend outdated recommendations.
