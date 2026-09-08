@@ -1,5 +1,7 @@
 # Changelog
 
+- Refresh visible forecasts automatically every 15 minutes and when the current hourly window expires, catch up after returning to the page, and prevent duplicate or looping requests.
+
 - Add non-blocking manual forecast refresh, show the real retrieval time and failure or stale-data notices, preserve displayed results, and suspend outdated recommendations.
 
 - Preserve the selected forecast time across activity and data changes, fall back safely when it disappears, and select the earliest valid overall-score recommendation.
