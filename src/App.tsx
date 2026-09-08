@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { CSSProperties, FormEvent } from "react";
 
 import { getForecast, searchLocations } from "./api";
@@ -43,20 +43,32 @@ export default function App() {
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
   const [forecast, setForecast] = useState<Forecast | null>(null);
   const [sport, setSport] = useState<SportId>("easy_run");
-  const [hourIndex, setHourIndex] = useState(0);
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const selectedHour = forecast?.hours[hourIndex] ?? null;
+  const selectedHour =
+    forecast?.hours.find((hour) => hour.time === selectedTime) ?? forecast?.hours[0] ?? null;
   const selectedScore = selectedHour?.scores[sport] ?? null;
   const bestHour = useMemo(() => {
-    if (!forecast) return null;
+    if (!forecast?.recommendation_available) return null;
     return forecast.hours.reduce<ForecastHour | null>((best, hour) => {
-      const score = hour.scores[sport].score ?? -1;
-      const bestScore = best?.scores[sport].score ?? -1;
-      return score > bestScore ? hour : best;
+      const score = hour.scores[sport].overall.score;
+      if (score === null) return best;
+      const bestScore = best?.scores[sport].overall.score;
+      return bestScore === null || bestScore === undefined || score > bestScore ? hour : best;
     }, null);
   }, [forecast, sport]);
+
+  useEffect(() => {
+    if (!forecast) {
+      setSelectedTime(null);
+      return;
+    }
+    if (!selectedTime || !forecast.hours.some((hour) => hour.time === selectedTime)) {
+      setSelectedTime(forecast.hours[0]?.time ?? null);
+    }
+  }, [forecast, selectedTime]);
 
   async function handleSearch(event: FormEvent) {
     event.preventDefault();
@@ -64,6 +76,7 @@ export default function App() {
     setLoading(true);
     setError(null);
     setForecast(null);
+    setSelectedTime(null);
     try {
       const results = await searchLocations(query.trim());
       setLocations(results);
@@ -80,9 +93,12 @@ export default function App() {
     setLocations([]);
     setLoading(true);
     setError(null);
-    setHourIndex(0);
+    setForecast(null);
+    setSelectedTime(null);
     try {
-      setForecast(await getForecast(location));
+      const nextForecast = await getForecast(location);
+      setForecast(nextForecast);
+      setSelectedTime(nextForecast.hours[0]?.time ?? null);
     } catch (forecastError) {
       setError(forecastError instanceof Error ? forecastError.message : "Prévisions indisponibles.");
     } finally {
@@ -92,7 +108,6 @@ export default function App() {
 
   function chooseSport(nextSport: SportId) {
     setSport(nextSport);
-    setHourIndex(0);
   }
 
   return (
@@ -157,13 +172,13 @@ export default function App() {
             {bestHour && (
               <button
                 className="best-slot"
-                onClick={() => setHourIndex(forecast.hours.indexOf(bestHour))}
+                onClick={() => setSelectedTime(bestHour.time)}
               >
                 <span>Meilleur créneau</span>
                 <strong>
                   {formatSlot(bestHour.time, bestHour.end_time, forecast.timezone, "short")}
                 </strong>
-                <b>{bestHour.scores[sport].score}/100</b>
+                <b>{bestHour.scores[sport].overall.score}/100</b>
               </button>
             )}
           </div>
@@ -216,11 +231,11 @@ export default function App() {
           <div className="timeline-wrap">
             <h3>Heure par heure</h3>
             <div className="timeline">
-              {forecast.hours.map((hour, index) => (
+              {forecast.hours.map((hour) => (
                 <button
                   key={hour.time}
-                  className={hourIndex === index ? "active" : ""}
-                  onClick={() => setHourIndex(index)}
+                  className={selectedHour.time === hour.time ? "active" : ""}
+                  onClick={() => setSelectedTime(hour.time)}
                 >
                   <span>{formatSlot(hour.time, hour.end_time, forecast.timezone, "short")}</span>
                   <strong>{hour.scores[sport].score ?? "—"}</strong>
