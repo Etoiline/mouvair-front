@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties, FormEvent } from "react";
 
 import { getForecast, searchLocations } from "./api";
-import { formatSlot, formatTimeZoneLabel } from "./dateTime";
+import { formatLocalTime, formatSlot, formatTimeZoneLabel } from "./dateTime";
 import type { Forecast, ForecastHour, Location, SportId } from "./types";
 
 const SPORTS: { id: SportId; shortLabel: string; icon: string }[] = [
@@ -19,6 +19,8 @@ const STATUS_LABELS = {
   défavorable: "Conditions défavorables",
   incomplet: "Données incomplètes",
 };
+
+const STALE_AFTER_MS = 60 * 60 * 1000;
 
 function locationLabel(location: Location): string {
   return [location.name, location.admin1, location.country].filter(Boolean).join(", ");
@@ -45,7 +47,9 @@ export default function App() {
   const [sport, setSport] = useState<SportId>("easy_run");
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const forecastRequest = useRef(0);
 
   const selectedHour =
     forecast?.hours.find((hour) => hour.time === selectedTime) ?? forecast?.hours[0] ?? null;
@@ -74,9 +78,11 @@ export default function App() {
     event.preventDefault();
     if (query.trim().length < 2) return;
     setLoading(true);
+    setRefreshing(false);
     setError(null);
     setForecast(null);
     setSelectedTime(null);
+    forecastRequest.current += 1;
     try {
       const results = await searchLocations(query.trim());
       setLocations(results);
@@ -89,20 +95,51 @@ export default function App() {
   }
 
   async function chooseLocation(location: Location) {
+    const requestId = ++forecastRequest.current;
     setSelectedLocation(location);
     setLocations([]);
     setLoading(true);
+    setRefreshing(false);
     setError(null);
     setForecast(null);
     setSelectedTime(null);
     try {
       const nextForecast = await getForecast(location);
+      if (requestId !== forecastRequest.current) return;
       setForecast(nextForecast);
       setSelectedTime(nextForecast.hours[0]?.time ?? null);
     } catch (forecastError) {
+      if (requestId !== forecastRequest.current) return;
       setError(forecastError instanceof Error ? forecastError.message : "Prévisions indisponibles.");
     } finally {
-      setLoading(false);
+      if (requestId === forecastRequest.current) setLoading(false);
+    }
+  }
+
+  async function refreshForecast() {
+    if (!selectedLocation || !forecast || refreshing) return;
+    const requestId = ++forecastRequest.current;
+    setRefreshing(true);
+    try {
+      const nextForecast = await getForecast(selectedLocation);
+      if (requestId !== forecastRequest.current) return;
+      setForecast(nextForecast);
+    } catch {
+      if (requestId !== forecastRequest.current) return;
+      setForecast((current) => {
+        if (!current) return current;
+        const retrievedAt = Date.parse(current.generated_at);
+        const age = Date.now() - retrievedAt;
+        const stale =
+          current.data_state === "stale" || !Number.isFinite(age) || age > STALE_AFTER_MS;
+        return {
+          ...current,
+          data_state: stale ? "stale" : "refresh_failed",
+          recommendation_available: stale ? false : current.recommendation_available,
+        };
+      });
+    } finally {
+      if (requestId === forecastRequest.current) setRefreshing(false);
     }
   }
 
@@ -169,19 +206,48 @@ export default function App() {
                 {formatTimeZoneLabel(selectedHour.time, selectedHour.end_time, forecast.timezone)}
               </p>
             </div>
-            {bestHour && (
-              <button
-                className="best-slot"
-                onClick={() => setSelectedTime(bestHour.time)}
-              >
-                <span>Meilleur créneau</span>
-                <strong>
-                  {formatSlot(bestHour.time, bestHour.end_time, forecast.timezone, "short")}
-                </strong>
-                <b>{bestHour.scores[sport].overall.score}/100</b>
-              </button>
-            )}
+            <div className="dashboard__actions">
+              <div className="data-refresh">
+                <span>
+                  Données récupérées à {formatLocalTime(forecast.generated_at, forecast.timezone)}
+                </span>
+                <button type="button" onClick={() => void refreshForecast()} disabled={refreshing}>
+                  {refreshing ? "Actualisation…" : "Actualiser"}
+                </button>
+              </div>
+              {bestHour && (
+                <button
+                  className="best-slot"
+                  onClick={() => setSelectedTime(bestHour.time)}
+                >
+                  <span>Meilleur créneau</span>
+                  <strong>
+                    {formatSlot(bestHour.time, bestHour.end_time, forecast.timezone, "short")}
+                  </strong>
+                  <b>{bestHour.scores[sport].overall.score}/100</b>
+                </button>
+              )}
+              {!forecast.recommendation_available && (
+                <button className="best-slot" type="button" disabled>
+                  <span>Meilleur créneau</span>
+                  <strong>Données trop anciennes</strong>
+                </button>
+              )}
+            </div>
           </div>
+
+          {forecast.data_state === "stale" ? (
+            <p className="data-notice data-notice--stale" role="status">
+              Données anciennes — dernières données récupérées à{" "}
+              {formatLocalTime(forecast.generated_at, forecast.timezone)}. Les notes sont indicatives
+              et le meilleur créneau est suspendu.
+            </p>
+          ) : forecast.data_state === "refresh_failed" ? (
+            <p className="data-notice" role="status">
+              Actualisation impossible — dernières données récupérées à{" "}
+              {formatLocalTime(forecast.generated_at, forecast.timezone)}.
+            </p>
+          ) : null}
 
           <div className="sport-tabs" role="tablist" aria-label="Choisir une activité">
             {SPORTS.map((item) => (

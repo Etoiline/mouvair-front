@@ -42,6 +42,10 @@ function formatTime(value: string, timeZone: string): string {
   return minute === "00" ? `${hour} h` : `${hour} h ${minute}`;
 }
 
+export function formatLocalTime(value: string, timeZone: string): string {
+  return formatTime(value, timeZone);
+}
+
 function formatOffset(value: string): string | null {
   const match = value.match(/(Z|([+-])(\d{2}):(\d{2}))$/);
   if (!match) return null;
