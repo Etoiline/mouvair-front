@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import type { CSSProperties, FormEvent } from "react";
 
 import { getForecast, searchLocations } from "./api";
+import { formatSlot, formatTimeZoneLabel } from "./dateTime";
 import type { Forecast, ForecastHour, Location, SportId } from "./types";
 
 const SPORTS: { id: SportId; shortLabel: string; icon: string }[] = [
@@ -18,15 +19,6 @@ const STATUS_LABELS = {
   défavorable: "Conditions défavorables",
   incomplet: "Données incomplètes",
 };
-
-function formatHour(value: string): string {
-  const [date, time] = value.split("T");
-  const weekday = new Intl.DateTimeFormat("fr-FR", {
-    weekday: "short",
-    timeZone: "UTC",
-  }).format(new Date(`${date}T12:00:00Z`));
-  return `${weekday} ${time}`;
-}
 
 function locationLabel(location: Location): string {
   return [location.name, location.admin1, location.country].filter(Boolean).join(", ");
@@ -158,6 +150,9 @@ export default function App() {
             <div>
               <p className="eyebrow">{locationLabel(selectedLocation)}</p>
               <h2>Vos conditions sur 24 h</h2>
+              <p className="timezone-label">
+                {formatTimeZoneLabel(selectedHour.time, selectedHour.end_time, forecast.timezone)}
+              </p>
             </div>
             {bestHour && (
               <button
@@ -165,7 +160,9 @@ export default function App() {
                 onClick={() => setHourIndex(forecast.hours.indexOf(bestHour))}
               >
                 <span>Meilleur créneau</span>
-                <strong>{formatHour(bestHour.time)}</strong>
+                <strong>
+                  {formatSlot(bestHour.time, bestHour.end_time, forecast.timezone, "short")}
+                </strong>
                 <b>{bestHour.scores[sport].score}/100</b>
               </button>
             )}
@@ -188,7 +185,9 @@ export default function App() {
 
           <div className={`score-card score-card--${selectedScore.status}`}>
             <div className="score-card__primary">
-              <p className="eyebrow">{formatHour(selectedHour.time)}</p>
+              <p className="eyebrow">
+                {formatSlot(selectedHour.time, selectedHour.end_time, forecast.timezone)}
+              </p>
               <ScoreGauge score={selectedScore.score} />
               <div>
                 <h3>{STATUS_LABELS[selectedScore.status]}</h3>
@@ -223,7 +222,7 @@ export default function App() {
                   className={hourIndex === index ? "active" : ""}
                   onClick={() => setHourIndex(index)}
                 >
-                  <span>{formatHour(hour.time)}</span>
+                  <span>{formatSlot(hour.time, hour.end_time, forecast.timezone, "short")}</span>
                   <strong>{hour.scores[sport].score ?? "—"}</strong>
                   <i className={`status-dot status-dot--${hour.scores[sport].status}`} />
                 </button>
