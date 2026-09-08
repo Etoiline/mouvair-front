@@ -1,5 +1,7 @@
 # Changelog
 
+- Preserve the selected forecast time across activity and data changes, fall back safely when it disappears, and select the earliest valid overall-score recommendation.
+
 - Display complete local forecast intervals across the dashboard, identify the city timezone, and distinguish repeated hours during daylight-saving transitions.
 
 - Align the TypeScript forecast contract with nested weather, air, and overall scores, nullable conditions, pollen data, hourly bounds, and cache freshness metadata.
