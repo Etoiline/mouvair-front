@@ -1,8 +1,13 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties, FormEvent } from "react";
 
 import { getForecast, searchLocations } from "./api";
 import { formatLocalTime, formatSlot, formatTimeZoneLabel } from "./dateTime";
+import {
+  boundaryRefreshDelay,
+  periodicRefreshDelay,
+  shouldRefreshWhenVisible,
+} from "./refreshSchedule";
 import type { Forecast, ForecastHour, Location, SportId } from "./types";
 
 const SPORTS: { id: SportId; shortLabel: string; icon: string }[] = [
@@ -48,8 +53,10 @@ export default function App() {
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [lastCheckAt, setLastCheckAt] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const forecastRequest = useRef(0);
+  const activeRefresh = useRef<number | null>(null);
 
   const selectedHour =
     forecast?.hours.find((hour) => hour.time === selectedTime) ?? forecast?.hours[0] ?? null;
@@ -82,6 +89,8 @@ export default function App() {
     setError(null);
     setForecast(null);
     setSelectedTime(null);
+    setLastCheckAt(null);
+    activeRefresh.current = null;
     forecastRequest.current += 1;
     try {
       const results = await searchLocations(query.trim());
@@ -103,11 +112,14 @@ export default function App() {
     setError(null);
     setForecast(null);
     setSelectedTime(null);
+    setLastCheckAt(null);
+    activeRefresh.current = null;
     try {
       const nextForecast = await getForecast(location);
       if (requestId !== forecastRequest.current) return;
       setForecast(nextForecast);
       setSelectedTime(nextForecast.hours[0]?.time ?? null);
+      setLastCheckAt(Date.now());
     } catch (forecastError) {
       if (requestId !== forecastRequest.current) return;
       setError(forecastError instanceof Error ? forecastError.message : "Prévisions indisponibles.");
@@ -116,9 +128,10 @@ export default function App() {
     }
   }
 
-  async function refreshForecast() {
-    if (!selectedLocation || !forecast || refreshing) return;
+  const refreshForecast = useCallback(async () => {
+    if (!selectedLocation || !forecast || activeRefresh.current !== null) return;
     const requestId = ++forecastRequest.current;
+    activeRefresh.current = requestId;
     setRefreshing(true);
     try {
       const nextForecast = await getForecast(selectedLocation);
@@ -139,9 +152,64 @@ export default function App() {
         };
       });
     } finally {
-      if (requestId === forecastRequest.current) setRefreshing(false);
+      if (activeRefresh.current === requestId) activeRefresh.current = null;
+      if (requestId === forecastRequest.current) {
+        setRefreshing(false);
+        setLastCheckAt(Date.now());
+      }
     }
-  }
+  }, [forecast, selectedLocation]);
+
+  useEffect(() => {
+    if (!forecast || !selectedLocation || lastCheckAt === null) return;
+    const delay = periodicRefreshDelay(lastCheckAt, Date.now());
+    const timer = window.setTimeout(() => {
+      if (document.visibilityState === "visible") void refreshForecast();
+    }, delay);
+    return () => window.clearTimeout(timer);
+  }, [forecast, lastCheckAt, refreshForecast, selectedLocation]);
+
+  useEffect(() => {
+    if (!forecast || !selectedLocation) return;
+    const delay = boundaryRefreshDelay(
+      forecast.hours[0]?.time ?? "",
+      lastCheckAt,
+      Date.now(),
+    );
+    if (delay === null) return;
+    if (delay === 0) {
+      if (document.visibilityState === "visible") void refreshForecast();
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      if (document.visibilityState === "visible") void refreshForecast();
+    }, delay);
+    return () => window.clearTimeout(timer);
+  }, [forecast, lastCheckAt, refreshForecast, selectedLocation]);
+
+  useEffect(() => {
+    if (!forecast || !selectedLocation) return;
+    const currentForecast = forecast;
+
+    function handleVisibilityChange() {
+      if (document.visibilityState !== "visible") return;
+      if (
+        shouldRefreshWhenVisible(
+          currentForecast.hours[0]?.time ?? "",
+          currentForecast.generated_at,
+          currentForecast.data_state,
+          lastCheckAt,
+          Date.now(),
+        )
+      ) {
+        void refreshForecast();
+      }
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, [forecast, lastCheckAt, refreshForecast, selectedLocation]);
 
   function chooseSport(nextSport: SportId) {
     setSport(nextSport);

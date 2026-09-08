@@ -9,6 +9,14 @@ pnpm dev
 
 Copier `.env.example` vers `.env` uniquement si l'API n'est pas lancée sur `http://localhost:8000`.
 
+## Actualisation des prévisions
+
+Le bouton « Actualiser » conserve les résultats visibles pendant la récupération. Lorsque la page
+reste ouverte, elle vérifie aussi les prévisions toutes les 15 minutes et au début d’un nouveau
+créneau. Aucun appel automatique n’est lancé lorsque l’onglet est masqué ; les données sont vérifiées
+au retour sur la page si un contrôle a été manqué ou si les données mises en cache ont dépassé leur
+durée de réutilisation.
+
 ## Créer une release
 
 Le dépôt doit être propre et `CHANGELOG.md` doit contenir au moins une ligne de changement non
