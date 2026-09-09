@@ -1,5 +1,7 @@
 # Changelog
 
+- Add selected-slot European AQI details with its category, separate guidance for general and sensitive people, and an explicit unavailable state.
+
 - Add selected-slot weather details with apparent temperature, hourly precipitation, actual wind and gust values, factor scores, and explicit unavailable states.
 
 - Replace the legacy factor card with a selected-slot summary that separates overall, weather, and air scores, preserves partial results, and surfaces weather alerts and primary explanations.

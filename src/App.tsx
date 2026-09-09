@@ -9,6 +9,7 @@ import {
   shouldRefreshWhenVisible,
 } from "./refreshSchedule";
 import type {
+  AirQualityCategory,
   Forecast,
   ForecastHour,
   Location,
@@ -42,8 +43,19 @@ const STATUS_TONES: Record<ScoreStatus, string> = {
   incomplet: "incomplet",
 };
 
+// Les seuils et recommandations restent définis par le backend ; ce mapping ne choisit que la
+// présentation visuelle de la catégorie déjà calculée à partir de l’AQI original.
+const AIR_CATEGORY_TONES: Record<AirQualityCategory, string> = {
+  Bonne: "good",
+  Acceptable: "acceptable",
+  Modérée: "moderate",
+  Mauvaise: "poor",
+  "Très mauvaise": "very-poor",
+  "Extrêmement mauvaise": "extremely-poor",
+};
+
 const STALE_AFTER_MS = 60 * 60 * 1000;
-const WEATHER_VALUE_FORMATTER = new Intl.NumberFormat("fr-FR", {
+const DECIMAL_FORMATTER = new Intl.NumberFormat("fr-FR", {
   maximumFractionDigits: 1,
 });
 
@@ -102,7 +114,7 @@ function mainExplanations(score: SportScore): string[] {
 function formatWeatherValue(value: number | null | undefined, unit: string): string {
   return value === null || value === undefined
     ? "Indisponible"
-    : `${WEATHER_VALUE_FORMATTER.format(value)} ${unit}`;
+    : `${DECIMAL_FORMATTER.format(value)} ${unit}`;
 }
 
 function WeatherMetric({
@@ -536,6 +548,64 @@ export default function App() {
                 score={windFactor?.score}
               />
             </div>
+          </section>
+
+          <section className="conditions-details" aria-labelledby="air-details-title">
+            <header className="conditions-details__header">
+              <div>
+                <p className="eyebrow">Détail du créneau</p>
+                <h3 id="air-details-title">Qualité de l’air</h3>
+              </div>
+              <p>Indice européen de qualité de l’air</p>
+            </header>
+
+            {selectedScore.air.aqi === null ? (
+              <div className="air-details__unavailable" role="status">
+                <strong>Qualité de l’air indisponible</strong>
+                <p>L’indice AQI européen n’est pas disponible pour ce créneau.</p>
+              </div>
+            ) : (
+              <div className="air-details__content">
+                <div className="air-index">
+                  <p>AQI européen</p>
+                  <div className="air-index__value">
+                    <strong>{DECIMAL_FORMATTER.format(selectedScore.air.aqi)}</strong>
+                    <span>indice</span>
+                  </div>
+                  {selectedScore.air.category ? (
+                    <span
+                      className={`air-category air-category--${
+                        AIR_CATEGORY_TONES[selectedScore.air.category]
+                      }`}
+                    >
+                      {selectedScore.air.category}
+                    </span>
+                  ) : (
+                    <span className="air-category air-category--missing">
+                      Catégorie indisponible
+                    </span>
+                  )}
+                  <small>Indice de pollution sans unité : ce n’est pas un pourcentage.</small>
+                </div>
+
+                <div className="air-recommendations">
+                  <article>
+                    <span>Population générale</span>
+                    <p>
+                      {selectedScore.air.recommendations?.general_population ??
+                        "Recommandation indisponible."}
+                    </p>
+                  </article>
+                  <article>
+                    <span>Personnes sensibles</span>
+                    <p>
+                      {selectedScore.air.recommendations?.sensitive_people ??
+                        "Recommandation indisponible."}
+                    </p>
+                  </article>
+                </div>
+              </div>
+            )}
           </section>
 
           <div className="timeline-wrap">

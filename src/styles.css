@@ -160,6 +160,28 @@ h1 { margin-bottom: 22px; font: 800 clamp(48px, 7vw, 82px)/.95 "Manrope", sans-s
 .weather-metric__score span { color: #7c8982; font-size: 11px; }
 .weather-metric__score--missing { color: #75817b; font-size: 12px; }
 
+.air-details__content { display: grid; grid-template-columns: .72fr 1.28fr; }
+.air-index { display: flex; align-items: flex-start; min-width: 0; padding: 28px; background: #edf3ef; flex-direction: column; }
+.air-index > p { margin-bottom: 16px; color: #627269; font-size: 13px; font-weight: 700; }
+.air-index__value { display: flex; align-items: baseline; gap: 8px; margin-bottom: 17px; color: #285f4a; }
+.air-index__value strong { font: 800 clamp(45px, 5vw, 62px)/.9 "Manrope", sans-serif; letter-spacing: -.06em; }
+.air-index__value span { color: #6f7e76; font-size: 12px; }
+.air-category { display: inline-flex; margin-bottom: 18px; padding: 7px 10px; border-radius: 999px; background: #d7eadf; color: #286046; font-size: 12px; font-weight: 700; }
+.air-category--acceptable { background: #e1edcf; color: #536b2f; }
+.air-category--moderate { background: #f3e8ba; color: #775f17; }
+.air-category--poor { background: #f6d5bd; color: #8a4829; }
+.air-category--very-poor { background: #f2c7bd; color: #8a3027; }
+.air-category--extremely-poor { background: #7b2d2a; color: #fff7f4; }
+.air-category--missing { background: #e2e6e2; color: #66736c; }
+.air-index small { margin-top: auto; color: #6d7b74; font-size: 11px; line-height: 1.45; }
+.air-recommendations { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: #e5e7df; }
+.air-recommendations article { padding: 30px 27px; background: #fff; }
+.air-recommendations span { display: block; margin-bottom: 15px; color: #627269; font-size: 12px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
+.air-recommendations p { margin: 0; color: #314f43; font-size: 15px; line-height: 1.6; }
+.air-details__unavailable { padding: 30px 28px; background: #f1f2ee; color: #64716a; }
+.air-details__unavailable strong { display: block; margin-bottom: 7px; color: #3f554b; font: 700 18px "Manrope", sans-serif; }
+.air-details__unavailable p { margin: 0; line-height: 1.5; }
+
 .timeline-wrap { margin-top: 34px; }
 .timeline-wrap h3 { font: 700 17px "Manrope", sans-serif; }
 .timeline { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: thin; }
@@ -191,6 +213,8 @@ footer p { margin: 0; }
   .score-card__secondary { border-top: 1px solid #e5e7df; }
   .weather-metrics { grid-template-columns: 1fr; }
   .weather-metric { min-height: 0; }
+  .air-details__content { grid-template-columns: 1fr; }
+  .air-index small { margin-top: 4px; }
   footer { flex-direction: column; }
 }
 
@@ -209,6 +233,10 @@ footer p { margin: 0; }
   .weather-alerts, .score-reasons { padding: 20px 18px; }
   .conditions-details__header { align-items: flex-start; flex-direction: column; gap: 8px; padding: 22px 18px; }
   .weather-metric { padding: 22px 18px; }
+  .air-index { padding: 24px 18px; }
+  .air-recommendations { grid-template-columns: 1fr; }
+  .air-recommendations article { padding: 24px 18px; }
+  .air-details__unavailable { padding: 24px 18px; }
   .sport-tabs button { font-size: 12px; }
   .best-slot { width: 100%; }
 }

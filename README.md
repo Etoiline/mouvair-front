@@ -16,7 +16,10 @@ globale apparaît avant les notes météo et qualité de l’air. Une donnée ma
 masquer les notes disponibles ; les alertes météo restent visibles et deux explications principales
 au maximum résument les facteurs déterminants. Le détail météo associe ensuite la température
 ressentie, les précipitations, le vent moyen et les rafales à leurs sous-notes respectives. La valeur
-intermédiaire utilisée par le calcul du vent n’est pas présentée comme une mesure météo.
+intermédiaire utilisée par le calcul du vent n’est pas présentée comme une mesure météo. Le détail
+de la qualité de l’air conserve l’AQI européen brut, sa catégorie et les recommandations fournies
+pour la population générale et les personnes sensibles. L’AQI est présenté comme un indice sans
+unité, jamais comme un pourcentage.
 
 ## Actualisation des prévisions
 
