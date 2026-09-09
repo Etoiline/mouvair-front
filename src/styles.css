@@ -193,17 +193,33 @@ h1 { margin-bottom: 22px; font: 800 clamp(48px, 7vw, 82px)/.95 "Manrope", sans-s
 .pollen-details__unavailable strong { font: 700 17px/1.4 "Manrope", sans-serif; }
 .pollen-details__notice { margin: 0; padding: 16px 28px; border-top: 1px solid #e5e7df; background: #fff; color: #6d7b74; font-size: 12px; line-height: 1.5; }
 
-.timeline-wrap { margin-top: 34px; }
-.timeline-wrap h3 { font: 700 17px "Manrope", sans-serif; }
-.timeline { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: thin; }
-.timeline button { min-width: 132px; padding: 14px 10px; border: 1px solid #d7d8cc; border-radius: 13px; background: transparent; cursor: pointer; }
-.timeline button.active { border-color: var(--ink); background: var(--ink); color: white; }
-.timeline span { display: block; min-height: 30px; margin-bottom: 7px; color: #718078; font-size: 11px; line-height: 1.35; text-transform: capitalize; }
-.timeline button.active span { color: rgba(255,255,255,.65); }
-.timeline strong { display: inline-block; font: 700 22px "Manrope", sans-serif; }
-.status-dot { display: inline-block; width: 7px; height: 7px; margin-left: 7px; border-radius: 50%; background: #e2bd4d; }
-.status-dot--favorable { background: #6ec395; }
-.status-dot--défavorable { background: #e66f59; }
+.timeline-wrap { margin-top: 38px; }
+.timeline-wrap > h3 { margin-bottom: 22px; font: 750 21px "Manrope", sans-serif; }
+.timeline-days { display: grid; gap: 30px; }
+.timeline-day h4 { margin: 0 0 12px; color: #52675d; font: 700 15px "Manrope", sans-serif; text-transform: capitalize; }
+.slot-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.slot-card { --slot-accent: #66897a; position: relative; display: flex; min-width: 0; min-height: 150px; padding: 18px; overflow: hidden; border: 1px solid #d7d8cc; border-radius: 15px; background: #fff; cursor: pointer; flex-direction: column; align-items: stretch; gap: 15px; text-align: left; }
+.slot-card::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 4px; background: var(--slot-accent); }
+.slot-card--favorable { --slot-accent: #55a879; }
+.slot-card--mitige { --slot-accent: #d1a934; }
+.slot-card--defavorable { --slot-accent: #db745e; }
+.slot-card--tres-defavorable { --slot-accent: #a94438; }
+.slot-card--incomplet { --slot-accent: #9ba39e; }
+.slot-card:hover { border-color: #9baaa2; transform: translateY(-1px); }
+.slot-card.active { border-color: var(--ink); background: var(--ink); color: #fff; box-shadow: 0 10px 25px rgba(21,56,46,.16); }
+.slot-card__header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.slot-card__header > strong { font: 750 18px "Manrope", sans-serif; }
+.slot-card__selected { padding: 5px 7px; border-radius: 999px; background: var(--lime); color: var(--ink); font-size: 9px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+.slot-card__result { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 5px 12px; margin-top: auto; }
+.slot-card__result > span:last-child { color: #65776e; font-size: 12px; line-height: 1.35; }
+.slot-card.active .slot-card__result > span:last-child { color: rgba(255,255,255,.72); }
+.slot-card__score { display: flex; align-items: baseline; gap: 4px; grid-row: 1 / 3; }
+.slot-card__score strong { font: 800 29px/1 "Manrope", sans-serif; letter-spacing: -.045em; }
+.slot-card__score small { color: #7d8a83; font-size: 10px; }
+.slot-card.active .slot-card__score small { color: rgba(255,255,255,.58); }
+.slot-card__missing { grid-column: 1 / -1; font: 700 14px "Manrope", sans-serif; }
+.slot-card__alert { align-self: flex-start; padding: 5px 8px; border-radius: 999px; background: #fff0eb; color: #9a4939; font-size: 10px; font-weight: 700; }
+.slot-card.active .slot-card__alert { background: #ffd9cf; color: #7b3024; }
 
 .empty-state { display: flex; align-items: center; gap: 24px; width: min(700px, calc(100% - 48px)); margin: 55px auto 90px; }
 .empty-state span { color: #b8bcad; font: 800 56px "Manrope", sans-serif; }
@@ -227,6 +243,7 @@ footer p { margin: 0; }
   .air-details__content { grid-template-columns: 1fr; }
   .air-index small { margin-top: 4px; }
   .pollen-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .slot-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   footer { flex-direction: column; }
 }
 
@@ -253,6 +270,8 @@ footer p { margin: 0; }
   .pollen-item { min-height: 0; padding: 22px 18px; }
   .pollen-details__unavailable { padding: 24px 18px; }
   .pollen-details__notice { padding: 15px 18px; }
+  .slot-grid { grid-template-columns: 1fr; }
+  .slot-card { min-height: 135px; }
   .sport-tabs button { font-size: 12px; }
   .best-slot { width: 100%; }
 }

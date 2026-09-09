@@ -22,7 +22,9 @@ pour la population générale et les personnes sensibles. L’AQI est présenté
 unité, jamais comme un pourcentage. Le bloc pollen présente les concentrations horaires d’aulne,
 bouleau, graminées, armoise, olivier et ambroisie en grains/m³. Une valeur nulle au sens numérique
 reste affichée comme `0`, tandis qu’une donnée absente est indiquée comme indisponible. Les pollens
-n’entrent pas dans les notes Mouv’Air.
+n’entrent pas dans les notes Mouv’Air. Les 24 créneaux sont regroupés par date locale et restent
+classés chronologiquement. Chaque carte présente l’horaire, la note globale, son appréciation et la
+présence éventuelle d’une alerte météo ; les créneaux incomplets restent sélectionnables.
 
 ## Actualisation des prévisions
 

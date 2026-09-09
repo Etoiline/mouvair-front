@@ -2,7 +2,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties, FormEvent, ReactNode } from "react";
 
 import { getForecast, searchLocations } from "./api";
-import { formatLocalTime, formatSlot, formatTimeZoneLabel } from "./dateTime";
+import {
+  formatLocalInterval,
+  formatLocalTime,
+  formatSlot,
+  formatTimeZoneLabel,
+  groupByLocalDate,
+} from "./dateTime";
 import {
   boundaryRefreshDelay,
   periodicRefreshDelay,
@@ -207,6 +213,10 @@ export default function App() {
       return bestScore === null || bestScore === undefined || score > bestScore ? hour : best;
     }, null);
   }, [forecast, sport]);
+  const forecastDays = useMemo(
+    () => (forecast ? groupByLocalDate(forecast.hours, forecast.timezone) : []),
+    [forecast],
+  );
 
   useEffect(() => {
     if (!forecast) {
@@ -672,22 +682,62 @@ export default function App() {
             </p>
           </section>
 
-          <div className="timeline-wrap">
-            <h3>Heure par heure</h3>
-            <div className="timeline">
-              {forecast.hours.map((hour) => (
-                <button
-                  key={hour.time}
-                  className={selectedHour.time === hour.time ? "active" : ""}
-                  onClick={() => setSelectedTime(hour.time)}
-                >
-                  <span>{formatSlot(hour.time, hour.end_time, forecast.timezone, "short")}</span>
-                  <strong>{hour.scores[sport].score ?? "—"}</strong>
-                  <i className={`status-dot status-dot--${hour.scores[sport].status}`} />
-                </button>
+          <section className="timeline-wrap" aria-labelledby="timeline-title">
+            <h3 id="timeline-title">Heure par heure</h3>
+            <div className="timeline-days">
+              {forecastDays.map((day) => (
+                <section className="timeline-day" key={day.key}>
+                  <h4>{day.label}</h4>
+                  <div className="slot-grid">
+                    {day.items.map((hour) => {
+                      const score = hour.scores[sport];
+                      const selected = selectedHour.time === hour.time;
+                      const alerts = score.weather.alerts.length;
+                      return (
+                        <button
+                          key={hour.time}
+                          className={`slot-card slot-card--${STATUS_TONES[score.overall.status]}${
+                            selected ? " active" : ""
+                          }`}
+                          onClick={() => setSelectedTime(hour.time)}
+                          aria-pressed={selected}
+                        >
+                          <span className="slot-card__header">
+                            <strong>
+                              {formatLocalInterval(
+                                hour.time,
+                                hour.end_time,
+                                forecast.timezone,
+                              )}
+                            </strong>
+                            {selected && <span className="slot-card__selected">Sélectionné</span>}
+                          </span>
+                          <span className="slot-card__result">
+                            {score.overall.score === null ? (
+                              <strong className="slot-card__missing">Données incomplètes</strong>
+                            ) : (
+                              <>
+                                <span className="slot-card__score">
+                                  <strong>{score.overall.score}</strong>
+                                  <small>/ 100</small>
+                                </span>
+                                <span>{STATUS_LABELS[score.overall.status]}</span>
+                              </>
+                            )}
+                          </span>
+                          {alerts > 0 && (
+                            <span className="slot-card__alert">
+                              {alerts === 1 ? "Alerte météo" : `${alerts} alertes météo`}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </section>
               ))}
             </div>
-          </div>
+          </section>
         </section>
       )}
 
