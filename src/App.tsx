@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { CSSProperties, FormEvent } from "react";
+import type { CSSProperties, FormEvent, ReactNode } from "react";
 
 import { getForecast, searchLocations } from "./api";
 import { formatLocalTime, formatSlot, formatTimeZoneLabel } from "./dateTime";
@@ -43,6 +43,9 @@ const STATUS_TONES: Record<ScoreStatus, string> = {
 };
 
 const STALE_AFTER_MS = 60 * 60 * 1000;
+const WEATHER_VALUE_FORMATTER = new Intl.NumberFormat("fr-FR", {
+  maximumFractionDigits: 1,
+});
 
 function locationLabel(location: Location): string {
   return [location.name, location.admin1, location.country].filter(Boolean).join(", ");
@@ -96,6 +99,46 @@ function mainExplanations(score: SportScore): string[] {
   return explanations.slice(0, 2);
 }
 
+function formatWeatherValue(value: number | null | undefined, unit: string): string {
+  return value === null || value === undefined
+    ? "Indisponible"
+    : `${WEATHER_VALUE_FORMATTER.format(value)} ${unit}`;
+}
+
+function WeatherMetric({
+  label,
+  value,
+  score,
+}: {
+  label: string;
+  value: ReactNode;
+  score: number | null | undefined;
+}) {
+  return (
+    <article className="weather-metric">
+      <div>
+        <h4>{label}</h4>
+        <div className="weather-metric__value">{value}</div>
+      </div>
+      <div
+        className={`weather-metric__score${
+          score === null || score === undefined ? " weather-metric__score--missing" : ""
+        }`}
+      >
+        <span className="weather-metric__score-label">Sous-note</span>
+        {score === null || score === undefined ? (
+          <span>Indisponible</span>
+        ) : (
+          <>
+            <strong>{score}</strong>
+            <span>/ 100</span>
+          </>
+        )}
+      </div>
+    </article>
+  );
+}
+
 export default function App() {
   const [query, setQuery] = useState("");
   const [locations, setLocations] = useState<Location[]>([]);
@@ -114,6 +157,13 @@ export default function App() {
     forecast?.hours.find((hour) => hour.time === selectedTime) ?? forecast?.hours[0] ?? null;
   const selectedScore = selectedHour?.scores[sport] ?? null;
   const selectedExplanations = selectedScore ? mainExplanations(selectedScore) : [];
+  // Le facteur température porte le ressenti retenu pour l’activité ; la valeur du facteur vent
+  // reste un intermédiaire de calcul et n’est donc jamais présentée comme une mesure prévue.
+  const temperatureFactor = selectedScore?.weather.factors.find(
+    (factor) => factor.id === "temperature",
+  );
+  const rainFactor = selectedScore?.weather.factors.find((factor) => factor.id === "rain");
+  const windFactor = selectedScore?.weather.factors.find((factor) => factor.id === "wind");
   const bestHour = useMemo(() => {
     if (!forecast?.recommendation_available) return null;
     return forecast.hours.reduce<ForecastHour | null>((best, hour) => {
@@ -444,6 +494,49 @@ export default function App() {
               </section>
             )}
           </div>
+
+          <section className="conditions-details" aria-labelledby="weather-details-title">
+            <header className="conditions-details__header">
+              <div>
+                <p className="eyebrow">Détail du créneau</p>
+                <h3 id="weather-details-title">Météo</h3>
+              </div>
+              <p>Conditions retenues pour ce créneau de 1 h</p>
+            </header>
+
+            <div className="weather-metrics">
+              <WeatherMetric
+                label="Température ressentie"
+                value={formatWeatherValue(temperatureFactor?.value, "°C")}
+                score={temperatureFactor?.score}
+              />
+              <WeatherMetric
+                label="Précipitations sur l’heure"
+                value={formatWeatherValue(selectedHour.conditions.precipitation, "mm")}
+                score={rainFactor?.score}
+              />
+              <WeatherMetric
+                label="Vent et rafales"
+                value={
+                  <div className="weather-metric__wind-values">
+                    <span>
+                      Vent moyen
+                      <strong>
+                        {formatWeatherValue(selectedHour.conditions.wind_speed, "km/h")}
+                      </strong>
+                    </span>
+                    <span>
+                      Rafales
+                      <strong>
+                        {formatWeatherValue(selectedHour.conditions.wind_gusts, "km/h")}
+                      </strong>
+                    </span>
+                  </div>
+                }
+                score={windFactor?.score}
+              />
+            </div>
+          </section>
 
           <div className="timeline-wrap">
             <h3>Heure par heure</h3>

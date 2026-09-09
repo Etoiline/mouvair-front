@@ -14,7 +14,9 @@ Copier `.env.example` vers `.env` uniquement si l'API n'est pas lancée sur `htt
 Le créneau sélectionné présente d’abord sa date, ses horaires locaux et l’activité choisie. La note
 globale apparaît avant les notes météo et qualité de l’air. Une donnée manquante est signalée sans
 masquer les notes disponibles ; les alertes météo restent visibles et deux explications principales
-au maximum résument les facteurs déterminants.
+au maximum résument les facteurs déterminants. Le détail météo associe ensuite la température
+ressentie, les précipitations, le vent moyen et les rafales à leurs sous-notes respectives. La valeur
+intermédiaire utilisée par le calcul du vent n’est pas présentée comme une mesure météo.
 
 ## Actualisation des prévisions
 
