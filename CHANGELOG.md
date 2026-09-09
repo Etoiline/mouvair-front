@@ -1,5 +1,7 @@
 # Changelog
 
+- Add selected-slot pollen forecasts for six types, preserve zero concentrations, distinguish missing values, and clarify that pollen does not affect scores.
+
 - Add selected-slot European AQI details with its category, separate guidance for general and sensitive people, and an explicit unavailable state.
 
 - Add selected-slot weather details with apparent temperature, hourly precipitation, actual wind and gust values, factor scores, and explicit unavailable states.

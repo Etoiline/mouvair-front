@@ -13,6 +13,7 @@ import type {
   Forecast,
   ForecastHour,
   Location,
+  PollenId,
   ScoreStatus,
   SportId,
   SportScore,
@@ -54,9 +55,21 @@ const AIR_CATEGORY_TONES: Record<AirQualityCategory, string> = {
   "Extrêmement mauvaise": "extremely-poor",
 };
 
+const POLLENS: { id: PollenId; label: string }[] = [
+  { id: "alder", label: "Aulne" },
+  { id: "birch", label: "Bouleau" },
+  { id: "grass", label: "Graminées" },
+  { id: "mugwort", label: "Armoise" },
+  { id: "olive", label: "Olivier" },
+  { id: "ragweed", label: "Ambroisie" },
+];
+
 const STALE_AFTER_MS = 60 * 60 * 1000;
 const DECIMAL_FORMATTER = new Intl.NumberFormat("fr-FR", {
   maximumFractionDigits: 1,
+});
+const POLLEN_VALUE_FORMATTER = new Intl.NumberFormat("fr-FR", {
+  maximumFractionDigits: 2,
 });
 
 function locationLabel(location: Location): string {
@@ -115,6 +128,11 @@ function formatWeatherValue(value: number | null | undefined, unit: string): str
   return value === null || value === undefined
     ? "Indisponible"
     : `${DECIMAL_FORMATTER.format(value)} ${unit}`;
+}
+
+function formatPollenValue(value: number): string {
+  if (value > 0 && value < 0.01) return "< 0,01";
+  return POLLEN_VALUE_FORMATTER.format(value);
 }
 
 function WeatherMetric({
@@ -176,6 +194,10 @@ export default function App() {
   );
   const rainFactor = selectedScore?.weather.factors.find((factor) => factor.id === "rain");
   const windFactor = selectedScore?.weather.factors.find((factor) => factor.id === "wind");
+  // Une concentration égale à zéro est une prévision disponible, contrairement à null.
+  const hasPollenData = selectedHour
+    ? POLLENS.some((pollen) => selectedHour.pollen[pollen.id] !== null)
+    : false;
   const bestHour = useMemo(() => {
     if (!forecast?.recommendation_available) return null;
     return forecast.hours.reduce<ForecastHour | null>((best, hour) => {
@@ -606,6 +628,48 @@ export default function App() {
                 </div>
               </div>
             )}
+          </section>
+
+          <section className="conditions-details" aria-labelledby="pollen-details-title">
+            <header className="conditions-details__header">
+              <div>
+                <p className="eyebrow">Détail du créneau</p>
+                <h3 id="pollen-details-title">Pollens prévus</h3>
+              </div>
+              <p>Concentrations horaires en grains/m³</p>
+            </header>
+
+            {hasPollenData ? (
+              <div className="pollen-grid">
+                {POLLENS.map((pollen) => {
+                  const value = selectedHour.pollen[pollen.id];
+                  return (
+                    <article
+                      className={`pollen-item${value === null ? " pollen-item--missing" : ""}`}
+                      key={pollen.id}
+                    >
+                      <span>{pollen.label}</span>
+                      {value === null ? (
+                        <strong>Indisponible</strong>
+                      ) : (
+                        <div className="pollen-item__value">
+                          <strong>{formatPollenValue(value)}</strong>
+                          <small>grains/m³</small>
+                        </div>
+                      )}
+                    </article>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="pollen-details__unavailable" role="status">
+                <strong>Prévisions de pollen indisponibles pour ce lieu ou ce créneau</strong>
+              </div>
+            )}
+
+            <p className="pollen-details__notice">
+              Information pollen présentée séparément ; elle n’entre pas dans les notes Mouv’Air.
+            </p>
           </section>
 
           <div className="timeline-wrap">
