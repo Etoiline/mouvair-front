@@ -37,6 +37,10 @@ créneau. Aucun appel automatique n’est lancé lorsque l’onglet est masqué 
 au retour sur la page si un contrôle a été manqué ou si les données mises en cache ont dépassé leur
 durée de réutilisation.
 
+La recherche de ville et le premier chargement des prévisions disposent d’états séparés. Après le
+choix d’une ville, l’interface annonce le chargement en cours. Si cette première récupération échoue,
+elle conserve la recherche accessible et propose de réessayer directement pour la même ville.
+
 ## Créer une release
 
 Le dépôt doit être propre et `CHANGELOG.md` doit contenir au moins une ligne de changement non

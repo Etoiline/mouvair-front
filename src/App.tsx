@@ -182,10 +182,12 @@ export default function App() {
   const [forecast, setForecast] = useState<Forecast | null>(null);
   const [sport, setSport] = useState<SportId>("easy_run");
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [searchingLocations, setSearchingLocations] = useState(false);
+  const [loadingForecast, setLoadingForecast] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [lastCheckAt, setLastCheckAt] = useState<number | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [searchError, setSearchError] = useState<string | null>(null);
+  const [forecastError, setForecastError] = useState<string | null>(null);
   const forecastRequest = useRef(0);
   const activeRefresh = useRef<number | null>(null);
 
@@ -228,32 +230,38 @@ export default function App() {
   async function handleSearch(event: FormEvent) {
     event.preventDefault();
     if (query.trim().length < 2) return;
-    setLoading(true);
+    setSearchingLocations(true);
+    setLoadingForecast(false);
     setRefreshing(false);
-    setError(null);
+    setSearchError(null);
+    setForecastError(null);
     setForecast(null);
+    setSelectedLocation(null);
     setSelectedTime(null);
     setLastCheckAt(null);
     activeRefresh.current = null;
+    // Une nouvelle recherche invalide un chargement ou une actualisation encore en cours.
     forecastRequest.current += 1;
     try {
       const results = await searchLocations(query.trim());
       setLocations(results);
-      if (results.length === 0) setError("Aucune ville trouvée.");
-    } catch (searchError) {
-      setError(searchError instanceof Error ? searchError.message : "Recherche impossible.");
+      if (results.length === 0) {
+        setSearchError("Aucune ville trouvée. Vérifiez l’orthographe ou précisez le pays.");
+      }
+    } catch (caughtError) {
+      setSearchError(caughtError instanceof Error ? caughtError.message : "Recherche impossible.");
     } finally {
-      setLoading(false);
+      setSearchingLocations(false);
     }
   }
 
-  async function chooseLocation(location: Location) {
+  async function loadInitialForecast(location: Location) {
     const requestId = ++forecastRequest.current;
     setSelectedLocation(location);
-    setLocations([]);
-    setLoading(true);
+    setLoadingForecast(true);
     setRefreshing(false);
-    setError(null);
+    setSearchError(null);
+    setForecastError(null);
     setForecast(null);
     setSelectedTime(null);
     setLastCheckAt(null);
@@ -264,12 +272,21 @@ export default function App() {
       setForecast(nextForecast);
       setSelectedTime(nextForecast.hours[0]?.time ?? null);
       setLastCheckAt(Date.now());
-    } catch (forecastError) {
+    } catch (caughtError) {
       if (requestId !== forecastRequest.current) return;
-      setError(forecastError instanceof Error ? forecastError.message : "Prévisions indisponibles.");
+      setForecastError(
+        caughtError instanceof Error
+          ? caughtError.message
+          : "Le service est momentanément indisponible.",
+      );
     } finally {
-      if (requestId === forecastRequest.current) setLoading(false);
+      if (requestId === forecastRequest.current) setLoadingForecast(false);
     }
+  }
+
+  function chooseLocation(location: Location) {
+    setLocations([]);
+    void loadInitialForecast(location);
   }
 
   const refreshForecast = useCallback(async () => {
@@ -389,8 +406,8 @@ export default function App() {
               placeholder="Lyon, Nantes, Annecy…"
               minLength={2}
             />
-            <button type="submit" disabled={loading}>
-              {loading ? "Recherche…" : "Voir les conditions"}
+            <button type="submit" disabled={searchingLocations}>
+              {searchingLocations ? "Recherche…" : "Voir les conditions"}
             </button>
           </div>
         </form>
@@ -398,15 +415,34 @@ export default function App() {
         {locations.length > 0 && (
           <div className="location-results" aria-label="Résultats de recherche">
             {locations.map((location) => (
-              <button key={location.id} onClick={() => void chooseLocation(location)}>
+              <button key={location.id} onClick={() => chooseLocation(location)}>
                 <strong>{location.name}</strong>
                 <span>{[location.admin1, location.country].filter(Boolean).join(" · ")}</span>
               </button>
             ))}
           </div>
         )}
-        {error && <p className="error">{error}</p>}
+        {searchError && <p className="error">{searchError}</p>}
       </header>
+
+      {loadingForecast && selectedLocation && (
+        <section className="forecast-state" aria-live="polite" aria-busy="true">
+          <span className="forecast-state__spinner" aria-hidden="true" />
+          <p className="eyebrow">{locationLabel(selectedLocation)}</p>
+          <h2>Chargement des prévisions pour {selectedLocation.name}…</h2>
+        </section>
+      )}
+
+      {!loadingForecast && forecastError && selectedLocation && !forecast && (
+        <section className="forecast-state forecast-state--error" role="alert">
+          <p className="eyebrow">{locationLabel(selectedLocation)}</p>
+          <h2>Impossible de charger les prévisions</h2>
+          <p>{forecastError}</p>
+          <button type="button" onClick={() => void loadInitialForecast(selectedLocation)}>
+            Réessayer
+          </button>
+        </section>
+      )}
 
       {forecast && selectedHour && selectedScore && selectedLocation && (
         <section className="dashboard">
@@ -762,7 +798,7 @@ export default function App() {
         </section>
       )}
 
-      {!forecast && !loading && (
+      {!forecast && !searchingLocations && !loadingForecast && !forecastError && (
         <section className="empty-state">
           <span>01</span>
           <p>Recherchez une ville pour comparer les quatre activités sur les prochaines 24 heures.</p>
