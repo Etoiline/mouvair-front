@@ -28,6 +28,8 @@ présence éventuelle d’une alerte météo ; les créneaux incomplets restent 
 créneau complet est signalé dans la liste et accessible depuis le bouton récapitulatif. Le premier
 créneau est retenu en cas d’égalité. Un avertissement accompagne une meilleure option défavorable,
 tandis que l’absence de note complète et la suspension pour données anciennes restent distinctes.
+Le contrat de score utilisé par l’interface contient uniquement les sections imbriquées `weather`,
+`air` et `overall`, qui portent chacune les données propres à leur rôle.
 
 ## Actualisation des prévisions
 

@@ -8,8 +8,7 @@ export type ScoreStatus =
   | "très défavorable"
   | "incomplet";
 
-export type LegacyScoreStatus = Exclude<ScoreStatus, "très défavorable">;
-export type ScoreFactorId = "air" | "temperature" | "rain" | "wind";
+export type WeatherFactorId = "temperature" | "rain" | "wind";
 export type PollenId = "alder" | "birch" | "grass" | "mugwort" | "olive" | "ragweed";
 export type ForecastDataState = "fresh" | "refresh_failed" | "stale";
 export type AirQualityCategory =
@@ -31,16 +30,11 @@ export type Location = {
 };
 
 export type ScoreFactor = {
-  id: ScoreFactorId;
+  id: WeatherFactorId;
   label: string;
   score: number | null;
   value: number | null;
   unit: string;
-};
-
-export type AvailableScoreFactor = Omit<ScoreFactor, "score" | "value"> & {
-  score: number;
-  value: number;
 };
 
 export type ScoreSummary = {
@@ -68,15 +62,12 @@ export type AirScore = {
 };
 
 export type SportScore = {
+  // Le contrat reflète les trois sections imbriquées renvoyées par l’API.
   sport: SportId;
   label: string;
   weather: WeatherScore;
   air: AirScore;
   overall: ScoreSummary;
-  score: number | null;
-  status: LegacyScoreStatus;
-  factors: AvailableScoreFactor[];
-  reasons: string[];
 };
 
 export type Conditions = {
