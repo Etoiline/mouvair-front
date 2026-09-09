@@ -24,7 +24,10 @@ bouleau, graminées, armoise, olivier et ambroisie en grains/m³. Une valeur nul
 reste affichée comme `0`, tandis qu’une donnée absente est indiquée comme indisponible. Les pollens
 n’entrent pas dans les notes Mouv’Air. Les 24 créneaux sont regroupés par date locale et restent
 classés chronologiquement. Chaque carte présente l’horaire, la note globale, son appréciation et la
-présence éventuelle d’une alerte météo ; les créneaux incomplets restent sélectionnables.
+présence éventuelle d’une alerte météo ; les créneaux incomplets restent sélectionnables. Le meilleur
+créneau complet est signalé dans la liste et accessible depuis le bouton récapitulatif. Le premier
+créneau est retenu en cas d’égalité. Un avertissement accompagne une meilleure option défavorable,
+tandis que l’absence de note complète et la suspension pour données anciennes restent distinctes.
 
 ## Actualisation des prévisions
 

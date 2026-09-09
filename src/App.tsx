@@ -9,6 +9,7 @@ import {
   formatTimeZoneLabel,
   groupByLocalDate,
 } from "./dateTime";
+import { findBestHour, hasUnfavorableOverall } from "./forecastRanking";
 import {
   boundaryRefreshDelay,
   periodicRefreshDelay,
@@ -17,7 +18,6 @@ import {
 import type {
   AirQualityCategory,
   Forecast,
-  ForecastHour,
   Location,
   PollenId,
   ScoreStatus,
@@ -204,15 +204,12 @@ export default function App() {
   const hasPollenData = selectedHour
     ? POLLENS.some((pollen) => selectedHour.pollen[pollen.id] !== null)
     : false;
-  const bestHour = useMemo(() => {
-    if (!forecast?.recommendation_available) return null;
-    return forecast.hours.reduce<ForecastHour | null>((best, hour) => {
-      const score = hour.scores[sport].overall.score;
-      if (score === null) return best;
-      const bestScore = best?.scores[sport].overall.score;
-      return bestScore === null || bestScore === undefined || score > bestScore ? hour : best;
-    }, null);
-  }, [forecast, sport]);
+  const bestAvailableHour = useMemo(
+    () => (forecast ? findBestHour(forecast.hours, sport) : null),
+    [forecast, sport],
+  );
+  const bestHour = forecast?.recommendation_available ? bestAvailableHour : null;
+  const bestHourIsUnfavorable = bestHour ? hasUnfavorableOverall(bestHour, sport) : false;
   const forecastDays = useMemo(
     () => (forecast ? groupByLocalDate(forecast.hours, forecast.timezone) : []),
     [forecast],
@@ -430,24 +427,40 @@ export default function App() {
                   {refreshing ? "Actualisation…" : "Actualiser"}
                 </button>
               </div>
-              {bestHour && (
-                <button
-                  className="best-slot"
-                  onClick={() => setSelectedTime(bestHour.time)}
-                >
-                  <span>Meilleur créneau</span>
-                  <strong>
-                    {formatSlot(bestHour.time, bestHour.end_time, forecast.timezone, "short")}
-                  </strong>
-                  <b>{bestHour.scores[sport].overall.score}/100</b>
-                </button>
-              )}
-              {!forecast.recommendation_available && (
-                <button className="best-slot" type="button" disabled>
-                  <span>Meilleur créneau</span>
-                  <strong>Données trop anciennes</strong>
-                </button>
-              )}
+              <div className="best-slot-panel">
+                {bestHour ? (
+                  <button
+                    className="best-slot"
+                    onClick={() => setSelectedTime(bestHour.time)}
+                  >
+                    <span>Meilleur créneau</span>
+                    <strong>
+                      {formatSlot(bestHour.time, bestHour.end_time, forecast.timezone, "short")}
+                    </strong>
+                    <b>{bestHour.scores[sport].overall.score}/100</b>
+                  </button>
+                ) : (
+                  <button className="best-slot" type="button" disabled>
+                    <span>Meilleur créneau</span>
+                    <strong>
+                      {forecast.recommendation_available
+                        ? "Aucun créneau complet"
+                        : "Recommandation suspendue"}
+                    </strong>
+                  </button>
+                )}
+                {bestHourIsUnfavorable && (
+                  <small className="best-slot-warning" role="status">
+                    Même le meilleur créneau présente des conditions défavorables.
+                  </small>
+                )}
+                {!forecast.recommendation_available && (
+                  <small className="best-slot-help">Les données sont trop anciennes.</small>
+                )}
+                {forecast.recommendation_available && !bestAvailableHour && (
+                  <small className="best-slot-help">Aucune note globale n’est disponible.</small>
+                )}
+              </div>
             </div>
           </div>
 
@@ -692,13 +705,14 @@ export default function App() {
                     {day.items.map((hour) => {
                       const score = hour.scores[sport];
                       const selected = selectedHour.time === hour.time;
+                      const best = bestHour?.time === hour.time;
                       const alerts = score.weather.alerts.length;
                       return (
                         <button
                           key={hour.time}
                           className={`slot-card slot-card--${STATUS_TONES[score.overall.status]}${
-                            selected ? " active" : ""
-                          }`}
+                            best ? " slot-card--best" : ""
+                          }${selected ? " active" : ""}`}
                           onClick={() => setSelectedTime(hour.time)}
                           aria-pressed={selected}
                         >
@@ -710,7 +724,14 @@ export default function App() {
                                 forecast.timezone,
                               )}
                             </strong>
-                            {selected && <span className="slot-card__selected">Sélectionné</span>}
+                            {(best || selected) && (
+                              <span className="slot-card__badges">
+                                {best && <span className="slot-card__best">Meilleur créneau</span>}
+                                {selected && (
+                                  <span className="slot-card__selected">Sélectionné</span>
+                                )}
+                              </span>
+                            )}
                           </span>
                           <span className="slot-card__result">
                             {score.overall.score === null ? (
