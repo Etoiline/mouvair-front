@@ -1,5 +1,7 @@
 # Changelog
 
+## 0.3.0 - 2026-09-09
+
 - Remove deprecated flat sport-score compatibility types and align the client contract exclusively with nested weather, air, and overall sections.
 
 - Separate location search from initial forecast loading, show city-specific progress, and provide an in-place retry after first-load failures while keeping search accessible.
