@@ -1,5 +1,7 @@
 # Changelog
 
+- Separate location search from initial forecast loading, show city-specific progress, and provide an in-place retry after first-load failures while keeping search accessible.
+
 - Mark and link the best complete slot, preserve the earliest tie, warn when its conditions are unfavorable, and distinguish suspended recommendations from forecasts with no complete slot.
 
 - Replace the horizontal hourly carousel with responsive date-grouped slot cards showing local intervals, overall scores and statuses, incomplete states, alerts, and selection.
