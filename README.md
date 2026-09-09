@@ -19,7 +19,10 @@ ressentie, les précipitations, le vent moyen et les rafales à leurs sous-notes
 intermédiaire utilisée par le calcul du vent n’est pas présentée comme une mesure météo. Le détail
 de la qualité de l’air conserve l’AQI européen brut, sa catégorie et les recommandations fournies
 pour la population générale et les personnes sensibles. L’AQI est présenté comme un indice sans
-unité, jamais comme un pourcentage.
+unité, jamais comme un pourcentage. Le bloc pollen présente les concentrations horaires d’aulne,
+bouleau, graminées, armoise, olivier et ambroisie en grains/m³. Une valeur nulle au sens numérique
+reste affichée comme `0`, tandis qu’une donnée absente est indiquée comme indisponible. Les pollens
+n’entrent pas dans les notes Mouv’Air.
 
 ## Actualisation des prévisions
 
