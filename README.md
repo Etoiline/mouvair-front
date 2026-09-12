@@ -9,6 +9,17 @@ pnpm dev
 
 Copier `.env.example` vers `.env` uniquement si l'API n'est pas lancée sur `http://localhost:8000`.
 
+## Tests
+
+La suite Vitest utilise Testing Library et un DOM simulé. Elle vérifie les principaux parcours de
+l’interface sans appeler le backend réel : sélection et meilleur créneau, actualisation réussie ou
+échouée, nouvel essai après un échec initial et erreur de recherche.
+
+```powershell
+pnpm test
+pnpm test:watch
+```
+
 ## Résumé d’un créneau
 
 Le créneau sélectionné présente d’abord sa date, ses horaires locaux et l’activité choisie. La note

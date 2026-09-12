@@ -1,5 +1,7 @@
 # Changelog
 
+- Add Vitest and Testing Library coverage for slot selection, best-slot ranking, refresh behavior, retries, and search errors.
+
 - Require three characters for city searches to align the interface with the Redis-protected geocoding contract.
 
 ## 0.3.0 - 2026-09-09
