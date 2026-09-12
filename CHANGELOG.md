@@ -1,5 +1,7 @@
 # Changelog
 
+- Consolidate weather, air-quality, and pollen details into one accessible tabbed card.
+
 - Improve the city-search submit button contrast on its lime background.
 
 - Ensure city names remain readable against the white location-results background.
