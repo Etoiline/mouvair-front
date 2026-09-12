@@ -55,8 +55,9 @@ durée de réutilisation.
 La recherche de ville et le premier chargement des prévisions disposent d’états séparés. À partir de
 trois caractères, la recherche se lance automatiquement après un court délai sans nouvelle frappe ;
 une saisie plus récente annule la requête précédente, tandis que le bouton ou la touche Entrée permet
-un déclenchement immédiat. Après le choix d’une ville, l’interface annonce le chargement en cours. Si
-cette première récupération échoue, elle conserve la recherche accessible et propose de réessayer
+un déclenchement immédiat. Les résultats s’ouvrent en surimpression sous le champ sans déplacer le
+reste de la page. Après le choix d’une ville, l’interface annonce le chargement en cours. Si cette
+première récupération échoue, elle conserve la recherche accessible et propose de réessayer
 directement pour la même ville.
 
 ## Créer une release
