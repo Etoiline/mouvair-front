@@ -229,7 +229,7 @@ export default function App() {
 
   async function handleSearch(event: FormEvent) {
     event.preventDefault();
-    if (query.trim().length < 2) return;
+    if (query.trim().length < 3) return;
     setSearchingLocations(true);
     setLoadingForecast(false);
     setRefreshing(false);
@@ -404,7 +404,7 @@ export default function App() {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Lyon, Nantes, Annecy…"
-              minLength={2}
+              minLength={3}
             />
             <button type="submit" disabled={searchingLocations}>
               {searchingLocations ? "Recherche…" : "Voir les conditions"}
