@@ -1,5 +1,7 @@
 # Changelog
 
+- Improve the city-search submit button contrast on its lime background.
+
 - Ensure city names remain readable against the white location-results background.
 
 - Trigger city searches automatically after three characters with debouncing, request cancellation, and an immediate submit fallback.
