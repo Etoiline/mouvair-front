@@ -31,8 +31,8 @@ trois onglets : météo, qualité de l’air et pollens. L’onglet météo asso
 les précipitations, le vent moyen et les rafales à leurs sous-notes respectives. La valeur
 intermédiaire utilisée par le calcul du vent n’est pas présentée comme une mesure météo. L’onglet de
 qualité de l’air conserve l’AQI européen brut, sa catégorie et les recommandations fournies pour la
-population générale et les personnes sensibles. L’AQI est présenté comme un indice sans unité,
-jamais comme un pourcentage. L’onglet pollen présente les concentrations horaires d’aulne, bouleau,
+population générale et les personnes sensibles. La valeur AQI est affichée seule, sans unité ni
+libellé accolé. L’onglet pollen présente les concentrations horaires d’aulne, bouleau,
 graminées, armoise, olivier et ambroisie en grains/m³. Une valeur nulle au sens numérique reste
 affichée comme `0`, tandis qu’une donnée absente est indiquée comme indisponible. Les pollens
 n’entrent pas dans les notes Mouv’Air. Les 24 créneaux sont regroupés par date locale et restent

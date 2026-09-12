@@ -192,11 +192,12 @@ describe("parcours principal", () => {
 
     await user.click(airTab);
     expect(airTab.getAttribute("aria-selected")).toBe("true");
+    const airPanel = within(screen.getByRole("tabpanel", { name: "Qualité de l’air" }));
+    expect(airPanel.getByText("AQI européen")).toBeTruthy();
+    expect(airPanel.queryByText("indice", { exact: true })).toBeNull();
     expect(
-      within(screen.getByRole("tabpanel", { name: "Qualité de l’air" })).getByText(
-        "AQI européen",
-      ),
-    ).toBeTruthy();
+      airPanel.queryByText("Indice de pollution sans unité : ce n’est pas un pourcentage."),
+    ).toBeNull();
 
     await user.keyboard("{ArrowRight}");
     expect(pollenTab.getAttribute("aria-selected")).toBe("true");
