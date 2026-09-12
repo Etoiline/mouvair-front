@@ -1,5 +1,7 @@
 # Changelog
 
+- Trigger city searches automatically after three characters with debouncing, request cancellation, and an immediate submit fallback.
+
 - Add Vitest and Testing Library coverage for slot selection, best-slot ranking, refresh behavior, retries, and search errors.
 
 - Require three characters for city searches to align the interface with the Redis-protected geocoding contract.

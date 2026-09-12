@@ -50,11 +50,12 @@ créneau. Aucun appel automatique n’est lancé lorsque l’onglet est masqué 
 au retour sur la page si un contrôle a été manqué ou si les données mises en cache ont dépassé leur
 durée de réutilisation.
 
-La recherche de ville et le premier chargement des prévisions disposent d’états séparés. Après le
-choix d’une ville, l’interface annonce le chargement en cours. Si cette première récupération échoue,
-elle conserve la recherche accessible et propose de réessayer directement pour la même ville. Une
-recherche nécessite au moins trois caractères, comme le contrat du backend préparé pour une future
-autocomplétion.
+La recherche de ville et le premier chargement des prévisions disposent d’états séparés. À partir de
+trois caractères, la recherche se lance automatiquement après un court délai sans nouvelle frappe ;
+une saisie plus récente annule la requête précédente, tandis que le bouton ou la touche Entrée permet
+un déclenchement immédiat. Après le choix d’une ville, l’interface annonce le chargement en cours. Si
+cette première récupération échoue, elle conserve la recherche accessible et propose de réessayer
+directement pour la même ville.
 
 ## Créer une release
 
