@@ -161,6 +161,12 @@ h1 { margin-bottom: 22px; font: 800 clamp(48px, 7vw, 82px)/.95 "Manrope", sans-s
 .conditions-details__header .eyebrow { margin-bottom: 6px; }
 .conditions-details__header h3 { margin: 0; font: 750 23px/1.2 "Manrope", sans-serif; letter-spacing: -.025em; }
 .conditions-details__header > p { margin: 0; color: #6e7b74; font-size: 13px; }
+.conditions-details__tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; padding: 7px; border-bottom: 1px solid #e5e7df; background: #f0f1ec; }
+.conditions-details__tab { min-width: 0; padding: 12px 15px; border: 0; border-radius: 11px; background: transparent; color: #536a60; cursor: pointer; font-weight: 700; }
+.conditions-details__tab:not([aria-selected="true"]):hover { background: #e3e9e2; color: var(--ink); }
+.conditions-details__tab[aria-selected="true"] { background: var(--ink); color: #fff; box-shadow: 0 5px 14px rgba(21,56,46,.18); }
+.conditions-details__tab:focus-visible, .conditions-details__panel:focus-visible { outline: 3px solid #86b9a3; outline-offset: -3px; }
+.conditions-details__panel[hidden] { display: none; }
 .weather-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: #e5e7df; }
 .weather-metric { display: flex; min-width: 0; min-height: 190px; padding: 25px; background: #fbfaf5; flex-direction: column; justify-content: space-between; gap: 25px; }
 .weather-metric h4 { margin: 0 0 12px; color: #627269; font: 700 13px "Manrope", sans-serif; }
@@ -282,6 +288,8 @@ footer p { margin: 0; }
   .score-summary > p { min-height: 0; margin-bottom: 12px; }
   .weather-alerts, .score-reasons { padding: 20px 18px; }
   .conditions-details__header { align-items: flex-start; flex-direction: column; gap: 8px; padding: 22px 18px; }
+  .conditions-details__tabs { gap: 4px; padding: 5px; }
+  .conditions-details__tab { padding: 11px 6px; font-size: 12px; }
   .weather-metric { padding: 22px 18px; }
   .air-index { padding: 24px 18px; }
   .air-recommendations { grid-template-columns: 1fr; }

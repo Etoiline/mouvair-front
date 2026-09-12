@@ -179,6 +179,35 @@ describe("parcours principal", () => {
     expect(within(cards[1]).getByText("Sélectionné")).toBeTruthy();
   });
 
+  it("regroupe les détails du créneau dans trois onglets navigables", async () => {
+    const user = await displayForecast(forecast([70]));
+    expect(screen.getAllByRole("region", { name: "Conditions détaillées" })).toHaveLength(1);
+    const tablist = screen.getByRole("tablist", { name: "Choisir le détail du créneau" });
+    const weatherTab = within(tablist).getByRole("tab", { name: "Météo" });
+    const airTab = within(tablist).getByRole("tab", { name: "Qualité de l’air" });
+    const pollenTab = within(tablist).getByRole("tab", { name: "Pollens" });
+
+    expect(weatherTab.getAttribute("aria-selected")).toBe("true");
+    expect(screen.getByRole("tabpanel", { name: "Météo" })).toBeTruthy();
+
+    await user.click(airTab);
+    expect(airTab.getAttribute("aria-selected")).toBe("true");
+    expect(
+      within(screen.getByRole("tabpanel", { name: "Qualité de l’air" })).getByText(
+        "AQI européen",
+      ),
+    ).toBeTruthy();
+
+    await user.keyboard("{ArrowRight}");
+    expect(pollenTab.getAttribute("aria-selected")).toBe("true");
+    expect(document.activeElement).toBe(pollenTab);
+    expect(
+      within(screen.getByRole("tabpanel", { name: "Pollens" })).getByText(
+        "Prévisions de pollen indisponibles pour ce lieu ou ce créneau",
+      ),
+    ).toBeTruthy();
+  });
+
   it("conserve les résultats visibles pendant une actualisation réussie", async () => {
     const user = await displayForecast(forecast([40, 60]));
     const nextForecast = deferred<Forecast>();

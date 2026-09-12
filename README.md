@@ -12,8 +12,9 @@ Copier `.env.example` vers `.env` uniquement si l'API n'est pas lancée sur `htt
 ## Tests
 
 La suite Vitest utilise Testing Library et un DOM simulé. Elle vérifie les principaux parcours de
-l’interface sans appeler le backend réel : sélection et meilleur créneau, actualisation réussie ou
-échouée, nouvel essai après un échec initial et erreur de recherche.
+l’interface sans appeler le backend réel : sélection et meilleur créneau, navigation entre les
+détails du créneau, actualisation réussie ou échouée, nouvel essai après un échec initial et erreur
+de recherche.
 
 ```powershell
 pnpm test
@@ -25,14 +26,15 @@ pnpm test:watch
 Le créneau sélectionné présente d’abord sa date, ses horaires locaux et l’activité choisie. La note
 globale apparaît avant les notes météo et qualité de l’air. Une donnée manquante est signalée sans
 masquer les notes disponibles ; les alertes météo restent visibles et deux explications principales
-au maximum résument les facteurs déterminants. Le détail météo associe ensuite la température
-ressentie, les précipitations, le vent moyen et les rafales à leurs sous-notes respectives. La valeur
-intermédiaire utilisée par le calcul du vent n’est pas présentée comme une mesure météo. Le détail
-de la qualité de l’air conserve l’AQI européen brut, sa catégorie et les recommandations fournies
-pour la population générale et les personnes sensibles. L’AQI est présenté comme un indice sans
-unité, jamais comme un pourcentage. Le bloc pollen présente les concentrations horaires d’aulne,
-bouleau, graminées, armoise, olivier et ambroisie en grains/m³. Une valeur nulle au sens numérique
-reste affichée comme `0`, tandis qu’une donnée absente est indiquée comme indisponible. Les pollens
+au maximum résument les facteurs déterminants. Une carte unique regroupe ensuite les détails dans
+trois onglets : météo, qualité de l’air et pollens. L’onglet météo associe la température ressentie,
+les précipitations, le vent moyen et les rafales à leurs sous-notes respectives. La valeur
+intermédiaire utilisée par le calcul du vent n’est pas présentée comme une mesure météo. L’onglet de
+qualité de l’air conserve l’AQI européen brut, sa catégorie et les recommandations fournies pour la
+population générale et les personnes sensibles. L’AQI est présenté comme un indice sans unité,
+jamais comme un pourcentage. L’onglet pollen présente les concentrations horaires d’aulne, bouleau,
+graminées, armoise, olivier et ambroisie en grains/m³. Une valeur nulle au sens numérique reste
+affichée comme `0`, tandis qu’une donnée absente est indiquée comme indisponible. Les pollens
 n’entrent pas dans les notes Mouv’Air. Les 24 créneaux sont regroupés par date locale et restent
 classés chronologiquement. Chaque carte présente l’horaire, la note globale, son appréciation et la
 présence éventuelle d’une alerte météo ; les créneaux incomplets restent sélectionnables. Le meilleur

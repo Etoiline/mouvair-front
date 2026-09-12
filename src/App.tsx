@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { CSSProperties, FormEvent, ReactNode } from "react";
+import type { CSSProperties, FormEvent, KeyboardEvent, ReactNode } from "react";
 
 import { getForecast, searchLocations } from "./api";
 import {
@@ -30,6 +30,26 @@ const SPORTS: { id: SportId; shortLabel: string; icon: string }[] = [
   { id: "hard_run", shortLabel: "Course intense", icon: "⚡" },
   { id: "cycling", shortLabel: "Vélo", icon: "◇" },
   { id: "walking", shortLabel: "Marche", icon: "•" },
+];
+
+type DetailTabId = "weather" | "air" | "pollen";
+
+const DETAIL_TABS: { id: DetailTabId; label: string; description: string }[] = [
+  {
+    id: "weather",
+    label: "Météo",
+    description: "Conditions retenues pour ce créneau de 1 h",
+  },
+  {
+    id: "air",
+    label: "Qualité de l’air",
+    description: "Indice européen de qualité de l’air",
+  },
+  {
+    id: "pollen",
+    label: "Pollens",
+    description: "Concentrations horaires en grains/m³",
+  },
 ];
 
 const LOCATION_SEARCH_MIN_LENGTH = 3;
@@ -184,6 +204,7 @@ export default function App() {
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
   const [forecast, setForecast] = useState<Forecast | null>(null);
   const [sport, setSport] = useState<SportId>("easy_run");
+  const [detailTab, setDetailTab] = useState<DetailTabId>("weather");
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [searchingLocations, setSearchingLocations] = useState(false);
   const [loadingForecast, setLoadingForecast] = useState(false);
@@ -222,6 +243,8 @@ export default function App() {
     () => (forecast ? groupByLocalDate(forecast.hours, forecast.timezone) : []),
     [forecast],
   );
+  const selectedDetailTab =
+    DETAIL_TABS.find((item) => item.id === detailTab) ?? DETAIL_TABS[0];
 
   useEffect(() => {
     if (!forecast) {
@@ -428,6 +451,27 @@ export default function App() {
 
   function chooseSport(nextSport: SportId) {
     setSport(nextSport);
+  }
+
+  function handleDetailTabKeyDown(
+    event: KeyboardEvent<HTMLButtonElement>,
+    currentTab: DetailTabId,
+  ) {
+    const currentIndex = DETAIL_TABS.findIndex((item) => item.id === currentTab);
+    let nextIndex: number | null = null;
+
+    if (event.key === "ArrowRight") nextIndex = (currentIndex + 1) % DETAIL_TABS.length;
+    if (event.key === "ArrowLeft") {
+      nextIndex = (currentIndex - 1 + DETAIL_TABS.length) % DETAIL_TABS.length;
+    }
+    if (event.key === "Home") nextIndex = 0;
+    if (event.key === "End") nextIndex = DETAIL_TABS.length - 1;
+    if (nextIndex === null) return;
+
+    event.preventDefault();
+    const nextTab = DETAIL_TABS[nextIndex];
+    setDetailTab(nextTab.id);
+    document.getElementById(`conditions-details-tab-${nextTab.id}`)?.focus();
   }
 
   return (
@@ -645,147 +689,177 @@ export default function App() {
             )}
           </div>
 
-          <section className="conditions-details" aria-labelledby="weather-details-title">
+          <section className="conditions-details" aria-labelledby="conditions-details-title">
             <header className="conditions-details__header">
               <div>
                 <p className="eyebrow">Détail du créneau</p>
-                <h3 id="weather-details-title">Météo</h3>
+                <h3 id="conditions-details-title">Conditions détaillées</h3>
               </div>
-              <p>Conditions retenues pour ce créneau de 1 h</p>
+              <p>{selectedDetailTab.description}</p>
             </header>
 
-            <div className="weather-metrics">
-              <WeatherMetric
-                label="Température ressentie"
-                value={formatWeatherValue(temperatureFactor?.value, "°C")}
-                score={temperatureFactor?.score}
-              />
-              <WeatherMetric
-                label="Précipitations sur l’heure"
-                value={formatWeatherValue(selectedHour.conditions.precipitation, "mm")}
-                score={rainFactor?.score}
-              />
-              <WeatherMetric
-                label="Vent et rafales"
-                value={
-                  <div className="weather-metric__wind-values">
-                    <span>
-                      Vent moyen
-                      <strong>
-                        {formatWeatherValue(selectedHour.conditions.wind_speed, "km/h")}
-                      </strong>
-                    </span>
-                    <span>
-                      Rafales
-                      <strong>
-                        {formatWeatherValue(selectedHour.conditions.wind_gusts, "km/h")}
-                      </strong>
-                    </span>
-                  </div>
-                }
-                score={windFactor?.score}
-              />
+            <div
+              className="conditions-details__tabs"
+              role="tablist"
+              aria-label="Choisir le détail du créneau"
+            >
+              {DETAIL_TABS.map((item) => (
+                <button
+                  className="conditions-details__tab"
+                  id={`conditions-details-tab-${item.id}`}
+                  key={item.id}
+                  type="button"
+                  role="tab"
+                  aria-controls={`conditions-details-panel-${item.id}`}
+                  aria-selected={detailTab === item.id}
+                  tabIndex={detailTab === item.id ? 0 : -1}
+                  onClick={() => setDetailTab(item.id)}
+                  onKeyDown={(event) => handleDetailTabKeyDown(event, item.id)}
+                >
+                  {item.label}
+                </button>
+              ))}
             </div>
-          </section>
 
-          <section className="conditions-details" aria-labelledby="air-details-title">
-            <header className="conditions-details__header">
-              <div>
-                <p className="eyebrow">Détail du créneau</p>
-                <h3 id="air-details-title">Qualité de l’air</h3>
+            <div
+              className="conditions-details__panel"
+              id="conditions-details-panel-weather"
+              role="tabpanel"
+              aria-labelledby="conditions-details-tab-weather"
+              tabIndex={0}
+              hidden={detailTab !== "weather"}
+            >
+              <div className="weather-metrics">
+                <WeatherMetric
+                  label="Température ressentie"
+                  value={formatWeatherValue(temperatureFactor?.value, "°C")}
+                  score={temperatureFactor?.score}
+                />
+                <WeatherMetric
+                  label="Précipitations sur l’heure"
+                  value={formatWeatherValue(selectedHour.conditions.precipitation, "mm")}
+                  score={rainFactor?.score}
+                />
+                <WeatherMetric
+                  label="Vent et rafales"
+                  value={
+                    <div className="weather-metric__wind-values">
+                      <span>
+                        Vent moyen
+                        <strong>
+                          {formatWeatherValue(selectedHour.conditions.wind_speed, "km/h")}
+                        </strong>
+                      </span>
+                      <span>
+                        Rafales
+                        <strong>
+                          {formatWeatherValue(selectedHour.conditions.wind_gusts, "km/h")}
+                        </strong>
+                      </span>
+                    </div>
+                  }
+                  score={windFactor?.score}
+                />
               </div>
-              <p>Indice européen de qualité de l’air</p>
-            </header>
+            </div>
 
-            {selectedScore.air.aqi === null ? (
-              <div className="air-details__unavailable" role="status">
-                <strong>Qualité de l’air indisponible</strong>
-                <p>L’indice AQI européen n’est pas disponible pour ce créneau.</p>
-              </div>
-            ) : (
-              <div className="air-details__content">
-                <div className="air-index">
-                  <p>AQI européen</p>
-                  <div className="air-index__value">
-                    <strong>{DECIMAL_FORMATTER.format(selectedScore.air.aqi)}</strong>
-                    <span>indice</span>
+            <div
+              className="conditions-details__panel"
+              id="conditions-details-panel-air"
+              role="tabpanel"
+              aria-labelledby="conditions-details-tab-air"
+              tabIndex={0}
+              hidden={detailTab !== "air"}
+            >
+              {selectedScore.air.aqi === null ? (
+                <div className="air-details__unavailable" role="status">
+                  <strong>Qualité de l’air indisponible</strong>
+                  <p>L’indice AQI européen n’est pas disponible pour ce créneau.</p>
+                </div>
+              ) : (
+                <div className="air-details__content">
+                  <div className="air-index">
+                    <p>AQI européen</p>
+                    <div className="air-index__value">
+                      <strong>{DECIMAL_FORMATTER.format(selectedScore.air.aqi)}</strong>
+                      <span>indice</span>
+                    </div>
+                    {selectedScore.air.category ? (
+                      <span
+                        className={`air-category air-category--${
+                          AIR_CATEGORY_TONES[selectedScore.air.category]
+                        }`}
+                      >
+                        {selectedScore.air.category}
+                      </span>
+                    ) : (
+                      <span className="air-category air-category--missing">
+                        Catégorie indisponible
+                      </span>
+                    )}
+                    <small>Indice de pollution sans unité : ce n’est pas un pourcentage.</small>
                   </div>
-                  {selectedScore.air.category ? (
-                    <span
-                      className={`air-category air-category--${
-                        AIR_CATEGORY_TONES[selectedScore.air.category]
-                      }`}
-                    >
-                      {selectedScore.air.category}
-                    </span>
-                  ) : (
-                    <span className="air-category air-category--missing">
-                      Catégorie indisponible
-                    </span>
-                  )}
-                  <small>Indice de pollution sans unité : ce n’est pas un pourcentage.</small>
-                </div>
 
-                <div className="air-recommendations">
-                  <article>
-                    <span>Population générale</span>
-                    <p>
-                      {selectedScore.air.recommendations?.general_population ??
-                        "Recommandation indisponible."}
-                    </p>
-                  </article>
-                  <article>
-                    <span>Personnes sensibles</span>
-                    <p>
-                      {selectedScore.air.recommendations?.sensitive_people ??
-                        "Recommandation indisponible."}
-                    </p>
-                  </article>
-                </div>
-              </div>
-            )}
-          </section>
-
-          <section className="conditions-details" aria-labelledby="pollen-details-title">
-            <header className="conditions-details__header">
-              <div>
-                <p className="eyebrow">Détail du créneau</p>
-                <h3 id="pollen-details-title">Pollens prévus</h3>
-              </div>
-              <p>Concentrations horaires en grains/m³</p>
-            </header>
-
-            {hasPollenData ? (
-              <div className="pollen-grid">
-                {POLLENS.map((pollen) => {
-                  const value = selectedHour.pollen[pollen.id];
-                  return (
-                    <article
-                      className={`pollen-item${value === null ? " pollen-item--missing" : ""}`}
-                      key={pollen.id}
-                    >
-                      <span>{pollen.label}</span>
-                      {value === null ? (
-                        <strong>Indisponible</strong>
-                      ) : (
-                        <div className="pollen-item__value">
-                          <strong>{formatPollenValue(value)}</strong>
-                          <small>grains/m³</small>
-                        </div>
-                      )}
+                  <div className="air-recommendations">
+                    <article>
+                      <span>Population générale</span>
+                      <p>
+                        {selectedScore.air.recommendations?.general_population ??
+                          "Recommandation indisponible."}
+                      </p>
                     </article>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="pollen-details__unavailable" role="status">
-                <strong>Prévisions de pollen indisponibles pour ce lieu ou ce créneau</strong>
-              </div>
-            )}
+                    <article>
+                      <span>Personnes sensibles</span>
+                      <p>
+                        {selectedScore.air.recommendations?.sensitive_people ??
+                          "Recommandation indisponible."}
+                      </p>
+                    </article>
+                  </div>
+                </div>
+              )}
+            </div>
 
-            <p className="pollen-details__notice">
-              Information pollen présentée séparément ; elle n’entre pas dans les notes Mouv’Air.
-            </p>
+            <div
+              className="conditions-details__panel"
+              id="conditions-details-panel-pollen"
+              role="tabpanel"
+              aria-labelledby="conditions-details-tab-pollen"
+              tabIndex={0}
+              hidden={detailTab !== "pollen"}
+            >
+              {hasPollenData ? (
+                <div className="pollen-grid">
+                  {POLLENS.map((pollen) => {
+                    const value = selectedHour.pollen[pollen.id];
+                    return (
+                      <article
+                        className={`pollen-item${value === null ? " pollen-item--missing" : ""}`}
+                        key={pollen.id}
+                      >
+                        <span>{pollen.label}</span>
+                        {value === null ? (
+                          <strong>Indisponible</strong>
+                        ) : (
+                          <div className="pollen-item__value">
+                            <strong>{formatPollenValue(value)}</strong>
+                            <small>grains/m³</small>
+                          </div>
+                        )}
+                      </article>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="pollen-details__unavailable" role="status">
+                  <strong>Prévisions de pollen indisponibles pour ce lieu ou ce créneau</strong>
+                </div>
+              )}
+
+              <p className="pollen-details__notice">
+                Information pollen présentée séparément ; elle n’entre pas dans les notes Mouv’Air.
+              </p>
+            </div>
           </section>
 
           <section className="timeline-wrap" aria-labelledby="timeline-title">
