@@ -494,36 +494,38 @@ export default function App() {
           </p>
         </div>
 
-        <form className="search" onSubmit={handleSearch}>
-          <label htmlFor="city">Votre ville</label>
-          <div className="search__row">
-            <input
-              id="city"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Lyon, Nantes, Annecy…"
-              minLength={LOCATION_SEARCH_MIN_LENGTH}
-            />
-            <button
-              type="submit"
-              disabled={searchingLocations || query.trim().length < LOCATION_SEARCH_MIN_LENGTH}
-            >
-              {searchingLocations ? "Recherche…" : "Voir les conditions"}
-            </button>
-          </div>
-        </form>
-
-        {locations.length > 0 && (
-          <div className="location-results" aria-label="Résultats de recherche">
-            {locations.map((location) => (
-              <button key={location.id} onClick={() => chooseLocation(location)}>
-                <strong>{location.name}</strong>
-                <span>{[location.admin1, location.country].filter(Boolean).join(" · ")}</span>
+        <div className="search-area">
+          <form className="search" onSubmit={handleSearch}>
+            <label htmlFor="city">Votre ville</label>
+            <div className="search__row">
+              <input
+                id="city"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Lyon, Nantes, Annecy…"
+                minLength={LOCATION_SEARCH_MIN_LENGTH}
+              />
+              <button
+                type="submit"
+                disabled={searchingLocations || query.trim().length < LOCATION_SEARCH_MIN_LENGTH}
+              >
+                {searchingLocations ? "Recherche…" : "Voir les conditions"}
               </button>
-            ))}
-          </div>
-        )}
-        {searchError && <p className="error">{searchError}</p>}
+            </div>
+          </form>
+
+          {locations.length > 0 && (
+            <div className="location-results" aria-label="Résultats de recherche">
+              {locations.map((location) => (
+                <button key={location.id} onClick={() => chooseLocation(location)}>
+                  <strong>{location.name}</strong>
+                  <span>{[location.admin1, location.country].filter(Boolean).join(" · ")}</span>
+                </button>
+              ))}
+            </div>
+          )}
+          {searchError && <p className="error">{searchError}</p>}
+        </div>
       </header>
 
       {loadingForecast && selectedLocation && (
