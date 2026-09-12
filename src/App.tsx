@@ -782,7 +782,6 @@ export default function App() {
                     <p>AQI européen</p>
                     <div className="air-index__value">
                       <strong>{DECIMAL_FORMATTER.format(selectedScore.air.aqi)}</strong>
-                      <span>indice</span>
                     </div>
                     {selectedScore.air.category ? (
                       <span
@@ -797,7 +796,6 @@ export default function App() {
                         Catégorie indisponible
                       </span>
                     )}
-                    <small>Indice de pollution sans unité : ce n’est pas un pourcentage.</small>
                   </div>
 
                   <div className="air-recommendations">

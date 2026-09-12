@@ -1,5 +1,7 @@
 # Changelog
 
+- Simplify the air-quality detail by showing the AQI value without a redundant unit label or explanatory note.
+
 - Consolidate weather, air-quality, and pollen details into one accessible tabbed card.
 
 - Improve the city-search submit button contrast on its lime background.

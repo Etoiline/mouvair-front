@@ -185,15 +185,13 @@ h1 { margin-bottom: 22px; font: 800 clamp(48px, 7vw, 82px)/.95 "Manrope", sans-s
 .air-index > p { margin-bottom: 16px; color: #627269; font-size: 13px; font-weight: 700; }
 .air-index__value { display: flex; align-items: baseline; gap: 8px; margin-bottom: 17px; color: #285f4a; }
 .air-index__value strong { font: 800 clamp(45px, 5vw, 62px)/.9 "Manrope", sans-serif; letter-spacing: -.06em; }
-.air-index__value span { color: #6f7e76; font-size: 12px; }
-.air-category { display: inline-flex; margin-bottom: 18px; padding: 7px 10px; border-radius: 999px; background: #d7eadf; color: #286046; font-size: 12px; font-weight: 700; }
+.air-category { display: inline-flex; padding: 7px 10px; border-radius: 999px; background: #d7eadf; color: #286046; font-size: 12px; font-weight: 700; }
 .air-category--acceptable { background: #e1edcf; color: #536b2f; }
 .air-category--moderate { background: #f3e8ba; color: #775f17; }
 .air-category--poor { background: #f6d5bd; color: #8a4829; }
 .air-category--very-poor { background: #f2c7bd; color: #8a3027; }
 .air-category--extremely-poor { background: #7b2d2a; color: #fff7f4; }
 .air-category--missing { background: #e2e6e2; color: #66736c; }
-.air-index small { margin-top: auto; color: #6d7b74; font-size: 11px; line-height: 1.45; }
 .air-recommendations { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: #e5e7df; }
 .air-recommendations article { padding: 30px 27px; background: #fff; }
 .air-recommendations span { display: block; margin-bottom: 15px; color: #627269; font-size: 12px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
@@ -267,7 +265,6 @@ footer p { margin: 0; }
   .weather-metrics { grid-template-columns: 1fr; }
   .weather-metric { min-height: 0; }
   .air-details__content { grid-template-columns: 1fr; }
-  .air-index small { margin-top: 4px; }
   .pollen-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .slot-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   footer { flex-direction: column; }
