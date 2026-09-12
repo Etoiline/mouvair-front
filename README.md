@@ -41,7 +41,9 @@ durée de réutilisation.
 
 La recherche de ville et le premier chargement des prévisions disposent d’états séparés. Après le
 choix d’une ville, l’interface annonce le chargement en cours. Si cette première récupération échoue,
-elle conserve la recherche accessible et propose de réessayer directement pour la même ville.
+elle conserve la recherche accessible et propose de réessayer directement pour la même ville. Une
+recherche nécessite au moins trois caractères, comme le contrat du backend préparé pour une future
+autocomplétion.
 
 ## Créer une release
 

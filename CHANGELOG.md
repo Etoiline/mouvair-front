@@ -1,5 +1,7 @@
 # Changelog
 
+- Require three characters for city searches to align the interface with the Redis-protected geocoding contract.
+
 ## 0.3.0 - 2026-09-09
 
 - Remove deprecated flat sport-score compatibility types and align the client contract exclusively with nested weather, air, and overall sections.
