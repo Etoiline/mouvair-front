@@ -32,6 +32,9 @@ const SPORTS: { id: SportId; shortLabel: string; icon: string }[] = [
   { id: "walking", shortLabel: "Marche", icon: "•" },
 ];
 
+const LOCATION_SEARCH_MIN_LENGTH = 3;
+const LOCATION_SEARCH_DEBOUNCE_MS = 350;
+
 const STATUS_LABELS: Record<ScoreStatus, string> = {
   favorable: "Conditions favorables",
   correct: "Conditions correctes",
@@ -190,6 +193,9 @@ export default function App() {
   const [forecastError, setForecastError] = useState<string | null>(null);
   const forecastRequest = useRef(0);
   const activeRefresh = useRef<number | null>(null);
+  const locationSearchRequest = useRef(0);
+  const locationSearchAbort = useRef<AbortController | null>(null);
+  const locationSearchTimer = useRef<number | null>(null);
 
   const selectedHour =
     forecast?.hours.find((hour) => hour.time === selectedTime) ?? forecast?.hours[0] ?? null;
@@ -227,12 +233,15 @@ export default function App() {
     }
   }, [forecast, selectedTime]);
 
-  async function handleSearch(event: FormEvent) {
-    event.preventDefault();
-    if (query.trim().length < 3) return;
+  const runLocationSearch = useCallback(async (searchQuery: string) => {
+    const requestId = ++locationSearchRequest.current;
+    locationSearchAbort.current?.abort();
+    const controller = new AbortController();
+    locationSearchAbort.current = controller;
     setSearchingLocations(true);
     setLoadingForecast(false);
     setRefreshing(false);
+    setLocations([]);
     setSearchError(null);
     setForecastError(null);
     setForecast(null);
@@ -243,16 +252,61 @@ export default function App() {
     // Une nouvelle recherche invalide un chargement ou une actualisation encore en cours.
     forecastRequest.current += 1;
     try {
-      const results = await searchLocations(query.trim());
+      const results = await searchLocations(searchQuery, controller.signal);
+      if (requestId !== locationSearchRequest.current) return;
       setLocations(results);
       if (results.length === 0) {
         setSearchError("Aucune ville trouvée. Vérifiez l’orthographe ou précisez le pays.");
       }
     } catch (caughtError) {
+      if (requestId !== locationSearchRequest.current || controller.signal.aborted) return;
       setSearchError(caughtError instanceof Error ? caughtError.message : "Recherche impossible.");
     } finally {
-      setSearchingLocations(false);
+      if (requestId === locationSearchRequest.current) {
+        setSearchingLocations(false);
+        if (locationSearchAbort.current === controller) locationSearchAbort.current = null;
+      }
     }
+  }, []);
+
+  useEffect(() => {
+    const searchQuery = query.trim();
+
+    // Toute nouvelle frappe invalide immédiatement le délai ou la réponse de la saisie précédente.
+    if (locationSearchTimer.current !== null) {
+      window.clearTimeout(locationSearchTimer.current);
+      locationSearchTimer.current = null;
+    }
+    locationSearchRequest.current += 1;
+    locationSearchAbort.current?.abort();
+    locationSearchAbort.current = null;
+    setSearchingLocations(false);
+    setLocations([]);
+    setSearchError(null);
+
+    if (searchQuery.length < LOCATION_SEARCH_MIN_LENGTH) return;
+
+    const timer = window.setTimeout(() => {
+      if (locationSearchTimer.current === timer) locationSearchTimer.current = null;
+      void runLocationSearch(searchQuery);
+    }, LOCATION_SEARCH_DEBOUNCE_MS);
+    locationSearchTimer.current = timer;
+
+    return () => {
+      window.clearTimeout(timer);
+      if (locationSearchTimer.current === timer) locationSearchTimer.current = null;
+    };
+  }, [query, runLocationSearch]);
+
+  function handleSearch(event: FormEvent) {
+    event.preventDefault();
+    const searchQuery = query.trim();
+    if (searchQuery.length < LOCATION_SEARCH_MIN_LENGTH) return;
+    if (locationSearchTimer.current !== null) {
+      window.clearTimeout(locationSearchTimer.current);
+      locationSearchTimer.current = null;
+    }
+    void runLocationSearch(searchQuery);
   }
 
   async function loadInitialForecast(location: Location) {
@@ -404,9 +458,12 @@ export default function App() {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Lyon, Nantes, Annecy…"
-              minLength={3}
+              minLength={LOCATION_SEARCH_MIN_LENGTH}
             />
-            <button type="submit" disabled={searchingLocations}>
+            <button
+              type="submit"
+              disabled={searchingLocations || query.trim().length < LOCATION_SEARCH_MIN_LENGTH}
+            >
               {searchingLocations ? "Recherche…" : "Voir les conditions"}
             </button>
           </div>
