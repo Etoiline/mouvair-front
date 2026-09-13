@@ -1,5 +1,7 @@
 # Changelog
 
+## 0.4.0 - 2026-09-13
+
 - Document the Vercel production deployment and public API configuration.
 
 - Keep the condition-details card height stable when switching between tabs.
