@@ -9,6 +9,18 @@ pnpm dev
 
 Copier `.env.example` vers `.env` uniquement si l'API n'est pas lancée sur `http://localhost:8000`.
 
+## Déploiement sur Vercel
+
+Importer ce dépôt comme projet Vite, utiliser `pnpm build` comme commande de construction et `dist`
+comme répertoire de sortie. La variable de production doit viser le domaine public Railway de l’API :
+
+```dotenv
+VITE_API_URL=https://mouvair-api.up.railway.app/api
+```
+
+Lorsque le domaine personnalisé sera disponible, remplacer cette valeur par une URL telle que
+`https://api.mouvair.example.dev/api`, puis reconstruire le frontend.
+
 ## Tests
 
 La suite Vitest utilise Testing Library et un DOM simulé. Elle vérifie les principaux parcours de
