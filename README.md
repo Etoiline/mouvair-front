@@ -28,8 +28,9 @@ Le créneau sélectionné présente d’abord sa date, ses horaires locaux et l�
 globale apparaît avant les notes météo et qualité de l’air. Une donnée manquante est signalée sans
 masquer les notes disponibles ; les alertes météo restent visibles et deux explications principales
 au maximum résument les facteurs déterminants. Une carte unique regroupe ensuite les détails dans
-trois onglets : météo, qualité de l’air et pollens. L’onglet météo associe la température ressentie,
-les précipitations, le vent moyen et les rafales à leurs sous-notes respectives. La valeur
+trois onglets de hauteur constante : météo, qualité de l’air et pollens. L’onglet météo associe la
+température ressentie, les précipitations, le vent moyen et les rafales à leurs sous-notes
+respectives. La valeur
 intermédiaire utilisée par le calcul du vent n’est pas présentée comme une mesure météo. L’onglet de
 qualité de l’air conserve l’AQI européen brut, sa catégorie et les recommandations fournies pour la
 population générale et les personnes sensibles. La valeur AQI est affichée seule, sans unité ni
