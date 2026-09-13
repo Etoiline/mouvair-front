@@ -1,5 +1,7 @@
 # Changelog
 
+- Present condition-detail tabs as a compact left-aligned navigation with a clear active underline.
+
 - Keep city results open beneath a loading overlay while an updated search is pending.
 
 - Preserve the score-specific colors of hourly chart bars instead of overriding them with the default accent.
