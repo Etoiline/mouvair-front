@@ -1,5 +1,7 @@
 # Changelog
 
+- Preserve the score-specific colors of hourly chart bars instead of overriding them with the default accent.
+
 - Populate the search field with the selected city without triggering a redundant location request.
 
 - Replace hourly slot cards with an interactive, accessible score chart that preserves selection, status, alerts, and best-slot cues.

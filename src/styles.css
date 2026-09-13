@@ -238,7 +238,7 @@ h1 { margin-bottom: 22px; font: 800 clamp(48px, 7vw, 82px)/.95 "Manrope", sans-s
 .hourly-chart__plot { position: relative; height: 258px; }
 .hourly-chart__grid { position: absolute; inset: 0 0 38px; border-bottom: 1px solid #dfe3dd; background: repeating-linear-gradient(to bottom, #dfe3dd 0 1px, transparent 1px 55px); pointer-events: none; }
 .hourly-chart__hours { position: relative; display: grid; height: 258px; grid-template-columns: repeat(var(--hour-count), minmax(0, 1fr)); }
-.hourly-chart__hour { --chart-accent: #66897a; display: grid; min-width: 0; padding: 0; border: 0; background: transparent; color: var(--ink); cursor: pointer; grid-template-rows: 220px 38px; }
+.hourly-chart__hour { display: grid; min-width: 0; padding: 0; border: 0; background: transparent; color: var(--ink); cursor: pointer; grid-template-rows: 220px 38px; }
 .hourly-chart__bar-space { position: relative; display: block; transition: background-color .16s ease; }
 .hourly-chart__hour:hover .hourly-chart__bar-space { background: rgba(169,227,202,.16); }
 .hourly-chart__hour.is-selected .hourly-chart__bar-space { background: rgba(215,245,95,.2); box-shadow: inset 0 0 0 2px rgba(21,56,46,.16); }
