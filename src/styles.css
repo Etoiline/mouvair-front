@@ -78,10 +78,13 @@ h1 { margin-bottom: 22px; font: 800 clamp(48px, 7vw, 82px)/.95 "Manrope", sans-s
 .search button:disabled { opacity: .65; cursor: wait; }
 
 .location-results { position: absolute; top: calc(100% + 8px); left: 0; width: 100%; max-height: min(360px, 50vh); padding: 6px; overflow-y: auto; border-radius: 16px; background: white; box-shadow: 0 18px 45px rgba(0,0,0,.25); }
+.location-results--loading { min-height: 72px; overflow: hidden; }
 .location-results button { display: flex; width: 100%; padding: 13px 15px; border: 0; border-radius: 11px; background: transparent; color: var(--ink); cursor: pointer; text-align: left; }
 .location-results button:hover { background: #eef4ec; }
 .location-results strong { min-width: 160px; }
 .location-results span { color: #6d7e77; }
+.location-results__loading { position: absolute; z-index: 1; inset: 0; display: flex; align-items: center; justify-content: center; gap: 10px; border-radius: inherit; background: rgba(255,255,255,.86); color: #365c4c; font-size: 13px; font-weight: 700; backdrop-filter: blur(2px); }
+.location-results__spinner { width: 21px; height: 21px; border: 3px solid #cddbd3; border-top-color: #3d795f; border-radius: 50%; animation: forecast-spin .8s linear infinite; }
 .error { width: 100%; margin-top: 12px; padding: 12px 15px; border-radius: 12px; background: rgba(255,128,102,.15); color: #ffd9d1; text-align: center; }
 
 .forecast-state { width: min(760px, calc(100% - 48px)); margin: 48px auto 80px; padding: 42px; border: 1px solid #d9dcd3; border-radius: 22px; background: #fff; box-shadow: 0 18px 45px rgba(39,59,50,.08); text-align: center; }

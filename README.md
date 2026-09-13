@@ -12,9 +12,10 @@ Copier `.env.example` vers `.env` uniquement si l'API n'est pas lancée sur `htt
 ## Tests
 
 La suite Vitest utilise Testing Library et un DOM simulé. Elle vérifie les principaux parcours de
-l’interface sans appeler le backend réel : sélection dans le graphique horaire et meilleur créneau,
-navigation entre les détails du créneau, actualisation réussie ou échouée, nouvel essai après un
-échec initial et erreur de recherche.
+l’interface sans appeler le backend réel : recherche de ville avec conservation des résultats durant
+leur mise à jour, sélection dans le graphique horaire et meilleur créneau, navigation entre les
+détails du créneau, actualisation réussie ou échouée, nouvel essai après un échec initial et erreur de
+recherche.
 
 ```powershell
 pnpm test
@@ -60,6 +61,8 @@ un déclenchement immédiat. Les résultats s’ouvrent en surimpression sous le
 reste de la page. Après le choix d’une ville, son nom remplace la saisie dans le champ sans relancer
 la recherche, puis l’interface annonce le chargement en cours. Si cette première récupération
 échoue, elle conserve la recherche accessible et propose de réessayer directement pour la même ville.
+Lorsqu’une lettre est ajoutée à une recherche affichée, la liste reste ouverte sous un
+indicateur de chargement, puis son contenu est remplacé par les nouveaux résultats.
 
 ## Créer une release
 

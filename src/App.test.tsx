@@ -31,6 +31,12 @@ const LOCATION: Location = {
   timezone: "Europe/Paris",
 };
 
+const UPDATED_LOCATION: Location = {
+  ...LOCATION,
+  id: 2,
+  name: "Lyon 1er Arrondissement",
+};
+
 const SPORTS: SportId[] = ["easy_run", "hard_run", "cycling", "walking"];
 const SPORT_LABELS: Record<SportId, string> = {
   easy_run: "Course tranquille",
@@ -176,6 +182,44 @@ describe("parcours principal", () => {
       await new Promise((resolve) => window.setTimeout(resolve, 400));
     });
     expect(mockedSearchLocations).toHaveBeenCalledTimes(1);
+  });
+
+  it("conserve la liste ouverte sous un loader pendant la mise à jour des villes", async () => {
+    const user = userEvent.setup();
+    const updatedSearch = deferred<Location[]>();
+    mockedSearchLocations
+      .mockResolvedValueOnce([LOCATION])
+      .mockReturnValueOnce(updatedSearch.promise);
+    render(<App />);
+
+    const input = screen.getByLabelText("Votre ville");
+    await user.type(input, "Lyo");
+    await user.click(screen.getByRole("button", { name: "Voir les conditions" }));
+    await screen.findByRole("button", { name: /Lyon.*France/ });
+
+    await user.type(input, "n");
+
+    const results = screen.getByLabelText("Résultats de recherche");
+    const previousResult = within(results).getByRole("button", { name: /Lyon.*France/ });
+    expect(results.getAttribute("aria-busy")).toBe("true");
+    expect((previousResult as HTMLButtonElement).disabled).toBe(true);
+    expect(within(results).getByRole("status").textContent).toContain(
+      "Mise à jour des résultats",
+    );
+
+    await act(async () => {
+      await new Promise((resolve) => window.setTimeout(resolve, 400));
+    });
+    expect(mockedSearchLocations).toHaveBeenCalledTimes(2);
+
+    await act(async () => {
+      updatedSearch.resolve([UPDATED_LOCATION]);
+      await updatedSearch.promise;
+    });
+
+    expect(within(results).getByText(UPDATED_LOCATION.name)).toBeTruthy();
+    expect(results.getAttribute("aria-busy")).toBe("false");
+    expect(within(results).queryByRole("status")).toBeNull();
   });
 
   it("sélectionne un créneau et conserve le premier meilleur score en cas d’égalité", async () => {

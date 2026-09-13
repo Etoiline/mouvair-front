@@ -366,6 +366,7 @@ export default function App() {
   const [detailTab, setDetailTab] = useState<DetailTabId>("weather");
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [searchingLocations, setSearchingLocations] = useState(false);
+  const [locationResultsPending, setLocationResultsPending] = useState(false);
   const [loadingForecast, setLoadingForecast] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [lastCheckAt, setLastCheckAt] = useState<number | null>(null);
@@ -418,9 +419,9 @@ export default function App() {
     const controller = new AbortController();
     locationSearchAbort.current = controller;
     setSearchingLocations(true);
+    setLocationResultsPending(true);
     setLoadingForecast(false);
     setRefreshing(false);
-    setLocations([]);
     setSearchError(null);
     setForecastError(null);
     setForecast(null);
@@ -439,10 +440,12 @@ export default function App() {
       }
     } catch (caughtError) {
       if (requestId !== locationSearchRequest.current || controller.signal.aborted) return;
+      setLocations([]);
       setSearchError(caughtError instanceof Error ? caughtError.message : "Recherche impossible.");
     } finally {
       if (requestId === locationSearchRequest.current) {
         setSearchingLocations(false);
+        setLocationResultsPending(false);
         if (locationSearchAbort.current === controller) locationSearchAbort.current = null;
       }
     }
@@ -460,14 +463,25 @@ export default function App() {
     locationSearchAbort.current?.abort();
     locationSearchAbort.current = null;
     setSearchingLocations(false);
-    setLocations([]);
     setSearchError(null);
 
     const skippedQuery = skippedAutomaticLocationQuery.current;
     skippedAutomaticLocationQuery.current = null;
-    if (skippedQuery === searchQuery) return;
+    if (skippedQuery === searchQuery) {
+      setLocationResultsPending(false);
+      setLocations([]);
+      return;
+    }
 
-    if (searchQuery.length < LOCATION_SEARCH_MIN_LENGTH) return;
+    if (searchQuery.length < LOCATION_SEARCH_MIN_LENGTH) {
+      setLocationResultsPending(false);
+      setLocations([]);
+      return;
+    }
+
+    // Les résultats précédents restent affichés et deviennent temporairement inactifs pendant
+    // le debounce puis la requête, afin d’éviter la fermeture et la réouverture du menu.
+    setLocationResultsPending(true);
 
     const timer = window.setTimeout(() => {
       if (locationSearchTimer.current === timer) locationSearchTimer.current = null;
@@ -489,6 +503,7 @@ export default function App() {
       window.clearTimeout(locationSearchTimer.current);
       locationSearchTimer.current = null;
     }
+    setLocationResultsPending(true);
     void runLocationSearch(searchQuery);
   }
 
@@ -679,14 +694,30 @@ export default function App() {
             </div>
           </form>
 
-          {locations.length > 0 && (
-            <div className="location-results" aria-label="Résultats de recherche">
+          {(locations.length > 0 || locationResultsPending) && (
+            <div
+              className={`location-results${
+                locationResultsPending ? " location-results--loading" : ""
+              }`}
+              aria-label="Résultats de recherche"
+              aria-busy={locationResultsPending}
+            >
               {locations.map((location) => (
-                <button key={location.id} onClick={() => chooseLocation(location)}>
+                <button
+                  key={location.id}
+                  onClick={() => chooseLocation(location)}
+                  disabled={locationResultsPending}
+                >
                   <strong>{location.name}</strong>
                   <span>{[location.admin1, location.country].filter(Boolean).join(" · ")}</span>
                 </button>
               ))}
+              {locationResultsPending && (
+                <div className="location-results__loading" role="status">
+                  <span className="location-results__spinner" aria-hidden="true" />
+                  Mise à jour des résultats…
+                </div>
+              )}
             </div>
           )}
           {searchError && <p className="error">{searchError}</p>}
