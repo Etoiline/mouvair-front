@@ -1,5 +1,7 @@
 # Changelog
 
+- Document the Vercel production deployment and public API configuration.
+
 - Keep the condition-details card height stable when switching between tabs.
 
 - Present condition-detail tabs as a compact left-aligned navigation with a clear active underline.
