@@ -1,5 +1,7 @@
 # Changelog
 
+- Keep city results open beneath a loading overlay while an updated search is pending.
+
 - Preserve the score-specific colors of hourly chart bars instead of overriding them with the default accent.
 
 - Populate the search field with the selected city without triggering a redundant location request.
