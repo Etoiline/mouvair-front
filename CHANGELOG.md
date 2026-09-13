@@ -1,5 +1,9 @@
 # Changelog
 
+- Populate the search field with the selected city without triggering a redundant location request.
+
+- Replace hourly slot cards with an interactive, accessible score chart that preserves selection, status, alerts, and best-slot cues.
+
 - Display city-search results as an anchored overlay without shifting the page layout.
 
 - Simplify the air-quality detail by showing the AQI value without a redundant unit label or explanatory note.

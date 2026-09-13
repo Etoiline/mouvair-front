@@ -12,9 +12,9 @@ Copier `.env.example` vers `.env` uniquement si l'API n'est pas lancée sur `htt
 ## Tests
 
 La suite Vitest utilise Testing Library et un DOM simulé. Elle vérifie les principaux parcours de
-l’interface sans appeler le backend réel : sélection et meilleur créneau, navigation entre les
-détails du créneau, actualisation réussie ou échouée, nouvel essai après un échec initial et erreur
-de recherche.
+l’interface sans appeler le backend réel : sélection dans le graphique horaire et meilleur créneau,
+navigation entre les détails du créneau, actualisation réussie ou échouée, nouvel essai après un
+échec initial et erreur de recherche.
 
 ```powershell
 pnpm test
@@ -35,11 +35,12 @@ population générale et les personnes sensibles. La valeur AQI est affichée se
 libellé accolé. L’onglet pollen présente les concentrations horaires d’aulne, bouleau,
 graminées, armoise, olivier et ambroisie en grains/m³. Une valeur nulle au sens numérique reste
 affichée comme `0`, tandis qu’une donnée absente est indiquée comme indisponible. Les pollens
-n’entrent pas dans les notes Mouv’Air. Les 24 créneaux sont regroupés par date locale et restent
-classés chronologiquement. Chaque carte présente l’horaire, la note globale, son appréciation et la
-présence éventuelle d’une alerte météo ; les créneaux incomplets restent sélectionnables. Le meilleur
-créneau complet est signalé dans la liste et accessible depuis le bouton récapitulatif. Le premier
-créneau est retenu en cas d’égalité. Un avertissement accompagne une meilleure option défavorable,
+n’entrent pas dans les notes Mouv’Air. Les 24 créneaux sont représentés chronologiquement dans un
+graphique en barres regroupé par date locale. Chaque barre indique la note globale et son état ; un
+clic sélectionne le créneau correspondant. Les alertes météo, les données incomplètes et le meilleur
+créneau restent repérables dans le graphique. Le meilleur créneau est également accessible depuis
+le bouton récapitulatif, et le premier est retenu en cas d’égalité. Un avertissement accompagne une
+meilleure option défavorable,
 tandis que l’absence de note complète et la suspension pour données anciennes restent distinctes.
 Le contrat de score utilisé par l’interface contient uniquement les sections imbriquées `weather`,
 `air` et `overall`, qui portent chacune les données propres à leur rôle.
@@ -56,9 +57,9 @@ La recherche de ville et le premier chargement des prévisions disposent d’ét
 trois caractères, la recherche se lance automatiquement après un court délai sans nouvelle frappe ;
 une saisie plus récente annule la requête précédente, tandis que le bouton ou la touche Entrée permet
 un déclenchement immédiat. Les résultats s’ouvrent en surimpression sous le champ sans déplacer le
-reste de la page. Après le choix d’une ville, l’interface annonce le chargement en cours. Si cette
-première récupération échoue, elle conserve la recherche accessible et propose de réessayer
-directement pour la même ville.
+reste de la page. Après le choix d’une ville, son nom remplace la saisie dans le champ sans relancer
+la recherche, puis l’interface annonce le chargement en cours. Si cette première récupération
+échoue, elle conserve la recherche accessible et propose de réessayer directement pour la même ville.
 
 ## Créer une release
 

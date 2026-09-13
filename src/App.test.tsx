@@ -160,23 +160,42 @@ describe("parcours principal", () => {
     vi.resetAllMocks();
   });
 
+  it("reporte la ville sélectionnée dans le champ sans relancer la recherche", async () => {
+    const user = userEvent.setup();
+    mockedSearchLocations.mockResolvedValueOnce([LOCATION]);
+    mockedGetForecast.mockResolvedValueOnce(forecast([70]));
+    render(<App />);
+
+    const input = screen.getByLabelText("Votre ville") as HTMLInputElement;
+    await user.type(input, "Lyo");
+    await user.click(screen.getByRole("button", { name: "Voir les conditions" }));
+    await user.click(await screen.findByRole("button", { name: /Lyon.*France/ }));
+
+    expect(input.value).toBe("Lyon");
+    await act(async () => {
+      await new Promise((resolve) => window.setTimeout(resolve, 400));
+    });
+    expect(mockedSearchLocations).toHaveBeenCalledTimes(1);
+  });
+
   it("sélectionne un créneau et conserve le premier meilleur score en cas d’égalité", async () => {
     const user = await displayForecast(forecast([40, 90, 90]));
     const timeline = screen.getByRole("region", { name: "Heure par heure" });
-    const cards = within(timeline).getAllByRole("button");
+    const hours = within(timeline).getAllByRole("button");
 
-    expect(within(cards[1]).getByText("Meilleur créneau")).toBeTruthy();
-    expect(within(cards[2]).queryByText("Meilleur créneau")).toBeNull();
+    expect(hours).toHaveLength(3);
+    expect(hours[1].getAttribute("aria-label")).toContain("meilleur créneau");
+    expect(hours[2].getAttribute("aria-label")).not.toContain("meilleur créneau");
 
-    await user.click(cards[2]);
-    expect(within(cards[2]).getByText("Sélectionné")).toBeTruthy();
+    await user.click(hours[2]);
+    expect(hours[2].getAttribute("aria-pressed")).toBe("true");
 
     const bestButton = screen
       .getByText("Meilleur créneau", { selector: ".best-slot > span" })
       .closest("button");
     if (bestButton === null) throw new Error("Bouton du meilleur créneau introuvable");
     await user.click(bestButton);
-    expect(within(cards[1]).getByText("Sélectionné")).toBeTruthy();
+    expect(hours[1].getAttribute("aria-pressed")).toBe("true");
   });
 
   it("regroupe les détails du créneau dans trois onglets navigables", async () => {

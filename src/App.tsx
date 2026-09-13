@@ -3,7 +3,7 @@ import type { CSSProperties, FormEvent, KeyboardEvent, ReactNode } from "react";
 
 import { getForecast, searchLocations } from "./api";
 import {
-  formatLocalInterval,
+  formatLocalDate,
   formatLocalTime,
   formatSlot,
   formatTimeZoneLabel,
@@ -18,6 +18,7 @@ import {
 import type {
   AirQualityCategory,
   Forecast,
+  ForecastHour,
   Location,
   PollenId,
   ScoreStatus,
@@ -72,6 +73,15 @@ const STATUS_TONES: Record<ScoreStatus, string> = {
   "très défavorable": "tres-defavorable",
   incomplet: "incomplet",
 };
+
+const CHART_LEGEND: { status: ScoreStatus; label: string }[] = [
+  { status: "favorable", label: "Favorable" },
+  { status: "correct", label: "Correct" },
+  { status: "mitigé", label: "Mitigé" },
+  { status: "défavorable", label: "Défavorable" },
+  { status: "très défavorable", label: "Très défavorable" },
+  { status: "incomplet", label: "Incomplet" },
+];
 
 // Les seuils et recommandations restent définis par le backend ; ce mapping ne choisit que la
 // présentation visuelle de la catégorie déjà calculée à partir de l’AQI original.
@@ -198,6 +208,155 @@ function WeatherMetric({
   );
 }
 
+function HourlyScoreChart({
+  hours,
+  sport,
+  selectedTime,
+  bestTime,
+  timeZone,
+  onSelect,
+}: {
+  hours: ForecastHour[];
+  sport: SportId;
+  selectedTime: string;
+  bestTime: string | null;
+  timeZone: string;
+  onSelect: (time: string) => void;
+}) {
+  const dayGroups = groupByLocalDate(hours, timeZone);
+  const selectedHour = hours.find((hour) => hour.time === selectedTime) ?? hours[0];
+  const selectedScore = selectedHour?.scores[sport];
+  const chartStyle = {
+    "--hour-count": Math.max(hours.length, 1),
+  } as CSSProperties;
+
+  return (
+    <div className="hourly-chart">
+      <div className="hourly-chart__legend" aria-label="Légende du graphique">
+        {CHART_LEGEND.map((item) => (
+          <span key={item.status}>
+            <i
+              className={`hourly-chart__legend-color hourly-chart__legend-color--${
+                STATUS_TONES[item.status]
+              }`}
+              aria-hidden="true"
+            />
+            {item.label}
+          </span>
+        ))}
+        <span><b aria-hidden="true">★</b> Meilleur créneau</span>
+        <span><b className="hourly-chart__legend-alert" aria-hidden="true">!</b> Alerte météo</span>
+      </div>
+
+      <div className="hourly-chart__body">
+        <div className="hourly-chart__y-axis" aria-hidden="true">
+          <span>100</span>
+          <span>75</span>
+          <span>50</span>
+          <span>25</span>
+          <span>0</span>
+        </div>
+
+        <div className="hourly-chart__viewport">
+          <div className="hourly-chart__canvas" style={chartStyle}>
+            <div className="hourly-chart__days" aria-label="Dates du graphique">
+              {dayGroups.map((day) => (
+                <span
+                  key={day.key}
+                  style={{ gridColumn: `span ${day.items.length}` }}
+                  aria-label={day.label}
+                >
+                  {formatLocalDate(day.items[0].time, timeZone, "short")}
+                </span>
+              ))}
+            </div>
+
+            <div className="hourly-chart__plot">
+              <div className="hourly-chart__grid" aria-hidden="true" />
+              <div className="hourly-chart__hours">
+                {hours.map((hour) => {
+                  const score = hour.scores[sport];
+                  const value = score.overall.score;
+                  const selected = hour.time === selectedTime;
+                  const best = hour.time === bestTime;
+                  const alerts = score.weather.alerts.length;
+                  const hourStyle = {
+                    "--hour-score": `${value ?? 0}%`,
+                  } as CSSProperties;
+                  const accessibleLabel = [
+                    formatSlot(hour.time, hour.end_time, timeZone, "short"),
+                    value === null
+                      ? "note indisponible"
+                      : `note ${value} sur 100, ${STATUS_LABELS[score.overall.status]}`,
+                    best ? "meilleur créneau" : null,
+                    alerts === 1
+                      ? "une alerte météo"
+                      : alerts > 1
+                        ? `${alerts} alertes météo`
+                        : null,
+                  ]
+                    .filter(Boolean)
+                    .join(" · ");
+
+                  return (
+                    <button
+                      className={`hourly-chart__hour hourly-chart__hour--${
+                        STATUS_TONES[score.overall.status]
+                      }${selected ? " is-selected" : ""}`}
+                      key={hour.time}
+                      type="button"
+                      style={hourStyle}
+                      onClick={() => onSelect(hour.time)}
+                      aria-label={accessibleLabel}
+                      aria-pressed={selected}
+                    >
+                      <span className="hourly-chart__bar-space" aria-hidden="true">
+                        {value === null ? (
+                          <span className="hourly-chart__missing">—</span>
+                        ) : (
+                          <>
+                            <span className="hourly-chart__value">{value}</span>
+                            <span className="hourly-chart__bar" />
+                          </>
+                        )}
+                      </span>
+                      <span className="hourly-chart__hour-label" aria-hidden="true">
+                        <span>{formatLocalTime(hour.time, timeZone).replaceAll(" ", "")}</span>
+                        <span className="hourly-chart__markers">
+                          {best && <b className="hourly-chart__best">★</b>}
+                          {alerts > 0 && <b className="hourly-chart__alert">!</b>}
+                        </span>
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+            <p className="hourly-chart__x-axis">Heure locale</p>
+          </div>
+        </div>
+      </div>
+
+      {selectedHour && selectedScore && (
+        <div className="hourly-chart__selection" aria-live="polite">
+          <div>
+            <span>Créneau sélectionné</span>
+            <strong>{formatSlot(selectedHour.time, selectedHour.end_time, timeZone)}</strong>
+          </div>
+          <div>
+            <strong>
+              {selectedScore.overall.score === null
+                ? "Note indisponible"
+                : `${selectedScore.overall.score} / 100`}
+            </strong>
+            <span>{STATUS_LABELS[selectedScore.overall.status]}</span>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function App() {
   const [query, setQuery] = useState("");
   const [locations, setLocations] = useState<Location[]>([]);
@@ -217,6 +376,7 @@ export default function App() {
   const locationSearchRequest = useRef(0);
   const locationSearchAbort = useRef<AbortController | null>(null);
   const locationSearchTimer = useRef<number | null>(null);
+  const skippedAutomaticLocationQuery = useRef<string | null>(null);
 
   const selectedHour =
     forecast?.hours.find((hour) => hour.time === selectedTime) ?? forecast?.hours[0] ?? null;
@@ -239,10 +399,6 @@ export default function App() {
   );
   const bestHour = forecast?.recommendation_available ? bestAvailableHour : null;
   const bestHourIsUnfavorable = bestHour ? hasUnfavorableOverall(bestHour, sport) : false;
-  const forecastDays = useMemo(
-    () => (forecast ? groupByLocalDate(forecast.hours, forecast.timezone) : []),
-    [forecast],
-  );
   const selectedDetailTab =
     DETAIL_TABS.find((item) => item.id === detailTab) ?? DETAIL_TABS[0];
 
@@ -307,6 +463,10 @@ export default function App() {
     setLocations([]);
     setSearchError(null);
 
+    const skippedQuery = skippedAutomaticLocationQuery.current;
+    skippedAutomaticLocationQuery.current = null;
+    if (skippedQuery === searchQuery) return;
+
     if (searchQuery.length < LOCATION_SEARCH_MIN_LENGTH) return;
 
     const timer = window.setTimeout(() => {
@@ -363,6 +523,11 @@ export default function App() {
 
   function chooseLocation(location: Location) {
     setLocations([]);
+    if (query !== location.name) {
+      // L’écriture du choix dans le champ ne doit pas relancer la recherche automatique.
+      skippedAutomaticLocationQuery.current = location.name.trim();
+      setQuery(location.name);
+    }
     void loadInitialForecast(location);
   }
 
@@ -863,68 +1028,18 @@ export default function App() {
           </section>
 
           <section className="timeline-wrap" aria-labelledby="timeline-title">
-            <h3 id="timeline-title">Heure par heure</h3>
-            <div className="timeline-days">
-              {forecastDays.map((day) => (
-                <section className="timeline-day" key={day.key}>
-                  <h4>{day.label}</h4>
-                  <div className="slot-grid">
-                    {day.items.map((hour) => {
-                      const score = hour.scores[sport];
-                      const selected = selectedHour.time === hour.time;
-                      const best = bestHour?.time === hour.time;
-                      const alerts = score.weather.alerts.length;
-                      return (
-                        <button
-                          key={hour.time}
-                          className={`slot-card slot-card--${STATUS_TONES[score.overall.status]}${
-                            best ? " slot-card--best" : ""
-                          }${selected ? " active" : ""}`}
-                          onClick={() => setSelectedTime(hour.time)}
-                          aria-pressed={selected}
-                        >
-                          <span className="slot-card__header">
-                            <strong>
-                              {formatLocalInterval(
-                                hour.time,
-                                hour.end_time,
-                                forecast.timezone,
-                              )}
-                            </strong>
-                            {(best || selected) && (
-                              <span className="slot-card__badges">
-                                {best && <span className="slot-card__best">Meilleur créneau</span>}
-                                {selected && (
-                                  <span className="slot-card__selected">Sélectionné</span>
-                                )}
-                              </span>
-                            )}
-                          </span>
-                          <span className="slot-card__result">
-                            {score.overall.score === null ? (
-                              <strong className="slot-card__missing">Données incomplètes</strong>
-                            ) : (
-                              <>
-                                <span className="slot-card__score">
-                                  <strong>{score.overall.score}</strong>
-                                  <small>/ 100</small>
-                                </span>
-                                <span>{STATUS_LABELS[score.overall.status]}</span>
-                              </>
-                            )}
-                          </span>
-                          {alerts > 0 && (
-                            <span className="slot-card__alert">
-                              {alerts === 1 ? "Alerte météo" : `${alerts} alertes météo`}
-                            </span>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </section>
-              ))}
+            <div className="timeline-wrap__heading">
+              <h3 id="timeline-title">Heure par heure</h3>
+              <p>Note globale sur 100 pour {selectedScore.label.toLowerCase()}</p>
             </div>
+            <HourlyScoreChart
+              hours={forecast.hours}
+              sport={sport}
+              selectedTime={selectedHour.time}
+              bestTime={bestHour?.time ?? null}
+              timeZone={forecast.timezone}
+              onSelect={setSelectedTime}
+            />
           </section>
         </section>
       )}
