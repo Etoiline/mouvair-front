@@ -920,12 +920,15 @@ export default function App() {
             </div>
 
             <div
-              className="conditions-details__panel"
+              className={`conditions-details__panel${
+                detailTab === "weather" ? "" : " conditions-details__panel--inactive"
+              }`}
               id="conditions-details-panel-weather"
               role="tabpanel"
               aria-labelledby="conditions-details-tab-weather"
-              tabIndex={0}
-              hidden={detailTab !== "weather"}
+              aria-hidden={detailTab !== "weather"}
+              inert={detailTab !== "weather"}
+              tabIndex={detailTab === "weather" ? 0 : -1}
             >
               <div className="weather-metrics">
                 <WeatherMetric
@@ -962,12 +965,15 @@ export default function App() {
             </div>
 
             <div
-              className="conditions-details__panel"
+              className={`conditions-details__panel${
+                detailTab === "air" ? "" : " conditions-details__panel--inactive"
+              }`}
               id="conditions-details-panel-air"
               role="tabpanel"
               aria-labelledby="conditions-details-tab-air"
-              tabIndex={0}
-              hidden={detailTab !== "air"}
+              aria-hidden={detailTab !== "air"}
+              inert={detailTab !== "air"}
+              tabIndex={detailTab === "air" ? 0 : -1}
             >
               {selectedScore.air.aqi === null ? (
                 <div className="air-details__unavailable" role="status">
@@ -1017,12 +1023,15 @@ export default function App() {
             </div>
 
             <div
-              className="conditions-details__panel"
+              className={`conditions-details__panel${
+                detailTab === "pollen" ? "" : " conditions-details__panel--inactive"
+              }`}
               id="conditions-details-panel-pollen"
               role="tabpanel"
               aria-labelledby="conditions-details-tab-pollen"
-              tabIndex={0}
-              hidden={detailTab !== "pollen"}
+              aria-hidden={detailTab !== "pollen"}
+              inert={detailTab !== "pollen"}
+              tabIndex={detailTab === "pollen" ? 0 : -1}
             >
               {hasPollenData ? (
                 <div className="pollen-grid">

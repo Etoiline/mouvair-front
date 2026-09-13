@@ -1,5 +1,7 @@
 # Changelog
 
+- Keep the condition-details card height stable when switching between tabs.
+
 - Present condition-detail tabs as a compact left-aligned navigation with a clear active underline.
 
 - Keep city results open beneath a loading overlay while an updated search is pending.

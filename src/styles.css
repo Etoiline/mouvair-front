@@ -160,17 +160,18 @@ h1 { margin-bottom: 22px; font: 800 clamp(48px, 7vw, 82px)/.95 "Manrope", sans-s
 .weather-alerts li, .score-reasons li { padding-left: 3px; line-height: 1.5; }
 .score-reasons { background: #fbfaf5; color: #52675d; }
 
-.conditions-details { margin-top: 22px; overflow: hidden; border: 1px solid #dedfd6; border-radius: 20px; background: #fff; }
-.conditions-details__header { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding: 25px 28px; border-bottom: 1px solid #e5e7df; }
+.conditions-details { display: grid; min-width: 0; margin-top: 22px; overflow: hidden; border: 1px solid #dedfd6; border-radius: 20px; background: #fff; grid-template-columns: minmax(0, 1fr); }
+.conditions-details__header { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding: 25px 28px; border-bottom: 1px solid #e5e7df; grid-column: 1; grid-row: 1; }
 .conditions-details__header .eyebrow { margin-bottom: 6px; }
 .conditions-details__header h3 { margin: 0; font: 750 23px/1.2 "Manrope", sans-serif; letter-spacing: -.025em; }
 .conditions-details__header > p { margin: 0; color: #6e7b74; font-size: 13px; }
-.conditions-details__tabs { display: flex; align-items: flex-end; gap: 26px; padding: 0 28px; overflow-x: auto; border-bottom: 1px solid #dfe2da; background: #f7f8f4; }
+.conditions-details__tabs { display: flex; align-items: flex-end; gap: 26px; padding: 0 28px; overflow-x: auto; border-bottom: 1px solid #dfe2da; background: #f7f8f4; grid-column: 1; grid-row: 2; }
 .conditions-details__tab { flex: none; min-width: 0; padding: 17px 2px 13px; border: 0; border-bottom: 3px solid transparent; background: transparent; color: #65756d; cursor: pointer; font-weight: 700; }
 .conditions-details__tab:not([aria-selected="true"]):hover { color: var(--ink); }
 .conditions-details__tab[aria-selected="true"] { border-bottom-color: #4e876f; color: var(--ink); }
 .conditions-details__tab:focus-visible, .conditions-details__panel:focus-visible { outline: 3px solid #86b9a3; outline-offset: -3px; }
-.conditions-details__panel[hidden] { display: none; }
+.conditions-details__panel { min-width: 0; grid-column: 1; grid-row: 3; }
+.conditions-details__panel--inactive { visibility: hidden; pointer-events: none; }
 .weather-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: #e5e7df; }
 .weather-metric { display: flex; min-width: 0; min-height: 190px; padding: 25px; background: #fbfaf5; flex-direction: column; justify-content: space-between; gap: 25px; }
 .weather-metric h4 { margin: 0 0 12px; color: #627269; font: 700 13px "Manrope", sans-serif; }
