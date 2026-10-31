@@ -15,6 +15,7 @@ permet pas les commentaires ; les explications de ses champs sont donc regroupé
 | `private` | Empêche de publier ce package comme bibliothèque sur un registre. |
 | `version` | Version du frontend, maintenue avec le changelog par le script de release. |
 | `type` | La valeur `module` configure les fichiers JavaScript du package comme modules ES. |
+| `packageManager` | Fixe la version de pnpm utilisée par les outils compatibles et par GitHub Actions. |
 | `engines.node` | Versions de Node compatibles avec les outils de test : branche 22 à partir de 22.22.2, branche 24 à partir de 24.15.0, ou version 26 et plus. |
 | `scripts` | Noms des commandes communes de développement, vérification et maintenance. |
 | `dependencies` | React et React DOM, utilisés pour monter et mettre à jour l’interface. |
@@ -26,6 +27,7 @@ permet pas les commentaires ; les explications de ses champs sont donc regroupé
 | --- | --- |
 | `pnpm dev` | Démarre Vite pour servir l’application pendant le développement. |
 | `pnpm build` | Vérifie les types avec `tsc`, puis construit le frontend avec Vite dans `dist/`. |
+| `pnpm check` | Lance les tests puis la vérification des types et la construction de production ; s’arrête à la première erreur. |
 | `pnpm test` | Exécute une fois toute la suite Vitest. |
 | `pnpm test:watch` | Garde Vitest ouvert pour relancer les tests pendant les modifications. |
 | `pnpm preview` | Sert le résultat déjà construit pour le consulter localement. |
@@ -48,14 +50,23 @@ versions stables publiées, y compris les versions majeures :
 ```powershell
 pnpm outdated
 pnpm update --latest
-pnpm test
-pnpm build
+pnpm check
 ```
 
 Le manifeste et le verrou doivent évoluer ensemble. Vérifier les prérequis Node et les changements
 incompatibles avant une mise à jour majeure ; la plage `engines.node` reflète ici les exigences
 communes de jsdom et de Vitest. Conserver les plages de version du manifeste et les versions
 résolues du verrou plutôt que modifier les fichiers de dépendances installées à la main.
+
+Pour changer de version de pnpm, mettre aussi à jour le champ `packageManager`, réinstaller les
+dépendances avec cette version puis relancer `pnpm check`. La CI lit ce champ directement.
+
+## `.node-version`
+
+Ce fichier indique la version exacte de Node utilisée par GitHub Actions et peut être lu par les
+gestionnaires de versions locaux compatibles. Cette référence reste dans la plage `engines.node`
+du manifeste. Lorsqu’elle change, installer la nouvelle version et exécuter `pnpm check` avant de
+la valider.
 
 ## `pnpm-lock.yaml`
 
@@ -92,6 +103,27 @@ implémentations avec `resetAllMocks`.
 
 Les tests restent à côté du code qu’ils vérifient. Le dossier `src/test/` regroupe la préparation
 commune et les fixtures, tandis que `src/app/App.test.tsx` vérifie l’assemblage du parcours complet.
+
+## `.github/workflows/checks.yml`
+
+Le workflow `Frontend checks` se déclenche pour chaque push et pull request. Le déclenchement
+manuel `workflow_dispatch` est aussi disponible lorsque le workflow est présent sur la branche
+par défaut du dépôt.
+
+Le job utilise Ubuntu 24.04, la version Node de `.node-version` et la version pnpm déclarée dans
+`package.json`. L’installation avec `--frozen-lockfile` échoue si le verrou ne correspond plus au
+manifeste. Le cache du magasin pnpm, associé au verrou, accélère l’installation sans remplacer
+cette vérification.
+
+`pnpm check` exécute les tests Vitest, puis la commande de construction existante : contrôle
+TypeScript et production de `dist/` avec Vite. Il n’utilise ni backend réel ni secret. Le job est
+limité à dix minutes et un nouveau commit annule l’exécution précédente sur la même référence.
+Ses permissions sont limitées à la lecture du dépôt ; les actions sont fixées par leur SHA complet.
+Le job vérifie le code sans déployer le résultat de construction.
+
+Après un échec, consulter l’étape concernée dans l’onglet Actions de GitHub et reproduire le
+contrôle avec `pnpm check`. Une mise à jour d’action doit remplacer son SHA et son commentaire de
+version ensemble, après vérification de sa release officielle.
 
 ## Démarrage navigateur
 

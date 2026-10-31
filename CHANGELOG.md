@@ -1,5 +1,7 @@
 # Changelog
 
+- Automate frontend tests, type checks, and production builds in GitHub Actions with pinned Node and pnpm versions and a shared local check command.
+
 - Centralize shared colors, light and dark palettes, and spacing in reusable CSS variables.
 
 - Scope layout and search styles to dedicated classes and decouple compact mobile search from its parent layout.
