@@ -1,5 +1,7 @@
 # Changelog
 
+- Limit the key takeaways to weather explanations.
+
 - Simplify the hourly chart subtitle to show only the overall score scale.
 
 - Improve the mobile layout with a compact search header, clearer score cards, and content-sized detail panels.

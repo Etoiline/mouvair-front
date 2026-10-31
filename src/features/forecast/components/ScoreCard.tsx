@@ -1,5 +1,5 @@
 /**
- * Synthèse d’un créneau pour une activité : note globale, notes météo et air, alertes et raisons.
+ * Synthèse d’un créneau pour une activité : note globale, notes météo et air, alertes et explications météo.
  * La vue utilise exclusivement les résultats de l’API. Elle présente les données disponibles même
  * si l’absence d’une source empêche de calculer la note globale.
  */
@@ -63,14 +63,12 @@ function ScoreSummary({
 }
 
 /**
- * Conserve au plus deux raisons, dans l’ordre météo puis qualité de l’air.
- * La copie évite de modifier le tableau reçu de l’API. Les alertes météo ne sont pas limitées ici,
+ * « À retenir » présente uniquement les deux premières explications météo.
+ * Le découpage évite de modifier le tableau reçu de l’API. Les alertes météo ne sont pas limitées ici,
  * car elles sont affichées dans une section distincte de la carte.
  */
 function mainExplanations(score: SportScore): string[] {
-  const explanations = [...score.weather.reasons];
-  if (score.air.reason) explanations.push(score.air.reason);
-  return explanations.slice(0, 2);
+  return score.weather.reasons.slice(0, 2);
 }
 
 /**

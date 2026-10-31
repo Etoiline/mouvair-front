@@ -71,8 +71,8 @@ pnpm test:watch
 
 Le créneau sélectionné présente d’abord sa date, ses horaires locaux et l’activité choisie. La note
 globale apparaît avant les notes météo et qualité de l’air. Une donnée manquante est signalée sans
-masquer les notes disponibles ; les alertes météo restent visibles et deux explications principales
-au maximum résument les facteurs déterminants. Une carte unique regroupe ensuite les détails dans
+masquer les notes disponibles ; les alertes météo restent visibles et « À retenir » présente au
+maximum deux explications météo. Une carte unique regroupe ensuite les détails dans
 trois onglets : météo, qualité de l’air et pollens. Leur hauteur reste constante sur grand écran ;
 sur mobile, elle suit le contenu du panneau actif pour éviter les espaces vides. L’onglet météo associe la
 température ressentie, les précipitations, le vent moyen et les rafales à leurs sous-notes
