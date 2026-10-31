@@ -1,5 +1,7 @@
 # Changelog
 
+- Remove the numbered city-search prompt from the initial screen and clean up its unused styles.
+
 - Update React, TypeScript, Vite, and frontend test dependencies, and document supported Node.js versions and dependency maintenance.
 
 - Organize the frontend by feature with dedicated hooks, components, colocated styles, and shared utilities.

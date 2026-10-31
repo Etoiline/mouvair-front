@@ -1,7 +1,7 @@
 /*
  * Présentation du cadre de page fourni par AppLayout : en-tête, identité, introduction et pied de page.
- * L’état d’accueil appartient aussi à ce cadre. Les cartes métier et le champ de recherche
- * possèdent leurs propres feuilles, même lorsqu’ils sont visuellement placés dans l’en-tête.
+ * Les cartes métier et le champ de recherche possèdent leurs propres feuilles,
+ * même lorsqu’ils sont visuellement placés dans l’en-tête.
  */
 
 /* Le cadre coupe les décorations qui dépassent horizontalement tout en gardant une page de hauteur suffisante. */
@@ -108,27 +108,6 @@ nav {
   line-height: 1.6;
 }
 
-/* État d’accueil léger affiché avant les prévisions ; le numéro est un repère visuel, pas une étape interactive. */
-.empty-state {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  width: min(700px, calc(100% - 48px));
-  margin: 55px auto 90px;
-}
-
-.empty-state span {
-  color: #b8bcad;
-  font: 800 56px "Manrope", sans-serif;
-}
-
-.empty-state p {
-  margin: 0;
-  color: #68786f;
-  font-size: 17px;
-  line-height: 1.6;
-}
-
 /* Les informations de source et le rappel de portée sont placés après le contenu, avec une bordure de séparation. */
 footer {
   display: flex;
@@ -176,13 +155,8 @@ footer p {
     color: #15382e;
   }
 
-  .empty-state p,
   footer {
     color: #afbeb6;
-  }
-
-  .empty-state span {
-    color: #65736b;
   }
 
   footer {

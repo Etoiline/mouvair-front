@@ -62,7 +62,8 @@ d’un panneau se fait donc dans son dossier.
 
 `app/global.css` contient les polices, les variables de couleur, les styles HTML communs, la classe
 partagée `eyebrow` et l’animation de chargement. `AppLayout.css` contient la présentation du cadre
-de la page et de l’état d’accueil.
+de la page : en-tête, introduction et pied de page. Avant la sélection d’une ville, aucun bloc
+d’attente supplémentaire n’est affiché sous la recherche.
 
 Les classes conservent leur préfixe de composant, par exemple `score-card__context` ou
 `conditions-details__tab`, pour limiter les interactions entre les feuilles de styles.

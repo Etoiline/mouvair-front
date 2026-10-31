@@ -13,6 +13,7 @@ import { AppLayout } from "./AppLayout";
 
 /**
  * Compose la recherche, les états de premier chargement et le tableau de bord dans le cadre commun.
+ * Avant la sélection d’une ville, le cadre présente l’introduction et la recherche sans bloc d’attente.
  * ForecastDashboard reste présent dans l’arbre React même lorsqu’il n’a rien à afficher : ses préférences
  * d’activité et de panneau survivent ainsi à une nouvelle recherche de ville.
  */
@@ -49,12 +50,6 @@ export default function App() {
         refreshing={refreshing}
         onRefresh={() => void refreshForecast()}
       />
-      {!forecast && !search.searchingLocations && !loadingForecast && !forecastError && (
-        <section className="empty-state">
-          <span>01</span>
-          <p>Recherchez une ville pour comparer les quatre activités sur les prochaines 24 heures.</p>
-        </section>
-      )}
     </AppLayout>
   );
 }
