@@ -1,7 +1,8 @@
 /**
  * Conteneur des trois panneaux de détail : météo, qualité de l’air et pollens.
  * L’onglet est contrôlé par ForecastDashboard pour survivre à un changement de ville. Les panneaux
- * restent rendus dans la même cellule de grille : le plus haut réserve la hauteur de la carte, même inactif.
+ * restent rendus dans la même cellule de grille : le plus haut réserve la hauteur de la carte sur
+ * grand écran. Sur mobile, le CSS retire les panneaux inactifs du calcul de hauteur.
  */
 
 import type { KeyboardEvent } from "react";
@@ -53,8 +54,8 @@ type ConditionsDetailsProps = {
 /**
  * Relie chaque bouton à son panneau avec aria-controls et aria-labelledby.
  * Seul l’onglet actif et son panneau entrent dans l’ordre de tabulation. Les autres panneaux combinent
- * aria-hidden, inert et la visibilité CSS : leur place reste réservée sans exposer leur contenu
- * aux lecteurs d’écran ni permettre d’y placer le focus.
+ * aria-hidden, inert et la visibilité CSS pour retirer leur contenu de la lecture et du focus.
+ * Leur place est conservée sur grand écran, mais libérée sur mobile pour éviter les zones vides.
  */
 export function ConditionsDetails({
   hour,

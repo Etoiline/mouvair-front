@@ -65,6 +65,10 @@
   cursor: wait;
 }
 
+.search__submit-icon {
+  display: none;
+}
+
 /* Le menu est détaché du flux et sa hauteur est bornée par la fenêtre.
  * Un défilement interne permet de consulter une liste longue sans agrandir l’en-tête. */
 .location-results {
@@ -150,8 +154,62 @@
 
 /* Le bouton passe sous le champ et les compléments de lieu sous le nom pour conserver une lecture confortable. */
 @media (max-width: 800px) {
+  .search-area {
+    margin-top: 26px;
+  }
+
+  .hero--compact .search-area {
+    margin-top: 18px;
+  }
+
+  /* Après sélection, le champ et la loupe tiennent sur une ligne sans changer l’action du formulaire. */
+  .hero--compact .search__row {
+    flex-direction: row;
+  }
+
+  .hero--compact .search button {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 48px;
+    padding: 12px;
+  }
+
+  .hero--compact .search__submit-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .hero--compact .search__submit-icon {
+    display: block;
+  }
+
   .search__row {
     flex-direction: column;
+    padding: 5px;
+    border-radius: 14px;
+  }
+
+  .search input {
+    min-height: 48px;
+    padding: 12px;
+  }
+
+  .search button {
+    min-height: 46px;
+    padding: 12px 16px;
+    font-size: 14px;
+    border-radius: 10px;
+  }
+
+  .search label {
+    font-size: 12px;
+    margin-bottom: 8px;
   }
 
   .location-results button {

@@ -73,7 +73,8 @@ Le créneau sélectionné présente d’abord sa date, ses horaires locaux et l�
 globale apparaît avant les notes météo et qualité de l’air. Une donnée manquante est signalée sans
 masquer les notes disponibles ; les alertes météo restent visibles et deux explications principales
 au maximum résument les facteurs déterminants. Une carte unique regroupe ensuite les détails dans
-trois onglets de hauteur constante : météo, qualité de l’air et pollens. L’onglet météo associe la
+trois onglets : météo, qualité de l’air et pollens. Leur hauteur reste constante sur grand écran ;
+sur mobile, elle suit le contenu du panneau actif pour éviter les espaces vides. L’onglet météo associe la
 température ressentie, les précipitations, le vent moyen et les rafales à leurs sous-notes
 respectives. La valeur
 intermédiaire utilisée par le calcul du vent n’est pas présentée comme une mesure météo. L’onglet de
@@ -94,6 +95,19 @@ meilleure option défavorable,
 tandis que l’absence de note complète et la suspension pour données anciennes restent distinctes.
 Le contrat de score utilisé par l’interface contient uniquement les sections imbriquées `weather`,
 `air` et `overall`, qui portent chacune les données propres à leur rôle.
+
+## Présentation sur mobile
+
+L’accueil utilise un en-tête dont la hauteur suit son contenu. Après le choix d’une ville,
+l’introduction s’efface visuellement et la recherche tient sur une ligne avec un bouton loupe,
+dont le libellé reste accessible aux lecteurs d’écran. Ce mode compact est conservé pendant les
+recherches suivantes pour éviter les sauts de mise en page.
+
+Le tableau de bord présente l’activité, la note globale puis les deux notes météo et air côte à
+côte. Le graphique horaire précède les détails, afin de choisir un créneau avant d’examiner ses
+mesures ; un repère indique son défilement tactile. Les mesures météo sont regroupées en lignes
+avec leurs sous-notes à droite. Les trois onglets de détails restent visibles et seul le panneau
+actif occupe de la hauteur sur petit écran. Les concentrations de pollen conservent deux colonnes.
 
 ## Actualisation des prévisions
 

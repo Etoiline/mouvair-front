@@ -11,11 +11,21 @@ import "./AppLayout.css";
 /**
  * Place la recherche dans l’en-tête puis le contenu du parcours avant les informations de source.
  * L’ancre top permet au lien de marque de revenir à l’en-tête sans imposer de routeur à cette page.
+ * Sur mobile, compact réserve la place aux résultats en retirant visuellement l’introduction après
+ * la première sélection. Le titre principal reste disponible pour les technologies d’assistance.
  */
-export function AppLayout({ search, children }: { search: ReactNode; children: ReactNode }) {
+export function AppLayout({
+  search,
+  children,
+  compact,
+}: {
+  search: ReactNode;
+  children: ReactNode;
+  compact: boolean;
+}) {
   return (
     <main>
-      <header className="hero" id="top">
+      <header className={`hero${compact ? " hero--compact" : ""}`} id="top">
         <nav>
           <a className="brand" href="#top" aria-label="Mouv’Air, accueil">
             <span className="brand__mark">M</span>

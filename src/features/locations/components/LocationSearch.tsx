@@ -51,7 +51,25 @@ export function LocationSearch({ search, onSelect }: LocationSearchProps) {
             type="submit"
             disabled={searchingLocations || query.trim().length < LOCATION_SEARCH_MIN_LENGTH}
           >
-            {searchingLocations ? "Recherche…" : "Voir les conditions"}
+            <span className="search__submit-label">
+              {searchingLocations ? "Recherche…" : "Voir les conditions"}
+            </span>
+            {/* Le bouton compact garde son libellé accessible même lorsque seule la loupe est visible. */}
+            <svg
+              className="search__submit-icon"
+              viewBox="0 0 24 24"
+              width="20"
+              height="20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <circle cx="10.5" cy="10.5" r="6.5" />
+              <path d="m15.5 15.5 5 5" />
+            </svg>
           </button>
         </div>
       </form>

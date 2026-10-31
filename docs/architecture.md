@@ -35,6 +35,11 @@ recherche, puis charge ses prévisions.
 l’onglet de détail entre deux villes. Le créneau sélectionné est conservé pendant une actualisation
 s’il existe encore ; sinon le tableau de bord sélectionne le premier créneau disponible.
 
+`App` conserve aussi le mode compact de l’en-tête dès la première sélection d’une ville. Ce choix
+de présentation ne dépend pas de la présence temporaire des données : une nouvelle recherche ou
+une erreur ne fait pas réapparaître la grande introduction pendant le parcours mobile. Sur grand
+écran, l’en-tête garde sa présentation complète.
+
 ## Code partagé et dépendances
 
 `shared/api/http.ts` centralise l’URL de l’API, les appels JSON et les messages d’erreur HTTP.
@@ -64,6 +69,17 @@ d’un panneau se fait donc dans son dossier.
 partagée `eyebrow` et l’animation de chargement. `AppLayout.css` contient la présentation du cadre
 de la page : en-tête, introduction et pied de page. Avant la sélection d’une ville, aucun bloc
 d’attente supplémentaire n’est affiché sous la recherche.
+
+Le cadre occupe au minimum la hauteur de la fenêtre. Le pied de page et ses mentions restent en
+bas de l’écran lorsque le contenu est court, sur ordinateur comme sur mobile. Lorsque les résultats
+allongent la page, il suit le contenu dans le défilement sans le recouvrir.
+
+Les règles mobiles privilégient une lecture courte : en-tête sans hauteur fixe, recherche compacte,
+notes secondaires côte à côte et mesures météo en lignes. Le graphique suit la synthèse et précède
+les détails dans le DOM pour conserver un ordre de lecture et de navigation cohérent. Les panneaux
+de détails inactifs réservent leur place sur grand écran ; à partir du seuil de 800 px vers le bas,
+ils utilisent `display: none` pour que la hauteur corresponde au panneau consulté. Les attributs
+`aria-hidden` et `inert` restent pilotés par le même état d’onglet sur toutes les tailles.
 
 Les classes conservent leur préfixe de composant, par exemple `score-card__context` ou
 `conditions-details__tab`, pour limiter les interactions entre les feuilles de styles.

@@ -175,6 +175,8 @@ export function HourlyScoreChart({
         </div>
       </div>
 
+      <p className="hourly-chart__hint">Glissez pour comparer les heures</p>
+
       {selectedHour && selectedScore && (
         <div className="hourly-chart__selection" aria-live="polite">
           <div>

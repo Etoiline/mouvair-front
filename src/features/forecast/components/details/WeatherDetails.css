@@ -89,7 +89,7 @@
   font-size: 12px;
 }
 
-/* Les mesures passent en pile et perdent leur hauteur minimale pour éviter de grandes zones vides. */
+/* Chaque mesure devient une ligne avec sa sous-note à droite, plutôt qu’une grande carte verticale. */
 @media (max-width: 800px) {
   .weather-metrics {
     grid-template-columns: 1fr;
@@ -97,13 +97,55 @@
 
   .weather-metric {
     min-height: 0;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    padding: 18px;
+  }
+
+  .weather-metric > div:first-child {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .weather-metric h4 {
+    margin-bottom: 8px;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .weather-metric__value {
+    font-size: 22px;
+  }
+
+  .weather-metric__score {
+    display: grid;
+    flex: none;
+    grid-template-columns: auto auto;
+    gap: 3px;
+    min-width: 62px;
+    max-width: 84px;
+  }
+
+  .weather-metric__score .weather-metric__score-label {
+    grid-column: 1 / -1;
+    margin-right: 0;
+    font-size: 9px;
+  }
+
+  .weather-metric__score strong {
+    font-size: 26px;
+  }
+
+  .weather-metric__score--missing > span:last-child {
+    grid-column: 1 / -1;
   }
 }
 
 /* Sur les téléphones étroits, réduit les espacements sans modifier l’ordre de lecture ni les données visibles. */
 @media (max-width: 520px) {
   .weather-metric {
-    padding: 22px 18px;
+    padding: 16px;
   }
 }
 

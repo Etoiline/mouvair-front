@@ -194,11 +194,13 @@
   background: var(--lime);
 }
 
-/* Les actions passent en pile et les quatre activités sur deux colonnes pour éviter un en-tête trop comprimé. */
+/* La récupération tient sur une ligne ; la recommandation et les activités restent faciles à toucher. */
 @media (max-width: 800px) {
   .dashboard__heading {
     align-items: flex-start;
     flex-direction: column;
+    gap: 16px;
+    padding: 24px 0 20px;
   }
 
   .dashboard__actions {
@@ -208,7 +210,21 @@
   }
 
   .data-refresh {
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .data-refresh span {
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  .data-refresh button {
+    flex: none;
+    min-height: 44px;
+    font-size: 12px;
   }
 
   .best-slot-panel {
@@ -219,16 +235,70 @@
   .sport-tabs {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .sport-tabs button {
+    min-height: 48px;
+    padding: 10px 8px;
+    font-size: 13px;
+  }
+
+  .sport-tabs span {
+    flex: none;
+    width: 22px;
+    height: 22px;
+  }
 }
 
 /* Sur les téléphones étroits, réduit les espacements sans modifier l’ordre de lecture ni les données visibles. */
 @media (max-width: 520px) {
   .dashboard {
-    width: calc(100% - 28px);
+    width: calc(100% - 32px);
+    margin: 22px auto 48px;
   }
 
-  .sport-tabs button {
+  .dashboard__heading {
+    padding-top: 0;
+  }
+
+  .dashboard__heading .eyebrow {
+    margin-bottom: 7px;
+    font-size: 10px;
+    letter-spacing: .06em;
+    line-height: 1.5;
+  }
+
+  .dashboard h2 {
+    font-size: 26px;
+    line-height: 1.15;
+  }
+
+  .timezone-label {
+    margin-top: 7px;
     font-size: 12px;
+  }
+
+  .best-slot {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 4px 12px;
+    padding: 12px 14px;
+    background: #e8eee2;
+  }
+
+  .best-slot strong {
+    max-width: none;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .best-slot-warning,
+  .best-slot-help,
+  .data-notice {
+    font-size: 12px;
+  }
+
+  .data-notice {
+    margin-top: 0;
+    line-height: 1.5;
   }
 }
 

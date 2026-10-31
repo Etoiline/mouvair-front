@@ -4,6 +4,8 @@
  * Il ne calcule ni les notes ni les horaires et ne lance aucune requête en dehors des actions des hooks.
  */
 
+import { useState } from "react";
+
 import { ForecastDashboard } from "../features/forecast/components/ForecastDashboard";
 import { ForecastStatus } from "../features/forecast/components/ForecastStatus";
 import { useForecast } from "../features/forecast/hooks/useForecast";
@@ -18,6 +20,8 @@ import { AppLayout } from "./AppLayout";
  * d’activité et de panneau survivent ainsi à une nouvelle recherche de ville.
  */
 export default function App() {
+  // Le mode compact persiste pendant une nouvelle recherche pour éviter un saut de l’en-tête mobile.
+  const [compactHeader, setCompactHeader] = useState(false);
   const {
     forecast,
     selectedLocation,
@@ -36,7 +40,16 @@ export default function App() {
 
   return (
     <AppLayout
-      search={<LocationSearch search={search} onSelect={(location) => void loadForecast(location)} />}
+      compact={compactHeader}
+      search={
+        <LocationSearch
+          search={search}
+          onSelect={(location) => {
+            setCompactHeader(true);
+            void loadForecast(location);
+          }}
+        />
+      }
     >
       <ForecastStatus
         loading={loadingForecast}
