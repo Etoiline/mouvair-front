@@ -1,5 +1,7 @@
 # Changelog
 
+- Simplify the hourly chart subtitle to show only the overall score scale.
+
 - Improve the mobile layout with a compact search header, clearer score cards, and content-sized detail panels.
 - Show the hourly chart before condition details and keep footer notices at the bottom of short pages on all screen sizes.
 

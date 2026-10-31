@@ -87,7 +87,8 @@ n’entrent pas dans les notes Mouv’Air. Sur mobile, ces six concentrations so
 colonnes afin de limiter la hauteur du panneau. Lorsque l’appareil utilise le thème sombre, les
 cartes emploient des surfaces et des séparateurs renforcés pour conserver une hiérarchie visuelle
 claire. Les 24 créneaux sont représentés chronologiquement dans un
-graphique en barres regroupé par date locale. Chaque barre indique la note globale et son état ; un
+graphique en barres regroupé par date locale. Son sous-titre « Note globale sur 100 » rappelle
+l’échelle, l’activité étant déjà indiquée dans le sélecteur. Chaque barre indique la note globale et son état ; un
 clic sélectionne le créneau correspondant. Les alertes météo, les données incomplètes et le meilleur
 créneau restent repérables dans le graphique. Le meilleur créneau est également accessible depuis
 le bouton récapitulatif, et le premier est retenu en cas d’égalité. Un avertissement accompagne une

@@ -3,6 +3,7 @@
  * Les données et l’action d’actualisation viennent du parent ; l’activité, l’onglet de détail et le créneau
  * consulté restent locaux à cette vue. Le graphique précède les détails pour choisir une heure avant
  * d’en consulter les mesures ; les sous-vues reçoivent toutes le même créneau et le même score.
+ * Le sélecteur porte déjà le contexte de l’activité ; le sous-titre du graphique rappelle seulement l’échelle.
  */
 
 import { useEffect, useMemo, useState } from "react";
@@ -182,7 +183,7 @@ export function ForecastDashboard({
       <section className="timeline-wrap" aria-labelledby="timeline-title">
         <div className="timeline-wrap__heading">
           <h3 id="timeline-title">Heure par heure</h3>
-          <p>Note globale sur 100 pour {selectedScore.label.toLowerCase()}</p>
+          <p>Note globale sur 100</p>
         </div>
         <HourlyScoreChart
           hours={forecast.hours}
