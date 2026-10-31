@@ -2,6 +2,7 @@
  * Formulaire et menu de la recherche de ville.
  * La zone de recherche sert d’ancrage relatif au menu absolu ; son niveau de superposition
  * l’empêche de repousser le tableau de bord lorsqu’une liste de villes s’ouvre.
+ * Le modificateur search-area--compact appartient à cette vue et ne dépend pas des classes de l’en-tête.
  */
 
 .search-area {
@@ -142,7 +143,7 @@
 }
 
 /* L’erreur reste dans la zone du formulaire afin qu’une correction de saisie soit immédiatement possible. */
-.error {
+.search-area__error {
   width: 100%;
   margin-top: 12px;
   padding: 12px 15px;
@@ -158,16 +159,16 @@
     margin-top: 26px;
   }
 
-  .hero--compact .search-area {
+  .search-area--compact {
     margin-top: 18px;
   }
 
   /* Après sélection, le champ et la loupe tiennent sur une ligne sans changer l’action du formulaire. */
-  .hero--compact .search__row {
+  .search-area--compact .search__row {
     flex-direction: row;
   }
 
-  .hero--compact .search button {
+  .search-area--compact .search button {
     display: grid;
     place-items: center;
     flex: none;
@@ -175,7 +176,7 @@
     padding: 12px;
   }
 
-  .hero--compact .search__submit-label {
+  .search-area--compact .search__submit-label {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -185,7 +186,7 @@
     white-space: nowrap;
   }
 
-  .hero--compact .search__submit-icon {
+  .search-area--compact .search__submit-icon {
     display: block;
   }
 

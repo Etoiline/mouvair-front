@@ -2,10 +2,12 @@
  * Présentation du cadre de page fourni par AppLayout : en-tête, identité, introduction et pied de page.
  * Les cartes métier et le champ de recherche possèdent leurs propres feuilles,
  * même lorsqu’ils sont visuellement placés dans l’en-tête.
+ * Tous les sélecteurs visent les classes du cadre : ajouter une navigation ou un pied de carte
+ * ailleurs dans l’application ne lui applique pas cette mise en page.
  */
 
 /* Le cadre occupe au moins la fenêtre et laisse le pied de page absorber l’espace libre sous le contenu. */
-main {
+.app-layout {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -14,7 +16,7 @@ main {
 }
 
 /* Les deux fonds superposés portent le décor ; le contenu utile est positionné au-dessus par ses indices z-index. */
-.hero {
+.app-layout__hero {
   position: relative;
   flex: none;
   min-height: 610px;
@@ -24,7 +26,7 @@ main {
 }
 
 /* Les cercles débordent volontairement du bloc. pointer-events: none les empêche d’intercepter un clic sur le contenu. */
-.hero::after {
+.app-layout__hero::after {
   content: "";
   position: absolute;
   right: -80px;
@@ -38,7 +40,7 @@ main {
 }
 
 /* La navigation partage la largeur maximale du tableau de bord et garde l’identité visible au-dessus du décor. */
-nav {
+.app-layout__nav {
   position: relative;
   z-index: 2;
   display: flex;
@@ -50,7 +52,7 @@ nav {
   border-bottom: 1px solid rgba(255,255,255,.14);
 }
 
-.brand {
+.app-layout__brand {
   display: flex;
   gap: 12px;
   align-items: center;
@@ -59,7 +61,7 @@ nav {
   font: 700 18px "Manrope", sans-serif;
 }
 
-.brand__mark {
+.app-layout__brand-mark {
   display: grid;
   place-items: center;
   width: 34px;
@@ -70,7 +72,7 @@ nav {
   font-weight: 800;
 }
 
-.live-dot {
+.app-layout__status {
   display: flex;
   gap: 8px;
   align-items: center;
@@ -78,7 +80,7 @@ nav {
   font-size: 13px;
 }
 
-.live-dot i {
+.app-layout__status-dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
@@ -87,7 +89,7 @@ nav {
 }
 
 /* Le texte d’introduction et la recherche utilisent une largeur de lecture commune, chacun dans son propre fichier CSS. */
-.hero__copy {
+.app-layout__intro {
   position: relative;
   z-index: 2;
   width: min(760px, 100%);
@@ -95,16 +97,23 @@ nav {
   margin-right: auto;
 }
 
-.hero__copy {
+.app-layout__intro {
   padding-top: 70px;
   text-align: center;
 }
 
-.hero .eyebrow {
+.app-layout__eyebrow {
   color: var(--lime);
 }
 
-.intro {
+/* La typographie de la bannière reste locale : les futurs h1 gardent leur propre présentation. */
+.app-layout__title {
+  margin-bottom: 22px;
+  font: 800 clamp(48px, 7vw, 82px)/.95 "Manrope", sans-serif;
+  letter-spacing: -.055em;
+}
+
+.app-layout__description {
   max-width: 590px;
   margin: 0 auto;
   color: rgba(255,255,255,.68);
@@ -113,7 +122,7 @@ nav {
 }
 
 /* La marge automatique pousse les mentions en bas de la fenêtre ; elles suivent les résultats si la page défile. */
-footer {
+.app-layout__footer {
   display: flex;
   flex: none;
   justify-content: space-between;
@@ -125,55 +134,51 @@ footer {
   font-size: 12px;
 }
 
-footer p {
+.app-layout__notice {
   margin: 0;
 }
 
 /* L’en-tête suit son contenu sur petit écran, sans réserver une hauteur de bannière de bureau. */
 @media (max-width: 800px) {
-  body {
-    min-width: 0;
-  }
-
-  .hero {
+  .app-layout__hero {
     min-height: 0;
     padding-bottom: 36px;
     background: linear-gradient(150deg, #173d32, #0e2f27);
   }
 
-  .hero::after {
+  .app-layout__hero::after {
     display: none;
   }
 
-  nav {
+  .app-layout__nav {
     padding-block: 18px;
   }
 
-  .hero__copy {
+  .app-layout__intro {
     padding-top: 32px;
   }
 
-  .hero h1 {
+  .app-layout__title {
     font-size: clamp(36px, 8vw, 56px);
     line-height: 1.05;
     margin-bottom: 14px;
   }
 
-  .hero .eyebrow {
+  .app-layout__eyebrow {
     margin-bottom: 12px;
     font-size: 10px;
   }
 
-  .intro {
+  .app-layout__description {
     font-size: 15px;
     line-height: 1.5;
   }
 
-  .live-dot {
+  .app-layout__status {
     display: none;
   }
 
-  footer {
+  .app-layout__footer {
     flex-direction: column;
     gap: 12px;
     padding: 22px 20px;
@@ -182,7 +187,7 @@ footer p {
   }
 
   /* Le texte reste accessible sans occuper une bannière au-dessus de chaque consultation. */
-  .hero--compact .hero__copy {
+  .app-layout__hero--compact .app-layout__intro {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -193,37 +198,37 @@ footer p {
     white-space: nowrap;
   }
 
-  .hero--compact {
+  .app-layout__hero--compact {
     padding-bottom: 24px;
   }
 }
 
 /* Sur les téléphones étroits, réduit les espacements sans modifier l’ordre de lecture ni les données visibles. */
 @media (max-width: 520px) {
-  .hero {
+  .app-layout__hero {
     padding-inline: 16px;
   }
 
-  .hero__copy {
+  .app-layout__intro {
     padding-top: 28px;
   }
 
-  .hero h1 {
+  .app-layout__title {
     font-size: clamp(34px, 10vw, 42px);
   }
 }
 
 /* Variante système sombre : conserve la structure et renforce le contraste des surfaces, du texte et des séparateurs. */
 @media (prefers-color-scheme: dark) {
-  .brand__mark {
+  .app-layout__brand-mark {
     color: #15382e;
   }
 
-  footer {
+  .app-layout__footer {
     color: #afbeb6;
   }
 
-  footer {
+  .app-layout__footer {
     border-color: #46564d;
   }
 }

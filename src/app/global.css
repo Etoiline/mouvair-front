@@ -60,21 +60,15 @@ p {
   margin-top: 0;
 }
 
-h1 {
-  margin-bottom: 22px;
-  font: 800 clamp(48px, 7vw, 82px)/.95 "Manrope", sans-serif;
-  letter-spacing: -.055em;
-}
-
 /* Animation commune aux indicateurs de recherche de villes et de récupération initiale des prévisions. */
 @keyframes forecast-spin {
   to { transform: rotate(360deg); }
 }
 
-/* Sur les téléphones étroits, réduit les espacements sans modifier l’ordre de lecture ni les données visibles. */
-@media (max-width: 520px) {
-  h1 {
-    font-size: 48px;
+/* Le comportement du corps de document reste global, même lorsque le cadre de page change. */
+@media (max-width: 800px) {
+  body {
+    min-width: 0;
   }
 }
 

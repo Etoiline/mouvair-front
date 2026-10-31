@@ -1,5 +1,7 @@
 # Changelog
 
+- Scope layout and search styles to dedicated classes and decouple compact mobile search from its parent layout.
+
 - Limit the key takeaways to weather explanations.
 
 - Simplify the hourly chart subtitle to show only the overall score scale.
