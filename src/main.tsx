@@ -1,12 +1,13 @@
 /**
  * Point d’entrée navigateur chargé par index.html.
- * Les styles globaux précèdent ceux des vues ; une seule racine React prend ensuite en charge
+ * Les variables communes puis les styles globaux précèdent ceux des vues ; une seule racine React prend en charge
  * le contenu de #root. StrictMode aide à détecter les effets dont le nettoyage est incomplet en développement.
  */
 
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
+import "./app/tokens.css";
 import "./app/global.css";
 import App from "./app/App";
 

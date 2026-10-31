@@ -33,6 +33,9 @@ composants, ses hooks et ses fonctions sans état (`lib/`). Les styles sont plac
 composant concerné, avec ses variantes mobiles et sombres. Les tests sont placés à côté du code
 qu’ils vérifient ; les parcours complets se trouvent dans `app/App.test.tsx`.
 
+Les couleurs et espacements réutilisés sont centralisés dans `app/tokens.css`, avec la palette
+sombre. Chaque composant conserve sa disposition et ses nuances spécifiques dans sa feuille CSS.
+
 Le [guide d’architecture](docs/architecture.md) précise les responsabilités et les conventions à
 suivre pour ajouter un écran ou faire évoluer une fonctionnalité. Les sources, tests, styles et
 scripts comportent des commentaires en français sur leurs contrats, leurs états et les choix

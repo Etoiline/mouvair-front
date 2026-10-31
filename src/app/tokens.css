@@ -1,0 +1,82 @@
+/*
+ * Valeurs visuelles communes, chargées avant les fondations et les styles des composants.
+ * Les noms de couleur décrivent un rôle : un changement de thème remplace les valeurs ici.
+ * Les nuances propres aux scores, badges et décorations restent dans leur composant.
+ */
+
+:root {
+  /* Texte, accent et surfaces ; le texte des boutons accentués garde son contraste sombre. */
+  --color-on-accent: #15382e;
+  --color-text: var(--color-on-accent);
+  --color-background: #f5f1e8;
+  --color-accent: #d7f55f;
+  --color-positive: #3d795f;
+  --color-positive-bright: #92d8ba;
+  --color-surface: #fff;
+  --color-surface-control: var(--color-surface);
+  --color-surface-detail: #fbfaf5;
+  --color-surface-detail-plain: var(--color-surface);
+  --color-surface-note: var(--color-surface-detail);
+  --color-surface-unavailable: #f1f2ee;
+
+  /* Bordures de cartes, séparateurs entre mesures et niveaux de texte secondaire. */
+  --color-border: #e5e7df;
+  --color-divider: var(--color-border);
+  --color-text-muted: #6e7b74;
+  --color-text-subtle: #738078;
+  --color-text-label: #627269;
+  --color-text-secondary: #314f43;
+  --color-text-unit: #7c8982;
+
+  /* Le suffixe correspond à la valeur en pixels. Les dimensions et décalages propres
+   * à un composant restent locaux ; ces valeurs servent aux marges, paddings et gaps. */
+  --space-2: 2px;
+  --space-3: 3px;
+  --space-4: 4px;
+  --space-5: 5px;
+  --space-6: 6px;
+  --space-7: 7px;
+  --space-8: 8px;
+  --space-9: 9px;
+  --space-10: 10px;
+  --space-12: 12px;
+  --space-13: 13px;
+  --space-14: 14px;
+  --space-15: 15px;
+  --space-16: 16px;
+  --space-17: 17px;
+  --space-18: 18px;
+  --space-20: 20px;
+  --space-22: 22px;
+  --space-24: 24px;
+  --space-25: 25px;
+  --space-26: 26px;
+  --space-28: 28px;
+  --space-30: 30px;
+  --space-32: 32px;
+  --space-34: 34px;
+  --space-48: 48px;
+  --space-80: 80px;
+  --space-96: 96px;
+}
+
+/* Les composants héritent de leurs surfaces et séparateurs sombres sans recopier la palette. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-text: #edf5f0;
+    --color-background: #0e1612;
+    --color-surface: #17211c;
+    --color-surface-control: #19241e;
+    --color-surface-detail: #18231d;
+    --color-surface-detail-plain: var(--color-surface-detail);
+    --color-surface-note: #1d2922;
+    --color-surface-unavailable: #24342c;
+    --color-border: #53645a;
+    --color-divider: #5a6b61;
+    --color-text-muted: #afbeb6;
+    --color-text-subtle: var(--color-text-muted);
+    --color-text-label: #becbc4;
+    --color-text-secondary: #dbe5df;
+    --color-text-unit: #adbbb3;
+  }
+}

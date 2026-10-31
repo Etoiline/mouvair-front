@@ -7,7 +7,7 @@
 /* Le chevauchement avec l’en-tête crée la continuité visuelle ; le z-index place le contenu au-dessus du décor. */
 .dashboard {
   width: min(1180px, calc(100% - 48px));
-  margin: -38px auto 80px;
+  margin: -38px auto var(--space-80);
   position: relative;
   z-index: 3;
 }
@@ -17,8 +17,8 @@
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: flex-end;
-  gap: 20px;
-  padding: 46px 0 30px;
+  gap: var(--space-20);
+  padding: 46px 0 var(--space-30);
 }
 
 .dashboard h2 {
@@ -28,8 +28,8 @@
 }
 
 .timezone-label {
-  margin: 9px 0 0;
-  color: #738078;
+  margin: var(--space-9) 0 0;
+  color: var(--color-text-subtle);
   font-size: 13px;
 }
 
@@ -39,7 +39,7 @@
   flex-wrap: wrap;
   align-items: flex-end;
   justify-content: flex-end;
-  gap: 12px;
+  gap: var(--space-12);
 }
 
 /* L’heure indique l’ancienneté des données affichées, tandis que le bouton distingue l’actualisation en cours. */
@@ -47,19 +47,19 @@
   display: flex;
   align-items: flex-end;
   flex-direction: column;
-  gap: 7px;
+  gap: var(--space-7);
 }
 
 .data-refresh span {
-  color: #738078;
+  color: var(--color-text-subtle);
   font-size: 12px;
 }
 
 .data-refresh button {
-  padding: 9px 13px;
+  padding: var(--space-9) var(--space-13);
   border: 1px solid #c9cec4;
   border-radius: 10px;
-  background: #fff;
+  background: var(--color-surface-control);
   cursor: pointer;
   font-weight: 600;
 }
@@ -75,7 +75,7 @@
   align-items: flex-start;
   max-width: 310px;
   flex-direction: column;
-  gap: 7px;
+  gap: var(--space-7);
 }
 
 /* La grille place la note à côté du créneau ; l’état disabled porte aussi le cas sans recommandation disponible. */
@@ -83,8 +83,8 @@
   display: grid;
   width: 100%;
   grid-template-columns: auto auto;
-  gap: 2px 25px;
-  padding: 14px 17px;
+  gap: var(--space-2) var(--space-25);
+  padding: var(--space-14) var(--space-17);
   border: 1px solid #d7d8cc;
   border-radius: 13px;
   background: transparent;
@@ -93,7 +93,7 @@
 }
 
 .best-slot span {
-  color: #738078;
+  color: var(--color-text-subtle);
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: .09em;
@@ -124,7 +124,7 @@
 }
 
 .best-slot-warning {
-  padding: 7px 9px;
+  padding: var(--space-7) var(--space-9);
   border-radius: 8px;
   background: #fff0eb;
   color: #8e4032;
@@ -132,14 +132,14 @@
 }
 
 .best-slot-help {
-  padding-left: 2px;
+  padding-left: var(--space-2);
   color: #6f7c75;
 }
 
 /* Les avertissements de fraîcheur occupent la largeur du tableau de bord avant les notes, sans supprimer les résultats. */
 .data-notice {
-  margin: -12px 0 20px;
-  padding: 12px 15px;
+  margin: -12px 0 var(--space-20);
+  padding: var(--space-12) var(--space-15);
   border: 1px solid #e1c875;
   border-radius: 12px;
   background: #fff6d8;
@@ -156,8 +156,8 @@
 .sport-tabs {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  padding: 5px;
-  margin-bottom: 14px;
+  padding: var(--space-5);
+  margin-bottom: var(--space-14);
   border: 1px solid #d7d8cc;
   border-radius: 16px;
   background: #eeece3;
@@ -167,8 +167,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 9px;
-  padding: 14px 10px;
+  gap: var(--space-9);
+  padding: var(--space-14) var(--space-10);
   border: 0;
   border-radius: 11px;
   background: transparent;
@@ -177,7 +177,7 @@
 }
 
 .sport-tabs button.active {
-  background: white;
+  background: var(--color-surface);
   box-shadow: 0 5px 15px rgba(22,56,46,.08);
 }
 
@@ -191,7 +191,7 @@
 }
 
 .sport-tabs button.active span {
-  background: var(--lime);
+  background: var(--color-accent);
 }
 
 /* La récupération tient sur une ligne ; la recommandation et les activités restent faciles à toucher. */
@@ -199,8 +199,8 @@
   .dashboard__heading {
     align-items: flex-start;
     flex-direction: column;
-    gap: 16px;
-    padding: 24px 0 20px;
+    gap: var(--space-16);
+    padding: var(--space-24) 0 var(--space-20);
   }
 
   .dashboard__actions {
@@ -213,7 +213,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
+    gap: var(--space-12);
   }
 
   .data-refresh span {
@@ -238,7 +238,7 @@
 
   .sport-tabs button {
     min-height: 48px;
-    padding: 10px 8px;
+    padding: var(--space-10) var(--space-8);
     font-size: 13px;
   }
 
@@ -253,7 +253,7 @@
 @media (max-width: 520px) {
   .dashboard {
     width: calc(100% - 32px);
-    margin: 22px auto 48px;
+    margin: var(--space-22) auto var(--space-48);
   }
 
   .dashboard__heading {
@@ -261,7 +261,7 @@
   }
 
   .dashboard__heading .eyebrow {
-    margin-bottom: 7px;
+    margin-bottom: var(--space-7);
     font-size: 10px;
     letter-spacing: .06em;
     line-height: 1.5;
@@ -273,14 +273,14 @@
   }
 
   .timezone-label {
-    margin-top: 7px;
+    margin-top: var(--space-7);
     font-size: 12px;
   }
 
   .best-slot {
     grid-template-columns: minmax(0, 1fr) auto;
-    gap: 4px 12px;
-    padding: 12px 14px;
+    gap: var(--space-4) var(--space-12);
+    padding: var(--space-12) var(--space-14);
     background: #e8eee2;
   }
 
@@ -308,17 +308,17 @@
   .data-refresh span,
   .best-slot span,
   .best-slot-help {
-    color: #afbeb6;
+    color: var(--color-text-muted);
   }
 
   .data-refresh button,
   .best-slot {
-    border-color: #53645a;
-    background: #19241e;
+    border-color: var(--color-border);
+    background: var(--color-surface-control);
   }
 
   .best-slot b {
-    color: #92d8ba;
+    color: var(--color-positive-bright);
   }
 
   .best-slot-warning {
@@ -339,8 +339,8 @@
   }
 
   .sport-tabs {
-    border-color: #53645a;
-    background: #19241e;
+    border-color: var(--color-border);
+    background: var(--color-surface-control);
   }
 
   .sport-tabs button.active {
@@ -353,7 +353,6 @@
   }
 
   .sport-tabs button.active span {
-    background: var(--lime);
-    color: #15382e;
+    color: var(--color-on-accent);
   }
 }

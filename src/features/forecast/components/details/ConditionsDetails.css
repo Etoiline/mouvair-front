@@ -9,11 +9,11 @@
 .conditions-details {
   display: grid;
   min-width: 0;
-  margin-top: 22px;
+  margin-top: var(--space-22);
   overflow: hidden;
   border: 1px solid #dedfd6;
   border-radius: 20px;
-  background: #fff;
+  background: var(--color-surface);
   grid-template-columns: minmax(0, 1fr);
 }
 
@@ -22,15 +22,15 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 24px;
-  padding: 25px 28px;
-  border-bottom: 1px solid #e5e7df;
+  gap: var(--space-24);
+  padding: var(--space-25) var(--space-28);
+  border-bottom: 1px solid var(--color-border);
   grid-column: 1;
   grid-row: 1;
 }
 
 .conditions-details__header .eyebrow {
-  margin-bottom: 6px;
+  margin-bottom: var(--space-6);
 }
 
 .conditions-details__header h3 {
@@ -41,7 +41,7 @@
 
 .conditions-details__header > p {
   margin: 0;
-  color: #6e7b74;
+  color: var(--color-text-muted);
   font-size: 13px;
 }
 
@@ -49,8 +49,8 @@
 .conditions-details__tabs {
   display: flex;
   align-items: flex-end;
-  gap: 26px;
-  padding: 0 28px;
+  gap: var(--space-26);
+  padding: 0 var(--space-28);
   overflow-x: auto;
   border-bottom: 1px solid #dfe2da;
   background: #f7f8f4;
@@ -61,7 +61,7 @@
 .conditions-details__tab {
   flex: none;
   min-width: 0;
-  padding: 17px 2px 13px;
+  padding: var(--space-17) var(--space-2) var(--space-13);
   border: 0;
   border-bottom: 3px solid transparent;
   background: transparent;
@@ -71,12 +71,12 @@
 }
 
 .conditions-details__tab:not([aria-selected="true"]):hover {
-  color: var(--ink);
+  color: var(--color-text);
 }
 
 .conditions-details__tab[aria-selected="true"] {
   border-bottom-color: #4e876f;
-  color: var(--ink);
+  color: var(--color-text);
 }
 
 /* Le focus clavier est matérialisé dans les limites du bouton ou du panneau, même sans survol de souris. */
@@ -109,15 +109,15 @@
 
 @media (max-width: 520px) {
   .conditions-details {
-    margin-top: 24px;
+    margin-top: var(--space-24);
     border-radius: 16px;
   }
 
   .conditions-details__header {
     align-items: flex-start;
     flex-direction: column;
-    gap: 8px;
-    padding: 18px 16px;
+    gap: var(--space-8);
+    padding: var(--space-18) var(--space-16);
   }
 
   .conditions-details__header h3 {
@@ -137,12 +137,12 @@
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0;
-    padding: 0 10px;
+    padding: 0 var(--space-10);
   }
 
   .conditions-details__tab {
     min-height: 48px;
-    padding: 12px 4px 9px;
+    padding: var(--space-12) var(--space-4) var(--space-9);
     font-size: 12px;
     line-height: 1.35;
   }
@@ -151,18 +151,14 @@
 /* Variante système sombre : conserve la structure et renforce le contraste des surfaces, du texte et des séparateurs. */
 @media (prefers-color-scheme: dark) {
   .conditions-details {
-    border-color: #53645a;
-    background: #17211c;
-    box-shadow: 0 20px 52px rgba(0,0,0,.3);
-  }
+    border-color: var(--color-border);
 
-  .conditions-details__header > p {
-    color: #afbeb6;
+    box-shadow: 0 20px 52px rgba(0,0,0,.3);
   }
 
   .conditions-details__header,
   .conditions-details__tabs {
-    border-color: #53645a;
+    border-color: var(--color-border);
   }
 
   .conditions-details {
@@ -170,7 +166,7 @@
   }
 
   .conditions-details__header {
-    background: #19241e;
+    background: var(--color-surface-control);
   }
 
   .conditions-details__tabs {
@@ -178,7 +174,7 @@
   }
 
   .conditions-details__tab {
-    color: #adbbb3;
+    color: var(--color-text-unit);
   }
 
   .conditions-details__tab:not([aria-selected="true"]):hover,
@@ -187,10 +183,10 @@
   }
 
   .conditions-details__tab[aria-selected="true"] {
-    border-bottom-color: #92d8ba;
+    border-bottom-color: var(--color-positive-bright);
   }
 
   .conditions-details__panel {
-    background: #17211c;
+    background: var(--color-surface);
   }
 }

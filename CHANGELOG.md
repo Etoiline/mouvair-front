@@ -1,5 +1,7 @@
 # Changelog
 
+- Centralize shared colors, light and dark palettes, and spacing in reusable CSS variables.
+
 - Scope layout and search styles to dedicated classes and decouple compact mobile search from its parent layout.
 
 - Limit the key takeaways to weather explanations.

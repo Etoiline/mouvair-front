@@ -1,25 +1,19 @@
 /*
  * Fondations visuelles partagées par toute l’application, chargées depuis main.tsx.
- * Ce fichier contient les polices, les variables héritées, quelques règles HTML communes et
+ * Ce fichier applique les variables de tokens.css et contient les polices, les règles HTML communes et
  * l’animation de chargement. Les styles propres aux fonctionnalités restent dans leurs fichiers voisins.
  */
 
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap");
 
-/* Les variables définissent les couleurs communes ; les composants peuvent ensuite ajouter leurs
- * propres variables locales. color-scheme permet aussi aux contrôles natifs de suivre le thème choisi. */
+/* color-scheme permet aux contrôles natifs de suivre le thème de la palette commune. */
 :root {
   color-scheme: light;
   font-family: "DM Sans", sans-serif;
-  color: #15382e;
-  background: #f5f1e8;
+  color: var(--color-text);
+  background: var(--color-background);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-  --ink: #15382e;
-  --paper: #f5f1e8;
-  --lime: #d7f55f;
-  --mint: #a9e3ca;
-  --coral: #ff8066;
 }
 
 /* Inclut les bordures et espacements dans les dimensions déclarées pour limiter les débordements des grilles. */
@@ -45,7 +39,7 @@ button {
 
 /* Petit libellé de contexte partagé par l’accueil, les états de chargement et les cartes du tableau de bord. */
 .eyebrow {
-  margin: 0 0 14px;
+  margin: 0 0 var(--space-14);
   color: #6ca28c;
   font-size: 12px;
   font-weight: 700;
@@ -72,20 +66,13 @@ p {
   }
 }
 
-/* Les surfaces sombres des composants suivent aussi le réglage système. */
-/* Seules les fondations sont remplacées ici. Chaque composant définit ses surfaces sombres dans
- * sa propre feuille afin que les couleurs ne reposent pas uniquement sur l’inversion du texte global. */
+/* La palette sombre vient de tokens.css ; ce fichier adapte les contrôles natifs et le corps du document. */
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
-    color: #edf5f0;
-    background: #0e1612;
-    --ink: #edf5f0;
-    --paper: #0e1612;
-    --mint: #92d8ba;
   }
 
   body {
-    background: var(--paper);
+    background: var(--color-background);
   }
 }
