@@ -4,6 +4,8 @@ Interface React et TypeScript du projet Mouv’Air.
 
 Utiliser Node.js 22 à partir de 22.22.2, Node.js 24 à partir de 24.15.0, ou Node.js 26 et plus,
 avec pnpm. Ces versions correspondent aux prérequis des outils de test, notamment jsdom.
+La version Node de référence est indiquée dans `.node-version` et la version de pnpm dans
+`packageManager`, dans `package.json`. La CI utilise ces deux versions.
 
 ```powershell
 pnpm install
@@ -53,6 +55,22 @@ VITE_API_URL=https://mouvair-api.up.railway.app/api
 
 Lorsque le domaine personnalisé sera disponible, remplacer cette valeur par une URL telle que
 `https://api.mouvair.example.dev/api`, puis reconstruire le frontend.
+
+## Vérifications automatiques
+
+Le workflow [Frontend checks](.github/workflows/checks.yml) exécute les vérifications à chaque
+push et pull request, et peut aussi être lancé manuellement dans GitHub Actions. Il installe les
+dépendances avec `pnpm install --frozen-lockfile`, réutilise leur cache, puis lance la même commande
+qu’en local :
+
+```powershell
+pnpm check
+```
+
+Cette commande exécute toute la suite de tests, puis vérifie les types TypeScript et construit le
+frontend de production. Une erreur fait échouer la vérification. Les tests simulent les API :
+aucun backend ni secret de déploiement n’est nécessaire. Le fonctionnement de la CI est décrit
+dans le [guide de configuration](docs/configuration.md).
 
 ## Tests
 

@@ -107,12 +107,15 @@ Les fichiers `*.test.ts` et `*.test.tsx` sont placés à côté des hooks ou com
 DOM après chaque test ; `src/test/fixtures.ts` fournit les données et promesses contrôlées communes.
 Les tests simulent les appels des modules `api.ts` sans dépendre du backend.
 
-Après une réorganisation, vérifier les parcours et la compilation de production :
+Après une réorganisation, vérifier les parcours, les types et la compilation de production :
 
 ```powershell
-pnpm test
-pnpm build
+pnpm check
 ```
+
+GitHub Actions exécute cette même commande à chaque push et pull request, après une installation
+avec le verrou de dépendances figé. Le [guide de configuration](configuration.md) décrit les
+versions des outils et le workflow de vérification.
 
 ## Ajouter du code
 
