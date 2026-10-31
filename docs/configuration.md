@@ -15,6 +15,7 @@ permet pas les commentaires ; les explications de ses champs sont donc regroupé
 | `private` | Empêche de publier ce package comme bibliothèque sur un registre. |
 | `version` | Version du frontend, maintenue avec le changelog par le script de release. |
 | `type` | La valeur `module` configure les fichiers JavaScript du package comme modules ES. |
+| `engines.node` | Versions de Node compatibles avec les outils de test : branche 22 à partir de 22.22.2, branche 24 à partir de 24.15.0, ou version 26 et plus. |
 | `scripts` | Noms des commandes communes de développement, vérification et maintenance. |
 | `dependencies` | React et React DOM, utilisés pour monter et mettre à jour l’interface. |
 | `devDependencies` | Outils de compilation, de développement, de test et déclarations de types. |
@@ -34,6 +35,27 @@ TypeScript vérifie le contrat des sources et des tests. Vite sert l’applicati
 ressources. Vitest exécute les scénarios ; jsdom fournit leur environnement DOM. Testing Library
 et user-event servent à monter React et à reproduire les interactions. Les packages `@types/*`
 fournissent les déclarations nécessaires à la vérification TypeScript.
+
+### Mise à jour des bibliothèques
+
+Le frontend utilise TypeScript 7 par la commande `tsc`, qui s’appuie sur le compilateur natif
+présenté dans l’[annonce officielle](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/).
+Les scripts du projet n’importent pas l’API de programmation du compilateur.
+
+Pour consulter les mises à jour disponibles, puis actualiser les dépendances directes vers les
+versions stables publiées, y compris les versions majeures :
+
+```powershell
+pnpm outdated
+pnpm update --latest
+pnpm test
+pnpm build
+```
+
+Le manifeste et le verrou doivent évoluer ensemble. Vérifier les prérequis Node et les changements
+incompatibles avant une mise à jour majeure ; la plage `engines.node` reflète ici les exigences
+communes de jsdom et de Vitest. Conserver les plages de version du manifeste et les versions
+résolues du verrou plutôt que modifier les fichiers de dépendances installées à la main.
 
 ## `pnpm-lock.yaml`
 
