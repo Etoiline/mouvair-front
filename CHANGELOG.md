@@ -1,5 +1,8 @@
 # Changelog
 
+- Improve the mobile layout with a compact search header, clearer score cards, and content-sized detail panels.
+- Show the hourly chart before condition details and keep footer notices at the bottom of short pages on all screen sizes.
+
 - Remove the numbered city-search prompt from the initial screen and clean up its unused styles.
 
 - Update React, TypeScript, Vite, and frontend test dependencies, and document supported Node.js versions and dependency maintenance.

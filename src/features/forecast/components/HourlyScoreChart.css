@@ -299,6 +299,11 @@
   text-align: center;
 }
 
+/* Le défilement tactile est annoncé uniquement là où le graphique dépasse la largeur disponible. */
+.hourly-chart__hint {
+  display: none;
+}
+
 /* Le récapitulatif textuel complète la sélection des barres ; son annonce aria-live est gérée dans le composant React. */
 .hourly-chart__selection {
   display: grid;
@@ -336,10 +341,35 @@
     flex-direction: column;
     gap: 5px;
   }
+
+  .hourly-chart__hint {
+    display: block;
+    margin: 0;
+    padding: 0 16px 12px;
+    color: #6e7b74;
+    font-size: 11px;
+    text-align: center;
+  }
 }
 
 /* Sur les téléphones étroits, réduit les espacements sans modifier l’ordre de lecture ni les données visibles. */
 @media (max-width: 520px) {
+  .timeline-wrap {
+    margin-top: 26px;
+  }
+
+  .timeline-wrap__heading h3 {
+    font-size: 19px;
+  }
+
+  .timeline-wrap__heading p {
+    font-size: 12px;
+  }
+
+  .hourly-chart {
+    border-radius: 16px;
+  }
+
   .hourly-chart__legend {
     gap: 8px 13px;
     padding: 13px 14px;
@@ -369,7 +399,8 @@
     box-shadow: 0 20px 52px rgba(0,0,0,.3);
   }
 
-  .timeline-wrap__heading p {
+  .timeline-wrap__heading p,
+  .hourly-chart__hint {
     color: #afbeb6;
   }
 

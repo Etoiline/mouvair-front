@@ -89,13 +89,15 @@ type ScoreCardProps = {
  */
 export function ScoreCard({ hour, score, timeZone }: ScoreCardProps) {
   const selectedExplanations = mainExplanations(score);
+  // Une espace insécable garde le symbole h avec sa valeur quand l’horaire passe sur plusieurs lignes.
+  const slotLabel = formatSlot(hour.time, hour.end_time, timeZone).replaceAll(" h", "\u00a0h");
 
   return (
     <div className={`score-card score-card--${STATUS_TONES[score.overall.status]}`}>
       <header className="score-card__context">
         <div>
           <p className="eyebrow">Créneau sélectionné</p>
-          <h3>{formatSlot(hour.time, hour.end_time, timeZone)}</h3>
+          <h3>{slotLabel}</h3>
         </div>
         <span className="activity-chip">{score.label}</span>
       </header>

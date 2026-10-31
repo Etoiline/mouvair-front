@@ -1,7 +1,8 @@
 /*
  * Cadre commun des panneaux météo, qualité de l’air et pollens.
  * La grille superpose les trois panneaux dans sa troisième ligne : leur présence simultanée
- * réserve la hauteur du plus grand et évite les sauts de mise en page entre onglets.
+ * réserve la hauteur du plus grand sur grand écran. Sur mobile, seul le panneau actif occupe
+ * de la place pour ne pas imposer un long espace vide aux panneaux les plus courts.
  */
 
 /* Une seule colonne borne les panneaux et coupe les débordements aux bords arrondis de la carte. */
@@ -99,23 +100,51 @@
   pointer-events: none;
 }
 
-/* Sur les téléphones étroits, réduit les espacements sans modifier l’ordre de lecture ni les données visibles. */
+/* Le contenu visible détermine la hauteur mobile ; les trois onglets restent tous accessibles sans défilement horizontal. */
+@media (max-width: 800px) {
+  .conditions-details__panel--inactive {
+    display: none;
+  }
+}
+
 @media (max-width: 520px) {
+  .conditions-details {
+    margin-top: 24px;
+    border-radius: 16px;
+  }
+
   .conditions-details__header {
     align-items: flex-start;
     flex-direction: column;
     gap: 8px;
-    padding: 22px 18px;
+    padding: 18px 16px;
+  }
+
+  .conditions-details__header h3 {
+    font-size: 19px;
+  }
+
+  .conditions-details__header .eyebrow {
+    font-size: 9px;
+  }
+
+  .conditions-details__header > p {
+    font-size: 12px;
+    line-height: 1.4;
   }
 
   .conditions-details__tabs {
-    gap: 19px;
-    padding: 0 18px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    padding: 0 10px;
   }
 
   .conditions-details__tab {
-    padding: 15px 0 11px;
+    min-height: 48px;
+    padding: 12px 4px 9px;
     font-size: 12px;
+    line-height: 1.35;
   }
 }
 

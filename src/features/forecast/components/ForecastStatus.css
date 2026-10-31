@@ -65,9 +65,9 @@
 /* Sur les téléphones étroits, réduit les espacements sans modifier l’ordre de lecture ni les données visibles. */
 @media (max-width: 520px) {
   .forecast-state {
-    width: calc(100% - 28px);
-    margin-block: 32px 60px;
-    padding: 30px 20px;
+    width: calc(100% - 32px);
+    margin-block: 24px 48px;
+    padding: 24px 20px;
   }
 }
 

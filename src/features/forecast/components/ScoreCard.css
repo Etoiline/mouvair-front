@@ -57,7 +57,8 @@
   margin: 0;
   font: 750 clamp(18px, 2vw, 23px)/1.25 "Manrope", sans-serif;
   letter-spacing: -.025em;
-  text-transform: capitalize;
+  /* La date et le symbole h gardent leur casse française, y compris lorsqu’ils passent à la ligne. */
+  text-transform: none;
 }
 
 .activity-chip {
@@ -243,46 +244,105 @@
   }
 }
 
-/* Les notes secondaires passent aussi en pile ; la jauge et les espacements diminuent sans supprimer les informations. */
+/* La note globale reste dominante ; les deux sources restent côte à côte pour être comparées sans défiler. */
 @media (max-width: 520px) {
+  .score-card {
+    border-radius: 18px;
+  }
+
   .score-card__context {
     align-items: flex-start;
-    flex-direction: column;
-    gap: 14px;
-    padding: 22px 18px;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .score-card__context > div {
+    min-width: 0;
+  }
+
+  .score-card__context .eyebrow {
+    font-size: 9px;
+    letter-spacing: .08em;
+  }
+
+  .score-card__context h3 {
+    font-size: 16px;
+    line-height: 1.4;
+  }
+
+  .activity-chip {
+    max-width: 104px;
+    padding: 6px 9px;
+    font-size: 11px;
+    line-height: 1.4;
+    text-align: center;
   }
 
   .score-card__overall {
-    grid-template-columns: 120px 1fr;
-    gap: 17px;
-    padding: 24px 18px;
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 12px 14px;
+    padding: 18px 16px 20px;
+  }
+
+  .score-card__label {
+    margin: 0;
+    font-size: 10px;
+  }
+
+  .score-card__overall h3 {
+    font-size: 20px;
+    line-height: 1.2;
+  }
+
+  .score-card__overall p:last-child {
+    font-size: 12px;
   }
 
   .score-gauge {
-    width: 118px;
-    height: 118px;
+    width: 96px;
+    height: 96px;
+    padding: 7px;
   }
 
   .score-gauge strong {
-    font-size: 39px;
+    font-size: 34px;
+  }
+
+  .score-gauge span {
+    font-size: 10px;
   }
 
   .score-card__secondary {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .score-summary {
-    padding: 24px 18px;
+    padding: 16px 12px;
   }
 
   .score-summary > p {
-    min-height: 0;
-    margin-bottom: 12px;
+    min-height: 32px;
+    margin-bottom: 8px;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .score-summary__value strong {
+    font-size: 32px;
+  }
+
+  .score-summary__value--missing strong {
+    font-size: 14px;
+  }
+
+  .score-summary small {
+    font-size: 11px;
   }
 
   .weather-alerts,
   .score-reasons {
-    padding: 20px 18px;
+    padding: 16px;
+    font-size: 13px;
   }
 }
 
