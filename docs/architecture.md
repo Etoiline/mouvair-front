@@ -83,6 +83,14 @@ ils utilisent `display: none` pour que la hauteur corresponde au panneau consult
 
 Les classes conservent leur préfixe de composant, par exemple `score-card__context` ou
 `conditions-details__tab`, pour limiter les interactions entre les feuilles de styles.
+Le cadre utilise exclusivement les classes `app-layout` et `app-layout__…`, y compris pour son
+titre, sa navigation et son pied de page. Les sélecteurs de balise sans classe restent dans
+`global.css` pour les fondations communes : corps du document, marges initiales et contrôles HTML.
+La présentation d’un titre d’accueil ne doit donc pas devenir celle de tous les `h1`.
+
+`App` transmet le même état `compactHeader` au cadre et à `LocationSearch`. La recherche applique
+son propre modificateur `search-area--compact` ; sa feuille ne cible aucune classe du cadre parent.
+Les erreurs de recherche utilisent aussi une classe dédiée, `search-area__error`.
 
 ## Tests et vérifications
 

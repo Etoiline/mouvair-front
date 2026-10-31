@@ -12,10 +12,12 @@ import "./LocationSearch.css";
 /**
  * Le contrôleur porte l’état de recherche ; onSelect ouvre le parcours métier du parent.
  * Cette séparation permet de choisir un lieu sans importer le hook de prévisions dans cette vue.
+ * compact pilote ses propres styles mobiles, sans dépendre des classes CSS du cadre parent.
  */
 type LocationSearchProps = {
   search: LocationSearchController;
   onSelect: (location: Location) => void;
+  compact: boolean;
 };
 
 /**
@@ -23,7 +25,7 @@ type LocationSearchProps = {
  * La sélection ferme d’abord le menu et met le champ à jour, puis transmet le lieu au parent.
  * aria-busy décrit la mise à jour de la liste et le statut de chargement en annonce l’avancement.
  */
-export function LocationSearch({ search, onSelect }: LocationSearchProps) {
+export function LocationSearch({ search, onSelect, compact }: LocationSearchProps) {
   const {
     query,
     setQuery,
@@ -36,7 +38,7 @@ export function LocationSearch({ search, onSelect }: LocationSearchProps) {
   } = search;
 
   return (
-    <div className="search-area">
+    <div className={`search-area${compact ? " search-area--compact" : ""}`}>
       <form className="search" onSubmit={handleSearch}>
         <label htmlFor="city">Votre ville</label>
         <div className="search__row">
@@ -103,7 +105,7 @@ export function LocationSearch({ search, onSelect }: LocationSearchProps) {
           )}
         </div>
       )}
-      {searchError && <p className="error">{searchError}</p>}
+      {searchError && <p className="search-area__error">{searchError}</p>}
     </div>
   );
 }

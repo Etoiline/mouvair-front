@@ -43,6 +43,7 @@ export default function App() {
       compact={compactHeader}
       search={
         <LocationSearch
+          compact={compactHeader}
           search={search}
           onSelect={(location) => {
             setCompactHeader(true);
