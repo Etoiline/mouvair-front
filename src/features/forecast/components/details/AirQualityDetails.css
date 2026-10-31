@@ -1,0 +1,198 @@
+/*
+ * Présentation de l’AQI brut, de sa catégorie et des recommandations pour deux publics.
+ * Le bloc d’indice et les recommandations restent deux zones visuelles distinctes.
+ * Les variantes de badge correspondent aux catégories déjà calculées par le backend.
+ */
+
+/* La première colonne met l’indice en évidence ; la seconde accueille les deux textes de recommandation. */
+.air-details__content {
+  display: grid;
+  grid-template-columns: .72fr 1.28fr;
+}
+
+.air-index {
+  display: flex;
+  align-items: flex-start;
+  min-width: 0;
+  padding: 28px;
+  background: #edf3ef;
+  flex-direction: column;
+}
+
+.air-index > p {
+  margin-bottom: 16px;
+  color: #627269;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* L’indice est un nombre brut sans unité ; sa taille le distingue du badge de catégorie placé en dessous. */
+.air-index__value {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 17px;
+  color: #285f4a;
+}
+
+.air-index__value strong {
+  font: 800 clamp(45px, 5vw, 62px)/.9 "Manrope", sans-serif;
+  letter-spacing: -.06em;
+}
+
+/* Le badge porte une couleur et un libellé explicite afin de ne pas se limiter à un code couleur. */
+.air-category {
+  display: inline-flex;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: #d7eadf;
+  color: #286046;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.air-category--acceptable {
+  background: #e1edcf;
+  color: #536b2f;
+}
+
+.air-category--moderate {
+  background: #f3e8ba;
+  color: #775f17;
+}
+
+.air-category--poor {
+  background: #f6d5bd;
+  color: #8a4829;
+}
+
+.air-category--very-poor {
+  background: #f2c7bd;
+  color: #8a3027;
+}
+
+.air-category--extremely-poor {
+  background: #7b2d2a;
+  color: #fff7f4;
+}
+
+/* La catégorie absente possède une présentation neutre, distincte d’une catégorie de bonne qualité de l’air. */
+.air-category--missing {
+  background: #e2e6e2;
+  color: #66736c;
+}
+
+/* Les textes pour population générale et personnes sensibles gardent des zones séparées mais de même importance. */
+.air-recommendations {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: #e5e7df;
+}
+
+.air-recommendations article {
+  padding: 30px 27px;
+  background: #fff;
+}
+
+.air-recommendations span {
+  display: block;
+  margin-bottom: 15px;
+  color: #627269;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.air-recommendations p {
+  margin: 0;
+  color: #314f43;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* Lorsque l’indice manque, ce panneau explicite remplace l’indice et les recommandations plutôt qu’un faux zéro. */
+.air-details__unavailable {
+  padding: 30px 28px;
+  background: #f1f2ee;
+  color: #64716a;
+}
+
+.air-details__unavailable strong {
+  display: block;
+  margin-bottom: 7px;
+  color: #3f554b;
+  font: 700 18px "Manrope", sans-serif;
+}
+
+.air-details__unavailable p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* L’indice passe au-dessus des recommandations quand la largeur ne permet plus une lecture côte à côte. */
+@media (max-width: 800px) {
+  .air-details__content {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Les deux publics passent à leur tour en pile pour garder les textes lisibles sur téléphone. */
+@media (max-width: 520px) {
+  .air-index {
+    padding: 24px 18px;
+  }
+
+  .air-recommendations {
+    grid-template-columns: 1fr;
+  }
+
+  .air-recommendations article {
+    padding: 24px 18px;
+  }
+
+  .air-details__unavailable {
+    padding: 24px 18px;
+  }
+}
+
+/* Variante système sombre : conserve la structure et renforce le contraste des surfaces, du texte et des séparateurs. */
+@media (prefers-color-scheme: dark) {
+  .air-recommendations {
+    background: #5a6b61;
+  }
+
+  .air-recommendations article {
+    background: #18231d;
+  }
+
+  .air-index {
+    background: #203028;
+  }
+
+  .air-index > p {
+    color: #becbc4;
+  }
+
+  .air-index__value {
+    color: #92d8ba;
+  }
+
+  .air-recommendations span {
+    color: #becbc4;
+  }
+
+  .air-recommendations p {
+    color: #dbe5df;
+  }
+
+  .air-details__unavailable {
+    background: #24342c;
+    color: #dbe5df;
+  }
+
+  .air-details__unavailable strong {
+    color: #edf5f0;
+  }
+}

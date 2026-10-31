@@ -1,8 +1,11 @@
 <!doctype html>
+<!-- Document d’entrée de Vite. La langue française s’applique aussi au contenu monté par React. -->
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
+    <!-- Le viewport adapte les dimensions CSS à la largeur réelle de l’appareil, notamment sur mobile. -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Description de la page disponible avant même l’exécution de l’application JavaScript. -->
     <meta
       name="description"
       content="Trouvez le meilleur moment pour courir, pédaler ou marcher selon la météo et la qualité de l'air."
@@ -10,7 +13,9 @@
     <title>Mouv’Air</title>
   </head>
   <body>
+    <!-- Conteneur unique transmis à createRoot dans main.tsx ; React gère tout son contenu. -->
     <div id="root"></div>
+    <!-- Vite transforme cet import TypeScript/JSX et remplace son chemin lors de la construction. -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

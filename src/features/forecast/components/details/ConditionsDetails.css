@@ -1,0 +1,167 @@
+/*
+ * Cadre commun des panneaux météo, qualité de l’air et pollens.
+ * La grille superpose les trois panneaux dans sa troisième ligne : leur présence simultanée
+ * réserve la hauteur du plus grand et évite les sauts de mise en page entre onglets.
+ */
+
+/* Une seule colonne borne les panneaux et coupe les débordements aux bords arrondis de la carte. */
+.conditions-details {
+  display: grid;
+  min-width: 0;
+  margin-top: 22px;
+  overflow: hidden;
+  border: 1px solid #dedfd6;
+  border-radius: 20px;
+  background: #fff;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* La première ligne de grille présente le titre fixe et la description propre à l’onglet actif. */
+.conditions-details__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 25px 28px;
+  border-bottom: 1px solid #e5e7df;
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.conditions-details__header .eyebrow {
+  margin-bottom: 6px;
+}
+
+.conditions-details__header h3 {
+  margin: 0;
+  font: 750 23px/1.2 "Manrope", sans-serif;
+  letter-spacing: -.025em;
+}
+
+.conditions-details__header > p {
+  margin: 0;
+  color: #6e7b74;
+  font-size: 13px;
+}
+
+/* La deuxième ligne peut défiler horizontalement sans comprimer les libellés des onglets. */
+.conditions-details__tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: 26px;
+  padding: 0 28px;
+  overflow-x: auto;
+  border-bottom: 1px solid #dfe2da;
+  background: #f7f8f4;
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.conditions-details__tab {
+  flex: none;
+  min-width: 0;
+  padding: 17px 2px 13px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: #65756d;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.conditions-details__tab:not([aria-selected="true"]):hover {
+  color: var(--ink);
+}
+
+.conditions-details__tab[aria-selected="true"] {
+  border-bottom-color: #4e876f;
+  color: var(--ink);
+}
+
+/* Le focus clavier est matérialisé dans les limites du bouton ou du panneau, même sans survol de souris. */
+.conditions-details__tab:focus-visible,
+.conditions-details__panel:focus-visible {
+  outline: 3px solid #86b9a3;
+  outline-offset: -3px;
+}
+
+/* Tous les panneaux occupent volontairement la même cellule pour participer au calcul de hauteur. */
+.conditions-details__panel {
+  min-width: 0;
+  grid-column: 1;
+  grid-row: 3;
+}
+
+/* visibility: hidden conserve la place, contrairement à display: none.
+ * React ajoute inert et aria-hidden pour retirer le panneau inactif des interactions et de la lecture assistée. */
+.conditions-details__panel--inactive {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Sur les téléphones étroits, réduit les espacements sans modifier l’ordre de lecture ni les données visibles. */
+@media (max-width: 520px) {
+  .conditions-details__header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+    padding: 22px 18px;
+  }
+
+  .conditions-details__tabs {
+    gap: 19px;
+    padding: 0 18px;
+  }
+
+  .conditions-details__tab {
+    padding: 15px 0 11px;
+    font-size: 12px;
+  }
+}
+
+/* Variante système sombre : conserve la structure et renforce le contraste des surfaces, du texte et des séparateurs. */
+@media (prefers-color-scheme: dark) {
+  .conditions-details {
+    border-color: #53645a;
+    background: #17211c;
+    box-shadow: 0 20px 52px rgba(0,0,0,.3);
+  }
+
+  .conditions-details__header > p {
+    color: #afbeb6;
+  }
+
+  .conditions-details__header,
+  .conditions-details__tabs {
+    border-color: #53645a;
+  }
+
+  .conditions-details {
+    border-color: #66786e;
+  }
+
+  .conditions-details__header {
+    background: #19241e;
+  }
+
+  .conditions-details__tabs {
+    background: #202d26;
+  }
+
+  .conditions-details__tab {
+    color: #adbbb3;
+  }
+
+  .conditions-details__tab:not([aria-selected="true"]):hover,
+  .conditions-details__tab[aria-selected="true"] {
+    color: #f4f8f5;
+  }
+
+  .conditions-details__tab[aria-selected="true"] {
+    border-bottom-color: #92d8ba;
+  }
+
+  .conditions-details__panel {
+    background: #17211c;
+  }
+}

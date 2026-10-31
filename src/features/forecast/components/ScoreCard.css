@@ -1,0 +1,374 @@
+/*
+ * Carte de synthèse et éléments internes : jauge, notes secondaires, alertes et raisons.
+ * Le statut global définit les variables locales de teinte et de surface ; elles se propagent
+ * aux descendants sans changer les couleurs des autres cartes de la page.
+ */
+
+/* La teinte par défaut couvre aussi le statut correct ; les variantes suivantes remplacent les variables nécessaires. */
+.score-card {
+  --score-accent: #3d795f;
+  --score-surface: #e3eddf;
+  overflow: hidden;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 22px 60px rgba(39,59,50,.1);
+}
+
+.score-card--favorable {
+  --score-accent: #277553;
+  --score-surface: #dcefe3;
+}
+
+.score-card--mitige {
+  --score-accent: #8a6b14;
+  --score-surface: #f2e8c6;
+}
+
+.score-card--defavorable {
+  --score-accent: #a34735;
+  --score-surface: #f6d8d0;
+}
+
+.score-card--tres-defavorable {
+  --score-accent: #8a3027;
+  --score-surface: #f2c7bd;
+}
+
+.score-card--incomplet {
+  --score-accent: #718078;
+  --score-surface: #e8ebe7;
+}
+
+/* La date et l’activité précèdent les notes ; la bordure maintient leur séparation du contenu chiffré. */
+.score-card__context {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 25px 30px;
+  border-bottom: 1px solid #e5e7df;
+}
+
+.score-card__context .eyebrow {
+  margin-bottom: 7px;
+}
+
+.score-card__context h3 {
+  margin: 0;
+  font: 750 clamp(18px, 2vw, 23px)/1.25 "Manrope", sans-serif;
+  letter-spacing: -.025em;
+  text-transform: capitalize;
+}
+
+.activity-chip {
+  flex: none;
+  padding: 9px 13px;
+  border-radius: 999px;
+  background: #edf1e9;
+  color: #456357;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* La synthèse globale et les deux notes par source occupent deux zones distinctes sur écran large. */
+.score-card__notes {
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+}
+
+.score-card__overall {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  align-items: center;
+  gap: 24px;
+  min-width: 0;
+  padding: 30px 34px 34px;
+  background: var(--score-surface);
+}
+
+.score-card__label {
+  grid-column: 1 / -1;
+  margin-bottom: -7px;
+  color: #536a60;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+
+.score-card__overall h3 {
+  margin-bottom: 7px;
+  font: 750 25px/1.15 "Manrope", sans-serif;
+  letter-spacing: -.03em;
+}
+
+.score-card__overall p:last-child {
+  margin: 0;
+  color: #547064;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Le composant fournit --score en degrés ; le dégradé conique dessine l’arc correspondant.
+ * Le cercle intérieur masque le centre pour obtenir un anneau sans SVG ni calcul de tracé. */
+.score-gauge {
+  width: 145px;
+  height: 145px;
+  padding: 9px;
+  border-radius: 50%;
+  background: conic-gradient(var(--score-accent) var(--score), rgba(21,56,46,.11) 0);
+}
+
+.score-gauge__inner {
+  display: flex;
+  height: 100%;
+  border-radius: 50%;
+  background: #f8faf4;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.score-gauge strong {
+  font: 800 48px/1 "Manrope", sans-serif;
+  letter-spacing: -.06em;
+}
+
+.score-gauge span {
+  margin-top: 3px;
+  color: #708078;
+  font-size: 11px;
+}
+
+/* Un espace d’un pixel sur fond séparateur crée la séparation entre les notes météo et qualité de l’air. */
+.score-card__secondary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: #e5e7df;
+}
+
+.score-summary {
+  min-width: 0;
+  padding: 32px 25px;
+  background: #fff;
+}
+
+.score-summary > p {
+  min-height: 36px;
+  margin-bottom: 18px;
+  color: #66776f;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.score-summary__value {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  margin-bottom: 8px;
+  color: var(--score-accent);
+}
+
+.score-summary__value strong {
+  font: 800 clamp(34px, 4vw, 46px)/1 "Manrope", sans-serif;
+  letter-spacing: -.055em;
+}
+
+.score-summary__value span {
+  color: #7c8982;
+  font-size: 12px;
+}
+
+/* Une note indisponible utilise une typographie de message plutôt qu’un nombre et ne doit pas ressembler à 0/100. */
+.score-summary__value--missing strong {
+  color: #68766f;
+  font-size: 18px;
+  letter-spacing: -.025em;
+}
+
+.score-summary small {
+  display: block;
+  color: #53665d;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* Alertes et explications partagent une structure ; leurs surfaces distinguent la vigilance météo de la synthèse descriptive. */
+.weather-alerts,
+.score-reasons {
+  padding: 22px 30px;
+  border-top: 1px solid #e5e7df;
+}
+
+.weather-alerts {
+  background: #fff0eb;
+  color: #7d3529;
+}
+
+.weather-alerts strong,
+.score-reasons strong {
+  display: block;
+  margin-bottom: 10px;
+  font: 700 14px "Manrope", sans-serif;
+}
+
+.weather-alerts ul,
+.score-reasons ul {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding-left: 19px;
+}
+
+.weather-alerts li,
+.score-reasons li {
+  padding-left: 3px;
+  line-height: 1.5;
+}
+
+.score-reasons {
+  background: #fbfaf5;
+  color: #52675d;
+}
+
+/* La zone globale passe au-dessus des notes secondaires lorsque les deux zones ne tiennent plus côte à côte. */
+@media (max-width: 800px) {
+  .score-card__notes {
+    grid-template-columns: 1fr;
+  }
+
+  .score-card__secondary {
+    border-top: 1px solid #e5e7df;
+  }
+}
+
+/* Les notes secondaires passent aussi en pile ; la jauge et les espacements diminuent sans supprimer les informations. */
+@media (max-width: 520px) {
+  .score-card__context {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+    padding: 22px 18px;
+  }
+
+  .score-card__overall {
+    grid-template-columns: 120px 1fr;
+    gap: 17px;
+    padding: 24px 18px;
+  }
+
+  .score-gauge {
+    width: 118px;
+    height: 118px;
+  }
+
+  .score-gauge strong {
+    font-size: 39px;
+  }
+
+  .score-card__secondary {
+    grid-template-columns: 1fr;
+  }
+
+  .score-summary {
+    padding: 24px 18px;
+  }
+
+  .score-summary > p {
+    min-height: 0;
+    margin-bottom: 12px;
+  }
+
+  .weather-alerts,
+  .score-reasons {
+    padding: 20px 18px;
+  }
+}
+
+/* Variante système sombre : conserve la structure et renforce le contraste des surfaces, du texte et des séparateurs. */
+@media (prefers-color-scheme: dark) {
+  .score-card {
+    border-color: #53645a;
+    background: #17211c;
+    box-shadow: 0 20px 52px rgba(0,0,0,.3);
+  }
+
+  .score-card {
+    --score-surface: #223129;
+  }
+
+  .score-card--favorable {
+    --score-surface: #17372a;
+  }
+
+  .score-card--mitige {
+    --score-surface: #393119;
+  }
+
+  .score-card--defavorable {
+    --score-surface: #3b241f;
+  }
+
+  .score-card--tres-defavorable {
+    --score-surface: #3b201e;
+  }
+
+  .score-card--incomplet {
+    --score-surface: #29322d;
+  }
+
+  .score-card__context,
+  .weather-alerts,
+  .score-reasons {
+    border-color: #53645a;
+  }
+
+  .activity-chip {
+    background: #2b3b33;
+    color: #c4d6cc;
+  }
+
+  .score-card__label,
+  .score-card__overall p:last-child,
+  .score-summary > p,
+  .score-summary small {
+    color: #b7c6be;
+  }
+
+  .score-gauge {
+    background: conic-gradient(var(--score-accent) var(--score), rgba(255,255,255,.14) 0);
+  }
+
+  .score-gauge__inner {
+    background: #17211c;
+  }
+
+  .score-gauge span,
+  .score-summary__value span {
+    color: #aebdb5;
+  }
+
+  .score-card__secondary {
+    border-color: #53645a;
+    background: #53645a;
+  }
+
+  .score-summary {
+    background: #17211c;
+  }
+
+  .score-summary__value--missing strong {
+    color: #b1bdb6;
+  }
+
+  .weather-alerts {
+    background: #3b231e;
+    color: #ffc1b5;
+  }
+
+  .score-reasons {
+    background: #1e2b24;
+    color: #c3d0c8;
+  }
+}

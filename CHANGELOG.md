@@ -1,5 +1,9 @@
 # Changelog
 
+- Organize the frontend by feature with dedicated hooks, components, colocated styles, and shared utilities.
+- Add detailed French code and configuration documentation, and expand regression coverage for concurrent requests, automatic refresh, and preserved selections.
+- Keep pollen cards compact on mobile and strengthen dark-theme contrast across forecast panels.
+
 ## 0.4.0 - 2026-09-13
 
 - Document the Vercel production deployment and public API configuration.

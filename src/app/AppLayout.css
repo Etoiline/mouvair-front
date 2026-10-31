@@ -1,0 +1,191 @@
+/*
+ * Présentation du cadre de page fourni par AppLayout : en-tête, identité, introduction et pied de page.
+ * L’état d’accueil appartient aussi à ce cadre. Les cartes métier et le champ de recherche
+ * possèdent leurs propres feuilles, même lorsqu’ils sont visuellement placés dans l’en-tête.
+ */
+
+/* Le cadre coupe les décorations qui dépassent horizontalement tout en gardant une page de hauteur suffisante. */
+main {
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* Les deux fonds superposés portent le décor ; le contenu utile est positionné au-dessus par ses indices z-index. */
+.hero {
+  position: relative;
+  min-height: 610px;
+  padding: 0 clamp(24px, 6vw, 96px) 72px;
+  background: radial-gradient(circle at 85% 55%, rgba(215, 245, 95, .22) 0 13%, transparent 13.5%), linear-gradient(135deg, #173d32 0%, #0e2f27 72%);
+  color: #f9f6ee;
+}
+
+/* Les cercles débordent volontairement du bloc. pointer-events: none les empêche d’intercepter un clic sur le contenu. */
+.hero::after {
+  content: "";
+  position: absolute;
+  right: -80px;
+  bottom: -170px;
+  width: min(47vw, 650px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(215, 245, 95, .25);
+  border-radius: 50%;
+  box-shadow: 0 0 0 75px rgba(215, 245, 95, .035), 0 0 0 150px rgba(215, 245, 95, .025);
+  pointer-events: none;
+}
+
+/* La navigation partage la largeur maximale du tableau de bord et garde l’identité visible au-dessus du décor. */
+nav {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 26px 0;
+  border-bottom: 1px solid rgba(255,255,255,.14);
+}
+
+.brand {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  color: inherit;
+  text-decoration: none;
+  font: 700 18px "Manrope", sans-serif;
+}
+
+.brand__mark {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--lime);
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.live-dot {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: rgba(255,255,255,.7);
+  font-size: 13px;
+}
+
+.live-dot i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--lime);
+  box-shadow: 0 0 0 5px rgba(215,245,95,.12);
+}
+
+/* Le texte d’introduction et la recherche utilisent une largeur de lecture commune, chacun dans son propre fichier CSS. */
+.hero__copy {
+  position: relative;
+  z-index: 2;
+  width: min(760px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero__copy {
+  padding-top: 70px;
+  text-align: center;
+}
+
+.hero .eyebrow {
+  color: var(--lime);
+}
+
+.intro {
+  max-width: 590px;
+  margin: 0 auto;
+  color: rgba(255,255,255,.68);
+  font-size: clamp(16px, 2vw, 19px);
+  line-height: 1.6;
+}
+
+/* État d’accueil léger affiché avant les prévisions ; le numéro est un repère visuel, pas une étape interactive. */
+.empty-state {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  width: min(700px, calc(100% - 48px));
+  margin: 55px auto 90px;
+}
+
+.empty-state span {
+  color: #b8bcad;
+  font: 800 56px "Manrope", sans-serif;
+}
+
+.empty-state p {
+  margin: 0;
+  color: #68786f;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+/* Les informations de source et le rappel de portée sont placés après le contenu, avec une bordure de séparation. */
+footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 24px clamp(24px, 6vw, 96px);
+  border-top: 1px solid #d9d8ce;
+  color: #778079;
+  font-size: 12px;
+}
+
+footer p {
+  margin: 0;
+}
+
+/* Le petit indicateur de données est masqué quand il réduit l’espace disponible ; le pied de page passe en colonne. */
+@media (max-width: 800px) {
+  .hero {
+    min-height: 620px;
+  }
+
+  .live-dot {
+    display: none;
+  }
+
+  footer {
+    flex-direction: column;
+  }
+}
+
+/* Sur les téléphones étroits, réduit les espacements sans modifier l’ordre de lecture ni les données visibles. */
+@media (max-width: 520px) {
+  .hero {
+    padding-inline: 18px;
+  }
+
+  .hero__copy {
+    padding-top: 55px;
+  }
+}
+
+/* Variante système sombre : conserve la structure et renforce le contraste des surfaces, du texte et des séparateurs. */
+@media (prefers-color-scheme: dark) {
+  .brand__mark {
+    color: #15382e;
+  }
+
+  .empty-state p,
+  footer {
+    color: #afbeb6;
+  }
+
+  .empty-state span {
+    color: #65736b;
+  }
+
+  footer {
+    border-color: #46564d;
+  }
+}
