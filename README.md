@@ -2,6 +2,9 @@
 
 Interface React et TypeScript du projet Mouv’Air.
 
+Utiliser Node.js 22 à partir de 22.22.2, Node.js 24 à partir de 24.15.0, ou Node.js 26 et plus,
+avec pnpm. Ces versions correspondent aux prérequis des outils de test, notamment jsdom.
+
 ```powershell
 pnpm install
 pnpm dev

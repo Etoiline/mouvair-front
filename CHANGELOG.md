@@ -1,5 +1,7 @@
 # Changelog
 
+- Update React, TypeScript, Vite, and frontend test dependencies, and document supported Node.js versions and dependency maintenance.
+
 - Organize the frontend by feature with dedicated hooks, components, colocated styles, and shared utilities.
 - Add detailed French code and configuration documentation, and expand regression coverage for concurrent requests, automatic refresh, and preserved selections.
 - Keep pollen cards compact on mobile and strengthen dark-theme contrast across forecast panels.
