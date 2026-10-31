@@ -20,7 +20,7 @@
   position: relative;
   flex: none;
   min-height: 610px;
-  padding: 0 clamp(24px, 6vw, 96px) 72px;
+  padding: 0 clamp(var(--space-24), 6vw, var(--space-96)) 72px;
   background: radial-gradient(circle at 85% 55%, rgba(215, 245, 95, .22) 0 13%, transparent 13.5%), linear-gradient(135deg, #173d32 0%, #0e2f27 72%);
   color: #f9f6ee;
 }
@@ -48,13 +48,13 @@
   justify-content: space-between;
   max-width: 1180px;
   margin: 0 auto;
-  padding: 26px 0;
+  padding: var(--space-26) 0;
   border-bottom: 1px solid rgba(255,255,255,.14);
 }
 
 .app-layout__brand {
   display: flex;
-  gap: 12px;
+  gap: var(--space-12);
   align-items: center;
   color: inherit;
   text-decoration: none;
@@ -67,14 +67,14 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: var(--lime);
-  color: var(--ink);
+  background: var(--color-accent);
+  color: var(--color-text);
   font-weight: 800;
 }
 
 .app-layout__status {
   display: flex;
-  gap: 8px;
+  gap: var(--space-8);
   align-items: center;
   color: rgba(255,255,255,.7);
   font-size: 13px;
@@ -84,7 +84,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--lime);
+  background: var(--color-accent);
   box-shadow: 0 0 0 5px rgba(215,245,95,.12);
 }
 
@@ -103,12 +103,12 @@
 }
 
 .app-layout__eyebrow {
-  color: var(--lime);
+  color: var(--color-accent);
 }
 
 /* La typographie de la bannière reste locale : les futurs h1 gardent leur propre présentation. */
 .app-layout__title {
-  margin-bottom: 22px;
+  margin-bottom: var(--space-22);
   font: 800 clamp(48px, 7vw, 82px)/.95 "Manrope", sans-serif;
   letter-spacing: -.055em;
 }
@@ -126,9 +126,9 @@
   display: flex;
   flex: none;
   justify-content: space-between;
-  gap: 20px;
+  gap: var(--space-20);
   margin-top: auto;
-  padding: 24px clamp(24px, 6vw, 96px);
+  padding: var(--space-24) clamp(var(--space-24), 6vw, var(--space-96));
   border-top: 1px solid #d9d8ce;
   color: #778079;
   font-size: 12px;
@@ -151,21 +151,21 @@
   }
 
   .app-layout__nav {
-    padding-block: 18px;
+    padding-block: var(--space-18);
   }
 
   .app-layout__intro {
-    padding-top: 32px;
+    padding-top: var(--space-32);
   }
 
   .app-layout__title {
     font-size: clamp(36px, 8vw, 56px);
     line-height: 1.05;
-    margin-bottom: 14px;
+    margin-bottom: var(--space-14);
   }
 
   .app-layout__eyebrow {
-    margin-bottom: 12px;
+    margin-bottom: var(--space-12);
     font-size: 10px;
   }
 
@@ -180,8 +180,8 @@
 
   .app-layout__footer {
     flex-direction: column;
-    gap: 12px;
-    padding: 22px 20px;
+    gap: var(--space-12);
+    padding: var(--space-22) var(--space-20);
     font-size: 11px;
     line-height: 1.5;
   }
@@ -199,18 +199,18 @@
   }
 
   .app-layout__hero--compact {
-    padding-bottom: 24px;
+    padding-bottom: var(--space-24);
   }
 }
 
 /* Sur les téléphones étroits, réduit les espacements sans modifier l’ordre de lecture ni les données visibles. */
 @media (max-width: 520px) {
   .app-layout__hero {
-    padding-inline: 16px;
+    padding-inline: var(--space-16);
   }
 
   .app-layout__intro {
-    padding-top: 28px;
+    padding-top: var(--space-28);
   }
 
   .app-layout__title {
@@ -221,11 +221,11 @@
 /* Variante système sombre : conserve la structure et renforce le contraste des surfaces, du texte et des séparateurs. */
 @media (prefers-color-scheme: dark) {
   .app-layout__brand-mark {
-    color: #15382e;
+    color: var(--color-on-accent);
   }
 
   .app-layout__footer {
-    color: #afbeb6;
+    color: var(--color-text-muted);
   }
 
   .app-layout__footer {

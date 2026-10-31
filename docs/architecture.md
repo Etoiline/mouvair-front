@@ -6,7 +6,7 @@ l’interface sans parcourir un composant unique.
 
 ## Assemblage de l’application
 
-`src/main.tsx` charge les styles globaux et monte React. `src/app/App.tsx` relie la recherche de
+`src/main.tsx` charge les variables visuelles puis les styles globaux et monte React. `src/app/App.tsx` relie la recherche de
 ville au chargement des prévisions et compose les vues. `AppLayout.tsx` porte l’en-tête, le pied de
 page et les emplacements de contenu. Il ne connaît ni les requêtes ni les données métier.
 
@@ -61,11 +61,19 @@ le backend. Le frontend se charge de leur présentation.
 
 ## Styles
 
-Chaque vue importe son fichier CSS voisin. Ce fichier contient ses styles de base, ses règles
-adaptées aux petits écrans et ses variantes `prefers-color-scheme: dark`. Une modification visuelle
-d’un panneau se fait donc dans son dossier.
+Chaque vue importe son fichier CSS voisin. Ce fichier contient sa disposition, ses règles adaptées
+aux petits écrans et les variantes sombres propres au composant. Une modification visuelle d’un
+panneau se fait donc dans son dossier.
 
-`app/global.css` contient les polices, les variables de couleur, les styles HTML communs, la classe
+`app/tokens.css` centralise les couleurs communes et les espacements réutilisés. Les couleurs sont
+nommées selon leur rôle (`--color-surface`, `--color-border`, `--color-text-muted`…) et leurs variantes
+sombres sont définies ensemble dans ce fichier. Les composants héritent de ces valeurs ; seules
+leurs nuances spécifiques, notamment les couleurs de score, restent locales. Les variables de
+taille `--space-12`, `--space-16`, etc. indiquent leur valeur en pixels et servent aux marges,
+espacements internes et espaces entre éléments. Elles ne remplacent pas les dimensions métier
+du graphique ni les décalages propres à une décoration.
+
+`app/global.css` contient les polices, les styles HTML communs, la classe
 partagée `eyebrow` et l’animation de chargement. `AppLayout.css` contient la présentation du cadre
 de la page : en-tête, introduction et pied de page. Avant la sélection d’une ville, aucun bloc
 d’attente supplémentaire n’est affiché sous la recherche.
