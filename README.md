@@ -9,6 +9,33 @@ pnpm dev
 
 Copier `.env.example` vers `.env` uniquement si l'API n'est pas lancée sur `http://localhost:8000`.
 
+## Organisation du frontend
+
+```text
+src/
+├── app/                     # Assemblage de l’écran, mise en page et styles globaux
+├── features/
+│   ├── locations/            # Recherche et sélection d’une ville
+│   └── forecast/             # Chargement, actualisation et affichage des prévisions
+├── shared/
+│   ├── api/http.ts           # Client HTTP et gestion commune des erreurs
+│   └── lib/dateTime.ts       # Dates et horaires dans le fuseau du lieu
+├── test/                    # Configuration et données partagées des tests
+├── main.tsx                 # Démarrage de React
+└── vite-env.d.ts
+```
+
+Chaque fonctionnalité regroupe son contrat API (`types.ts`), ses requêtes (`api.ts`), ses
+composants, ses hooks et ses fonctions sans état (`lib/`). Les styles sont placés à côté du
+composant concerné, avec ses variantes mobiles et sombres. Les tests sont placés à côté du code
+qu’ils vérifient ; les parcours complets se trouvent dans `app/App.test.tsx`.
+
+Le [guide d’architecture](docs/architecture.md) précise les responsabilités et les conventions à
+suivre pour ajouter un écran ou faire évoluer une fonctionnalité. Les sources, tests, styles et
+scripts comportent des commentaires en français sur leurs contrats, leurs états et les choix
+importants. Le [guide de configuration](docs/configuration.md) détaille aussi les fichiers à la
+racine, notamment `package.json` qui ne permet pas d’insérer des commentaires directement.
+
 ## Déploiement sur Vercel
 
 Importer ce dépôt comme projet Vite, utiliser `pnpm build` comme commande de construction et `dist`
@@ -27,7 +54,10 @@ La suite Vitest utilise Testing Library et un DOM simulé. Elle vérifie les pri
 l’interface sans appeler le backend réel : recherche de ville avec conservation des résultats durant
 leur mise à jour, sélection dans le graphique horaire et meilleur créneau, navigation entre les
 détails du créneau, actualisation réussie ou échouée, nouvel essai après un échec initial et erreur de
-recherche.
+recherche. Les tests des hooks couvrent aussi les réponses tardives, l’annulation des recherches,
+l’actualisation au changement de créneau, le retour sur un onglet masqué, les données trop anciennes
+et le nettoyage au démontage. Un parcours vérifie la conservation de l’activité et de l’onglet de
+détail lors d’un changement de ville.
 
 ```powershell
 pnpm test
@@ -49,7 +79,10 @@ population générale et les personnes sensibles. La valeur AQI est affichée se
 libellé accolé. L’onglet pollen présente les concentrations horaires d’aulne, bouleau,
 graminées, armoise, olivier et ambroisie en grains/m³. Une valeur nulle au sens numérique reste
 affichée comme `0`, tandis qu’une donnée absente est indiquée comme indisponible. Les pollens
-n’entrent pas dans les notes Mouv’Air. Les 24 créneaux sont représentés chronologiquement dans un
+n’entrent pas dans les notes Mouv’Air. Sur mobile, ces six concentrations sont regroupées sur deux
+colonnes afin de limiter la hauteur du panneau. Lorsque l’appareil utilise le thème sombre, les
+cartes emploient des surfaces et des séparateurs renforcés pour conserver une hiérarchie visuelle
+claire. Les 24 créneaux sont représentés chronologiquement dans un
 graphique en barres regroupé par date locale. Chaque barre indique la note globale et son état ; un
 clic sélectionne le créneau correspondant. Les alertes météo, les données incomplètes et le meilleur
 créneau restent repérables dans le graphique. Le meilleur créneau est également accessible depuis

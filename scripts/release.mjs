@@ -1,5 +1,13 @@
 #!/usr/bin/env node
 
+/**
+ * Outil interactif de création d’une release locale du frontend, lancé par pnpm release.
+ * Il contrôle la racine Git et la propreté du dépôt, vérifie les versions et les changements
+ * en attente, puis demande le niveau SemVer avant de modifier package.json et CHANGELOG.md.
+ * Le commit ne contient que ces deux fichiers ; aucune commande de tag ou de push n’est exécutée.
+ * --dry-run suit les mêmes validations et le même choix interactif, puis affiche le résultat prévu.
+ */
+
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
@@ -7,10 +15,14 @@ import process from "node:process";
 import readline from "node:readline/promises";
 import { fileURLToPath } from "node:url";
 
+// Les chemins partent de l’emplacement du script, pas du dossier courant du terminal.
+// Cela empêche d’appliquer une release au mauvais projet si la commande est appelée depuis ailleurs.
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(SCRIPT_DIR, "..");
 const PACKAGE_JSON_PATH = path.join(PROJECT_ROOT, "package.json");
 const CHANGELOG_PATH = path.join(PROJECT_ROOT, "CHANGELOG.md");
+// Les changements non publiés sont des puces directement sous le titre principal.
+// Les sections de version servent de frontière ; leur format doit rester compatible avec le validateur.
 const CHANGELOG_START_PATTERN = /^# Changelog(?:\r?\n){2}/;
 const RELEASE_HEADING_PATTERN = /^## (?<version>\d+\.\d+\.\d+) - \d{4}-\d{2}-\d{2}\s*$/m;
 
@@ -25,6 +37,8 @@ class ReleaseError extends Error {}
  * @returns {string} Sortie standard nettoyée quand elle est capturée.
  */
 function runGit(argumentsList, captureOutput = false) {
+  // Les arguments sont transmis séparément à Git, sans construire une commande interprétée par un shell.
+  // Le mode capturé sert aux validations ; le mode hérité laisse visibles les sorties de staging et commit.
   const result = spawnSync("git", argumentsList, {
     cwd: PROJECT_ROOT,
     encoding: "utf8",
@@ -49,6 +63,7 @@ function ensureCleanRepository() {
   const normalizePath = (value) =>
     process.platform === "win32" ? value.toLocaleLowerCase("en-US") : value;
 
+  // La comparaison ignore la casse sous Windows, tout en exigeant exactement la racine du projet.
   if (normalizePath(repositoryRoot) !== normalizePath(PROJECT_ROOT)) {
     throw new ReleaseError(
       `La racine Git attendue est ${PROJECT_ROOT}, pas ${repositoryRoot}.`,
@@ -117,6 +132,8 @@ function validateChangelog(changelog, currentVersion) {
     throw new ReleaseError("CHANGELOG.md ne contient aucune section de version valide.");
   }
 
+  // Le bloc à publier est uniquement celui placé avant le premier titre de version reconnu.
+  // Refuser les autres titres évite de publier accidentellement une section « Non publié » imbriquée.
   const pendingChanges = contentAfterTitle.slice(0, latestRelease.index);
   if (/^#{1,6}\s/m.test(pendingChanges)) {
     throw new ReleaseError(
@@ -127,6 +144,7 @@ function validateChangelog(changelog, currentVersion) {
     throw new ReleaseError("Aucun changement non publié n’est présent en haut de CHANGELOG.md.");
   }
 
+  // La version du package et celle de la dernière release doivent avoir progressé ensemble.
   const changelogVersion = latestRelease.groups.version;
   parseVersion(changelogVersion);
   if (changelogVersion !== currentVersion) {
@@ -144,6 +162,7 @@ function validateChangelog(changelog, currentVersion) {
  * @returns {Promise<"major" | "minor" | "patch">} Niveau choisi.
  */
 async function askBump(currentVersion) {
+  // Les choix numériques et textuels mènent aux mêmes niveaux ; Entrée seule choisit patch.
   const choices = new Map([
     ["1", "patch"],
     ["2", "minor"],
@@ -171,7 +190,10 @@ async function askBump(currentVersion) {
   }
 }
 
-/** Retourne la date locale au format ISO utilisé par le changelog. */
+/**
+ * Retourne le jour local de la machine exécutant la release au format année-mois-jour.
+ * Le calcul manuel évite le basculement de date UTC que pourrait introduire toISOString().
+ */
 function currentDate() {
   const now = new Date();
   const year = now.getFullYear();
@@ -182,6 +204,7 @@ function currentDate() {
 
 /** Valide, versionne et committe la prochaine release du frontend. */
 async function main() {
+  // Valider les options avant de lire ou modifier les fichiers permet un échec explicite et précoce.
   const argumentsList = process.argv.slice(2);
   const unknownArguments = argumentsList.filter((argument) => argument !== "--dry-run");
   if (unknownArguments.length > 0) {
@@ -200,9 +223,11 @@ async function main() {
   const insertionIndex = validateChangelog(changelog, packageJson.version);
   const nextVersion = bumpVersion(packageJson.version, await askBump(packageJson.version));
   const releaseHeading = `## ${nextVersion} - ${currentDate()}\n\n`;
+  // Le nouveau titre est inséré avant les puces en attente ; les sections déjà publiées restent en place.
   const nextChangelog =
     changelog.slice(0, insertionIndex) + releaseHeading + changelog.slice(insertionIndex);
 
+  // Cette sortie précède toutes les écritures et les commandes Git qui modifient le dépôt.
   if (argumentsList.includes("--dry-run")) {
     console.log(`Prévisualisation : ${packageJson.version} -> ${nextVersion}`);
     console.log(`Entrée du changelog : ${releaseHeading.trim()}`);
@@ -210,6 +235,7 @@ async function main() {
     return;
   }
 
+  // Les fichiers sont sérialisés avec une fin de ligne finale ; le changelog utilise des sauts LF.
   packageJson.version = nextVersion;
   fs.writeFileSync(PACKAGE_JSON_PATH, `${JSON.stringify(packageJson, null, 2)}\n`, "utf8");
   fs.writeFileSync(CHANGELOG_PATH, nextChangelog.replace(/\r\n/g, "\n"), "utf8");
@@ -217,6 +243,7 @@ async function main() {
   runGit(["add", "--", path.basename(PACKAGE_JSON_PATH), path.basename(CHANGELOG_PATH)]);
   runGit(["commit", "-m", `🔖 Release ${nextVersion}`]);
 
+  // Une modification apparue pendant le commit est signalée sans lancer d’autre commit implicite.
   const remainingChanges = runGit(["status", "--porcelain"], true);
   if (remainingChanges) {
     throw new ReleaseError(
@@ -229,6 +256,7 @@ async function main() {
 try {
   await main();
 } catch (error) {
+  // Les erreurs de validation deviennent un message court et un code d’échec pour le terminal.
   const message = error instanceof Error ? error.message : String(error);
   console.error(`Erreur : ${message}`);
   process.exitCode = 1;

@@ -1,0 +1,197 @@
+/*
+ * Formulaire et menu de la recherche de ville.
+ * La zone de recherche sert d’ancrage relatif au menu absolu ; son niveau de superposition
+ * l’empêche de repousser le tableau de bord lorsqu’une liste de villes s’ouvre.
+ */
+
+.search-area {
+  position: relative;
+  z-index: 2;
+  width: min(760px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.search-area {
+  z-index: 4;
+  margin-top: 44px;
+}
+
+/* Le formulaire et sa ligne de saisie occupent la même largeur que le menu qui apparaît juste en dessous. */
+.search {
+  width: 100%;
+}
+
+.search label {
+  display: block;
+  margin-bottom: 9px;
+  color: rgba(255,255,255,.7);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Le champ flexible conserve une largeur minimale nulle pour ne pas faire déborder le bouton sur petit écran. */
+.search__row {
+  display: flex;
+  padding: 7px;
+  border-radius: 17px;
+  background: #fff;
+  box-shadow: 0 20px 50px rgba(0,0,0,.22);
+}
+
+.search input {
+  flex: 1;
+  min-width: 0;
+  padding: 15px 17px;
+  border: 0;
+  outline: 0;
+  color: var(--ink);
+  background: transparent;
+  font-size: 16px;
+}
+
+.search button {
+  padding: 14px 21px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--lime);
+  color: var(--ink);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.search button:disabled {
+  opacity: .65;
+  cursor: wait;
+}
+
+/* Le menu est détaché du flux et sa hauteur est bornée par la fenêtre.
+ * Un défilement interne permet de consulter une liste longue sans agrandir l’en-tête. */
+.location-results {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 100%;
+  max-height: min(360px, 50vh);
+  padding: 6px;
+  overflow-y: auto;
+  border-radius: 16px;
+  background: white;
+  box-shadow: 0 18px 45px rgba(0,0,0,.25);
+}
+
+/* Une hauteur minimale accueille le loader même avant les premiers résultats ; le menu reste en place pendant leur remplacement. */
+.location-results--loading {
+  min-height: 72px;
+  overflow: hidden;
+}
+
+.location-results button {
+  display: flex;
+  width: 100%;
+  padding: 13px 15px;
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+}
+
+.location-results button:hover {
+  background: #eef4ec;
+}
+
+.location-results strong {
+  min-width: 160px;
+}
+
+.location-results span {
+  color: #6d7e77;
+}
+
+/* Le voile couvre les anciens résultats conservés dans le DOM.
+ * Les boutons sont également désactivés côté React : l’aspect visuel et l’interaction restent synchronisés. */
+.location-results__loading {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: inherit;
+  background: rgba(255,255,255,.86);
+  color: #365c4c;
+  font-size: 13px;
+  font-weight: 700;
+  backdrop-filter: blur(2px);
+}
+
+.location-results__spinner {
+  width: 21px;
+  height: 21px;
+  border: 3px solid #cddbd3;
+  border-top-color: #3d795f;
+  border-radius: 50%;
+  animation: forecast-spin .8s linear infinite;
+}
+
+/* L’erreur reste dans la zone du formulaire afin qu’une correction de saisie soit immédiatement possible. */
+.error {
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px 15px;
+  border-radius: 12px;
+  background: rgba(255,128,102,.15);
+  color: #ffd9d1;
+  text-align: center;
+}
+
+/* Le bouton passe sous le champ et les compléments de lieu sous le nom pour conserver une lecture confortable. */
+@media (max-width: 800px) {
+  .search__row {
+    flex-direction: column;
+  }
+
+  .location-results button {
+    flex-direction: column;
+    gap: 3px;
+  }
+}
+
+/* Variante système sombre : conserve la structure et renforce le contraste des surfaces, du texte et des séparateurs. */
+@media (prefers-color-scheme: dark) {
+  .search button {
+    color: #15382e;
+  }
+
+  .search__row,
+  .location-results {
+    border: 1px solid #53645a;
+    background: #19241e;
+  }
+
+  .search input,
+  .location-results button {
+    color: var(--ink);
+  }
+
+  .location-results button:hover {
+    background: #26362e;
+  }
+
+  .location-results span {
+    color: #b6c4bc;
+  }
+
+  .location-results__loading {
+    background: rgba(25,36,30,.9);
+    color: #bde5d2;
+  }
+
+  .location-results__spinner {
+    border-color: #53645a;
+    border-top-color: #92d8ba;
+  }
+}
