@@ -1,0 +1,155 @@
+/*
+ * Grille des concentrations de pollen et messages d’indisponibilité.
+ * La valeur, son unité et le nom de l’espèce gardent des niveaux typographiques distincts.
+ * Le rappel sous la grille indique que ces informations n’entrent pas dans le calcul des notes.
+ */
+
+/* La grille large place les six espèces sur trois colonnes ; le fond matérialise les séparateurs entre cartes. */
+.pollen-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--color-divider);
+}
+
+/* Une hauteur minimale aligne les cartes malgré les variations entre nombre et message d’absence. */
+.pollen-item {
+  display: flex;
+  min-width: 0;
+  min-height: 125px;
+  padding: 23px var(--space-25);
+  background: var(--color-surface-detail);
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-18);
+}
+
+.pollen-item > span {
+  color: var(--color-text-label);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* La concentration et son unité sont alignées à la ligne de base avec une importance visuelle différente. */
+.pollen-item__value {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-7);
+  color: #3b705a;
+}
+
+.pollen-item__value strong {
+  font: 800 31px/1 "Manrope", sans-serif;
+  letter-spacing: -.045em;
+}
+
+.pollen-item__value small {
+  color: #78847e;
+  font-size: 11px;
+}
+
+/* Le message d’absence se distingue d’une concentration 0, qui conserve la présentation numérique normale. */
+.pollen-item--missing > strong {
+  color: #76827c;
+  font: 650 14px "Manrope", sans-serif;
+}
+
+.pollen-details__unavailable {
+  padding: var(--space-30) var(--space-28);
+  background: var(--color-surface-unavailable);
+  color: #3f554b;
+}
+
+.pollen-details__unavailable strong {
+  font: 700 17px/1.4 "Manrope", sans-serif;
+}
+
+/* Cette mention reste visible aussi lorsque toutes les concentrations sont indisponibles. */
+.pollen-details__notice {
+  margin: 0;
+  padding: var(--space-16) var(--space-28);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: #6d7b74;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* Les six espèces passent sur deux colonnes pour conserver une carte suffisamment large. */
+@media (max-width: 800px) {
+  .pollen-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Les deux colonnes sont conservées sur mobile afin de limiter la hauteur totale.
+ * L’unité peut passer sur une autre ligne, mais ses caractères restent groupés pour ne pas être coupés. */
+@media (max-width: 520px) {
+  .pollen-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pollen-item {
+    min-height: 94px;
+    padding: var(--space-14);
+    gap: var(--space-10);
+  }
+
+  .pollen-item__value {
+    flex-wrap: wrap;
+    gap: var(--space-4) var(--space-6);
+  }
+
+  .pollen-item__value strong {
+    font-size: 26px;
+  }
+
+  .pollen-item__value small {
+    white-space: nowrap;
+  }
+
+  .pollen-details__unavailable {
+    padding: var(--space-20) var(--space-16);
+  }
+
+  .pollen-details__notice {
+    padding: var(--space-14) var(--space-16);
+    font-size: 11px;
+  }
+}
+
+/* Variante système sombre : conserve la structure et renforce le contraste des surfaces, du texte et des séparateurs. */
+@media (prefers-color-scheme: dark) {
+  .pollen-details__notice {
+    border-color: var(--color-border);
+  }
+
+  .pollen-item__value small {
+    color: var(--color-text-unit);
+  }
+
+  .pollen-item--missing > strong {
+    color: #b7c2bc;
+  }
+
+  .pollen-grid {
+    gap: var(--space-2);
+  }
+
+  .pollen-item__value {
+    color: var(--color-positive-bright);
+  }
+
+  .pollen-details__unavailable {
+    color: var(--color-text-secondary);
+  }
+
+  .pollen-details__unavailable strong {
+    color: var(--color-text);
+  }
+
+  .pollen-details__notice {
+    background: var(--color-surface-note);
+    color: var(--color-text-muted);
+  }
+}

@@ -1,4 +1,7 @@
+# Dépendances installées depuis package.json et pnpm-lock.yaml, reproductibles sur chaque machine.
 node_modules/
+# Résultat généré par pnpm build ; les sources sont conservées dans src et index.html.
 dist/
+# Configuration propre à la machine ; .env.example documente les valeurs attendues et reste versionné.
 .env
 

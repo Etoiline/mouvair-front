@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.4.1 - 2026-11-01
+
+- Automate frontend tests, type checks, and production builds in GitHub Actions with pinned Node and pnpm versions and a shared local check command.
+
+- Centralize shared colors, light and dark palettes, and spacing in reusable CSS variables.
+
+- Scope layout and search styles to dedicated classes and decouple compact mobile search from its parent layout.
+
+- Limit the key takeaways to weather explanations.
+
+- Simplify the hourly chart subtitle to show only the overall score scale.
+
+- Improve the mobile layout with a compact search header, clearer score cards, and content-sized detail panels.
+- Show the hourly chart before condition details and keep footer notices at the bottom of short pages on all screen sizes.
+
+- Remove the numbered city-search prompt from the initial screen and clean up its unused styles.
+
+- Update React, TypeScript, Vite, and frontend test dependencies, and document supported Node.js versions and dependency maintenance.
+
+- Organize the frontend by feature with dedicated hooks, components, colocated styles, and shared utilities.
+- Add detailed French code and configuration documentation, and expand regression coverage for concurrent requests, automatic refresh, and preserved selections.
+- Keep pollen cards compact on mobile and strengthen dark-theme contrast across forecast panels.
+
 ## 0.4.0 - 2026-09-13
 
 - Document the Vercel production deployment and public API configuration.

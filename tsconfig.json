@@ -1,22 +1,38 @@
 {
+  // TypeScript vérifie les sources ; Vite assure la transformation et la construction du bundle.
+  // Ce format de configuration accepte les commentaires, contrairement à package.json.
   "compilerOptions": {
+    // Le code cible les fonctionnalités ES2023 et les API d’un navigateur, y compris les itérables DOM.
     "target": "ES2023",
+    // Conserve la sémantique standard d’initialisation des champs si des classes sont ajoutées.
     "useDefineForClassFields": true,
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    // Les sources applicatives doivent être typées ; le script Node .mjs reste hors de ce périmètre.
     "allowJs": false,
+    // Évite de revérifier les déclarations des dépendances, sans désactiver les contrôles sur src.
     "skipLibCheck": true,
+    // Autorise les imports par défaut compatibles avec les dépendances et la résolution du bundler.
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    // Impose notamment le traitement explicite des valeurs nulles présentes dans le contrat API.
     "strict": true,
+    // Détecte les différences de casse qui pourraient passer sous Windows et échouer ailleurs.
     "forceConsistentCasingInFileNames": true,
+    // Les modules ES restent à la charge de Vite, avec une résolution adaptée à son mode bundler.
     "module": "ESNext",
     "moduleResolution": "Bundler",
+    // Permet d’importer un fichier JSON typé si une fonctionnalité en a besoin.
     "resolveJsonModule": true,
+    // Chaque fichier doit pouvoir être transformé isolément, comme le fait la chaîne Vite.
     "isolatedModules": true,
+    // La commande tsc ne produit pas de fichiers JavaScript à côté des sources.
     "noEmit": true,
+    // Utilise la transformation JSX automatique de React, sans import React uniquement pour le JSX.
     "jsx": "react-jsx",
+    // Les symboles inutilisés signalent souvent un ancien import ou un paramètre oublié après extraction.
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },
+  // Les composants, utilitaires et tests de src sont tous vérifiés lors de pnpm build.
   "include": ["src"]
 }

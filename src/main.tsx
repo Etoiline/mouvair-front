@@ -1,9 +1,21 @@
+/**
+ * Point d’entrée navigateur chargé par index.html.
+ * Les variables communes puis les styles globaux précèdent ceux des vues ; une seule racine React prend en charge
+ * le contenu de #root. StrictMode aide à détecter les effets dont le nettoyage est incomplet en développement.
+ */
+
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
-import App from "./App";
-import "./styles.css";
+import "./app/tokens.css";
+import "./app/global.css";
+import App from "./app/App";
 
+/**
+ * Le conteneur est garanti par le document HTML du projet, d’où l’assertion de présence.
+ * Cette initialisation est réservée au démarrage ; les composants mettent ensuite l’écran à jour sans
+ * recréer la racine ni remplacer manuellement le contenu du document.
+ */
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <App />

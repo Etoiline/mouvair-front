@@ -1,0 +1,250 @@
+/*
+ * Formulaire et menu de la recherche de ville.
+ * La zone de recherche sert d’ancrage relatif au menu absolu ; son niveau de superposition
+ * l’empêche de repousser le tableau de bord lorsqu’une liste de villes s’ouvre.
+ * Le modificateur search-area--compact appartient à cette vue et ne dépend pas des classes de l’en-tête.
+ */
+
+.search-area {
+  position: relative;
+  z-index: 2;
+  width: min(760px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.search-area {
+  z-index: 4;
+  margin-top: 44px;
+}
+
+/* Le formulaire et sa ligne de saisie occupent la même largeur que le menu qui apparaît juste en dessous. */
+.search {
+  width: 100%;
+}
+
+.search label {
+  display: block;
+  margin-bottom: var(--space-9);
+  color: rgba(255,255,255,.7);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Le champ flexible conserve une largeur minimale nulle pour ne pas faire déborder le bouton sur petit écran. */
+.search__row {
+  display: flex;
+  padding: var(--space-7);
+  border-radius: 17px;
+  background: var(--color-surface-control);
+  box-shadow: 0 20px 50px rgba(0,0,0,.22);
+}
+
+.search input {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-15) var(--space-17);
+  border: 0;
+  outline: 0;
+  color: var(--color-text);
+  background: transparent;
+  font-size: 16px;
+}
+
+.search button {
+  padding: var(--space-14) 21px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--color-accent);
+  color: var(--color-text);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.search button:disabled {
+  opacity: .65;
+  cursor: wait;
+}
+
+.search__submit-icon {
+  display: none;
+}
+
+/* Le menu est détaché du flux et sa hauteur est bornée par la fenêtre.
+ * Un défilement interne permet de consulter une liste longue sans agrandir l’en-tête. */
+.location-results {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 100%;
+  max-height: min(360px, 50vh);
+  padding: var(--space-6);
+  overflow-y: auto;
+  border-radius: 16px;
+  background: var(--color-surface-control);
+  box-shadow: 0 18px 45px rgba(0,0,0,.25);
+}
+
+/* Une hauteur minimale accueille le loader même avant les premiers résultats ; le menu reste en place pendant leur remplacement. */
+.location-results--loading {
+  min-height: 72px;
+  overflow: hidden;
+}
+
+.location-results button {
+  display: flex;
+  width: 100%;
+  padding: var(--space-13) var(--space-15);
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  text-align: left;
+}
+
+.location-results button:hover {
+  background: #eef4ec;
+}
+
+.location-results strong {
+  min-width: 160px;
+}
+
+.location-results span {
+  color: #6d7e77;
+}
+
+/* Le voile couvre les anciens résultats conservés dans le DOM.
+ * Les boutons sont également désactivés côté React : l’aspect visuel et l’interaction restent synchronisés. */
+.location-results__loading {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-10);
+  border-radius: inherit;
+  background: rgba(255,255,255,.86);
+  color: #365c4c;
+  font-size: 13px;
+  font-weight: 700;
+  backdrop-filter: blur(2px);
+}
+
+.location-results__spinner {
+  width: 21px;
+  height: 21px;
+  border: 3px solid #cddbd3;
+  border-top-color: var(--color-positive);
+  border-radius: 50%;
+  animation: forecast-spin .8s linear infinite;
+}
+
+/* L’erreur reste dans la zone du formulaire afin qu’une correction de saisie soit immédiatement possible. */
+.search-area__error {
+  width: 100%;
+  margin-top: var(--space-12);
+  padding: var(--space-12) var(--space-15);
+  border-radius: 12px;
+  background: rgba(255,128,102,.15);
+  color: #ffd9d1;
+  text-align: center;
+}
+
+/* Le bouton passe sous le champ et les compléments de lieu sous le nom pour conserver une lecture confortable. */
+@media (max-width: 800px) {
+  .search-area {
+    margin-top: var(--space-26);
+  }
+
+  .search-area--compact {
+    margin-top: var(--space-18);
+  }
+
+  /* Après sélection, le champ et la loupe tiennent sur une ligne sans changer l’action du formulaire. */
+  .search-area--compact .search__row {
+    flex-direction: row;
+  }
+
+  .search-area--compact .search button {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 48px;
+    padding: var(--space-12);
+  }
+
+  .search-area--compact .search__submit-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .search-area--compact .search__submit-icon {
+    display: block;
+  }
+
+  .search__row {
+    flex-direction: column;
+    padding: var(--space-5);
+    border-radius: 14px;
+  }
+
+  .search input {
+    min-height: 48px;
+    padding: var(--space-12);
+  }
+
+  .search button {
+    min-height: 46px;
+    padding: var(--space-12) var(--space-16);
+    font-size: 14px;
+    border-radius: 10px;
+  }
+
+  .search label {
+    font-size: 12px;
+    margin-bottom: var(--space-8);
+  }
+
+  .location-results button {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+}
+
+/* Variante système sombre : conserve la structure et renforce le contraste des surfaces, du texte et des séparateurs. */
+@media (prefers-color-scheme: dark) {
+  .search button {
+    color: var(--color-on-accent);
+  }
+
+  .search__row,
+  .location-results {
+    border: 1px solid var(--color-border);
+  }
+
+  .location-results button:hover {
+    background: #26362e;
+  }
+
+  .location-results span {
+    color: #b6c4bc;
+  }
+
+  .location-results__loading {
+    background: rgba(25,36,30,.9);
+    color: #bde5d2;
+  }
+
+  .location-results__spinner {
+    border-color: var(--color-border);
+    border-top-color: var(--color-positive-bright);
+  }
+}

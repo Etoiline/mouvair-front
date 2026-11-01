@@ -1,0 +1,78 @@
+/*
+ * Fondations visuelles partagées par toute l’application, chargées depuis main.tsx.
+ * Ce fichier applique les variables de tokens.css et contient les polices, les règles HTML communes et
+ * l’animation de chargement. Les styles propres aux fonctionnalités restent dans leurs fichiers voisins.
+ */
+
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap");
+
+/* color-scheme permet aux contrôles natifs de suivre le thème de la palette commune. */
+:root {
+  color-scheme: light;
+  font-family: "DM Sans", sans-serif;
+  color: var(--color-text);
+  background: var(--color-background);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+/* Inclut les bordures et espacements dans les dimensions déclarées pour limiter les débordements des grilles. */
+* {
+  box-sizing: border-box;
+}
+
+/* Le seuil de 320 px correspond au plus petit cadre prévu ; la page occupe au minimum la hauteur de la fenêtre. */
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  color: inherit;
+}
+
+/* Petit libellé de contexte partagé par l’accueil, les états de chargement et les cartes du tableau de bord. */
+.eyebrow {
+  margin: 0 0 var(--space-14);
+  color: #6ca28c;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+/* Animation commune aux indicateurs de recherche de villes et de récupération initiale des prévisions. */
+@keyframes forecast-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Le comportement du corps de document reste global, même lorsque le cadre de page change. */
+@media (max-width: 800px) {
+  body {
+    min-width: 0;
+  }
+}
+
+/* La palette sombre vient de tokens.css ; ce fichier adapte les contrôles natifs et le corps du document. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+  }
+
+  body {
+    background: var(--color-background);
+  }
+}

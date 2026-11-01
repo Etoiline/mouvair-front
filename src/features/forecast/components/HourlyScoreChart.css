@@ -1,0 +1,448 @@
+/*
+ * Tracé CSS du graphique horaire et de sa sélection.
+ * --hour-count vient du nombre de créneaux ; --hour-score porte la note de chaque bouton.
+ * Les colonnes de dates et de barres partagent la même grille, y compris dans la zone défilable.
+ */
+
+/* Le graphique suit les détails et possède son titre ainsi qu’un rappel de l’activité comparée. */
+.timeline-wrap {
+  margin-top: 38px;
+}
+
+.timeline-wrap__heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-20);
+  margin-bottom: var(--space-16);
+}
+
+.timeline-wrap__heading h3 {
+  margin: 0;
+  font: 750 21px "Manrope", sans-serif;
+}
+
+.timeline-wrap__heading p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+.hourly-chart {
+  overflow: hidden;
+  border: 1px solid #d7d8cc;
+  border-radius: 20px;
+  background: var(--color-surface);
+  box-shadow: 0 14px 35px rgba(39,59,50,.07);
+}
+
+/* La légende combine couleurs, textes et symboles ; le repérage ne dépend pas uniquement de la teinte des barres. */
+.hourly-chart__legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-9) var(--space-17);
+  padding: var(--space-15) var(--space-18);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-label);
+  font-size: 11px;
+}
+
+.hourly-chart__legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.hourly-chart__legend-color {
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  background: #66897a;
+}
+
+/* Les pastilles de légende et les barres du même statut partagent --chart-accent pour rester synchronisées. */
+.hourly-chart__legend-color--favorable,
+.hourly-chart__hour--favorable {
+  --chart-accent: #3f936b;
+}
+
+.hourly-chart__legend-color--correct,
+.hourly-chart__hour--correct {
+  --chart-accent: #7e9e42;
+}
+
+.hourly-chart__legend-color--mitige,
+.hourly-chart__hour--mitige {
+  --chart-accent: #c49a2c;
+}
+
+.hourly-chart__legend-color--defavorable,
+.hourly-chart__hour--defavorable {
+  --chart-accent: #d66f59;
+}
+
+.hourly-chart__legend-color--tres-defavorable,
+.hourly-chart__hour--tres-defavorable {
+  --chart-accent: #993d34;
+}
+
+.hourly-chart__legend-color--incomplet,
+.hourly-chart__hour--incomplet {
+  --chart-accent: #909a94;
+}
+
+.hourly-chart__legend-color {
+  background: var(--chart-accent);
+}
+
+.hourly-chart__legend b {
+  color: #547b32;
+}
+
+.hourly-chart__legend-alert {
+  display: grid;
+  place-items: center;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #ffd9cf;
+  color: #7b3024 !important;
+  font-size: 10px;
+}
+
+/* La première colonne réserve l’axe des notes ; la seconde contient le graphique horizontalement défilable. */
+.hourly-chart__body {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  padding: var(--space-20) var(--space-18) var(--space-10);
+}
+
+.hourly-chart__y-axis {
+  display: flex;
+  height: 220px;
+  margin-top: 31px;
+  padding-right: var(--space-9);
+  color: #77847d;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 11px;
+  text-align: right;
+}
+
+/* Le défilement local conserve des créneaux cliquables au lieu de les comprimer jusqu’à devenir illisibles. */
+.hourly-chart__viewport {
+  min-width: 0;
+  overflow-x: auto;
+  padding-bottom: var(--space-5);
+}
+
+/* Chaque heure conserve 40 px de largeur minimale ; la zone peut donc dépasser la largeur de l’écran. */
+.hourly-chart__canvas {
+  min-width: max(100%, calc(var(--hour-count) * 40px));
+}
+
+/* Les jours utilisent le même nombre de colonnes que les barres et reçoivent un span calculé par React. */
+.hourly-chart__days {
+  display: grid;
+  height: 31px;
+  grid-template-columns: repeat(var(--hour-count), minmax(0, 1fr));
+}
+
+.hourly-chart__days span {
+  min-width: 0;
+  overflow: hidden;
+  padding: var(--space-2) var(--space-7) 0;
+  border-left: 1px solid #ccd3cd;
+  color: #52675d;
+  font-size: 11px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.hourly-chart__plot {
+  position: relative;
+  height: 258px;
+}
+
+/* Le quadrillage est un décor non interactif dont les pas de 55 px couvrent les 220 px de hauteur des notes. */
+.hourly-chart__grid {
+  position: absolute;
+  inset: 0 0 38px;
+  border-bottom: 1px solid #dfe3dd;
+  background: repeating-linear-gradient(to bottom, #dfe3dd 0 1px, transparent 1px 55px);
+  pointer-events: none;
+}
+
+.hourly-chart__hours {
+  position: relative;
+  display: grid;
+  height: 258px;
+  grid-template-columns: repeat(var(--hour-count), minmax(0, 1fr));
+}
+
+/* Un bouton associe une zone de barre et son horaire ; le focus et la sélection restent visibles indépendamment du survol. */
+.hourly-chart__hour {
+  display: grid;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  grid-template-rows: 220px 38px;
+}
+
+.hourly-chart__bar-space {
+  position: relative;
+  display: block;
+  transition: background-color .16s ease;
+}
+
+.hourly-chart__hour:hover .hourly-chart__bar-space {
+  background: rgba(169,227,202,.16);
+}
+
+.hourly-chart__hour.is-selected .hourly-chart__bar-space {
+  background: rgba(215,245,95,.2);
+  box-shadow: inset 0 0 0 2px rgba(21,56,46,.16);
+}
+
+.hourly-chart__hour:focus-visible {
+  position: relative;
+  z-index: 2;
+  outline: 3px solid #4e9375;
+  outline-offset: -3px;
+}
+
+/* La hauteur en pourcentage utilise la note ; un minimum de 3 px garde repérable une note réellement égale à zéro. */
+.hourly-chart__bar {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 14px;
+  height: max(3px, var(--hour-score));
+  border-radius: 7px 7px 2px 2px;
+  background: var(--chart-accent);
+  transform: translateX(-50%);
+  transition: width .16s ease;
+}
+
+.hourly-chart__hour:hover .hourly-chart__bar,
+.hourly-chart__hour.is-selected .hourly-chart__bar {
+  width: 20px;
+}
+
+/* La valeur suit le sommet de la barre, avec une borne qui la maintient dans le cadre lorsque la note approche 100. */
+.hourly-chart__value {
+  position: absolute;
+  z-index: 1;
+  bottom: min(calc(var(--hour-score) + 5px), calc(100% - 18px));
+  left: 50%;
+  color: #344e43;
+  font-size: 11px;
+  font-weight: 800;
+  transform: translateX(-50%);
+}
+
+.hourly-chart__missing {
+  position: absolute;
+  bottom: 45%;
+  left: 50%;
+  color: #78847e;
+  font-size: 18px;
+  font-weight: 700;
+  transform: translateX(-50%);
+}
+
+.hourly-chart__hour-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-top: var(--space-7);
+  color: #596b62;
+  flex-direction: column;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.hourly-chart__markers {
+  display: flex;
+  min-height: 13px;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.hourly-chart__best {
+  color: #547b32;
+  line-height: 1;
+}
+
+.hourly-chart__alert {
+  display: grid;
+  place-items: center;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #ffd9cf;
+  color: #7b3024;
+  font-size: 9px;
+  line-height: 1;
+}
+
+.hourly-chart__x-axis {
+  margin: var(--space-5) 0 0;
+  color: #77847d;
+  font-size: 11px;
+  text-align: center;
+}
+
+/* Le défilement tactile est annoncé uniquement là où le graphique dépasse la largeur disponible. */
+.hourly-chart__hint {
+  display: none;
+}
+
+/* Le récapitulatif textuel complète la sélection des barres ; son annonce aria-live est gérée dans le composant React. */
+.hourly-chart__selection {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-24);
+  padding: var(--space-17) var(--space-20);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface-note);
+}
+
+.hourly-chart__selection > div {
+  display: grid;
+  min-width: 0;
+  gap: var(--space-4);
+}
+
+.hourly-chart__selection > div:last-child {
+  text-align: right;
+}
+
+.hourly-chart__selection span {
+  color: #68786f;
+  font-size: 11px;
+}
+
+.hourly-chart__selection strong {
+  color: var(--color-text);
+  font: 700 14px/1.35 "Manrope", sans-serif;
+}
+
+/* Le titre et la description passent en pile sans modifier l’échelle du graphique. */
+@media (max-width: 800px) {
+  .timeline-wrap__heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .hourly-chart__hint {
+    display: block;
+    margin: 0;
+    padding: 0 var(--space-16) var(--space-12);
+    color: var(--color-text-muted);
+    font-size: 11px;
+    text-align: center;
+  }
+}
+
+/* Sur les téléphones étroits, réduit les espacements sans modifier l’ordre de lecture ni les données visibles. */
+@media (max-width: 520px) {
+  .timeline-wrap {
+    margin-top: var(--space-26);
+  }
+
+  .timeline-wrap__heading h3 {
+    font-size: 19px;
+  }
+
+  .timeline-wrap__heading p {
+    font-size: 12px;
+  }
+
+  .hourly-chart {
+    border-radius: 16px;
+  }
+
+  .hourly-chart__legend {
+    gap: var(--space-8) var(--space-13);
+    padding: var(--space-13) var(--space-14);
+  }
+
+  .hourly-chart__body {
+    grid-template-columns: 36px minmax(0, 1fr);
+    padding: var(--space-16) var(--space-8) var(--space-8);
+  }
+
+  .hourly-chart__selection {
+    grid-template-columns: 1fr;
+    gap: var(--space-10);
+    padding: var(--space-15) var(--space-14);
+  }
+
+  .hourly-chart__selection > div:last-child {
+    text-align: left;
+  }
+}
+
+/* Variante système sombre : conserve la structure et renforce le contraste des surfaces, du texte et des séparateurs. */
+@media (prefers-color-scheme: dark) {
+  .hourly-chart {
+    border-color: var(--color-border);
+
+    box-shadow: 0 20px 52px rgba(0,0,0,.3);
+  }
+
+  .timeline-wrap__heading p,
+  .hourly-chart__hint {
+    color: var(--color-text-muted);
+  }
+
+  .hourly-chart__legend,
+  .hourly-chart__selection {
+    border-color: var(--color-border);
+  }
+
+  .hourly-chart__legend {
+    color: #b7c5bd;
+  }
+
+  .hourly-chart__days span {
+    border-color: #52635a;
+    color: #c4d0c9;
+  }
+
+  .hourly-chart__grid {
+    border-color: #46564d;
+    background: repeating-linear-gradient(to bottom, #3f4e46 0 1px, transparent 1px 55px);
+  }
+
+  .hourly-chart__hour:hover .hourly-chart__bar-space {
+    background: rgba(146,216,186,.12);
+  }
+
+  .hourly-chart__hour.is-selected .hourly-chart__bar-space {
+    background: rgba(215,245,95,.12);
+    box-shadow: inset 0 0 0 2px rgba(215,245,95,.3);
+  }
+
+  .hourly-chart__value {
+    color: var(--color-text-secondary);
+  }
+
+  .hourly-chart__missing,
+  .hourly-chart__hour-label,
+  .hourly-chart__x-axis {
+    color: var(--color-text-muted);
+  }
+
+  .hourly-chart__selection span {
+    color: var(--color-text-muted);
+  }
+}
