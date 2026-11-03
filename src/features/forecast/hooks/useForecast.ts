@@ -33,7 +33,7 @@ export function useForecast() {
   const [refreshing, setRefreshing] = useState(false);
   /**
    * Date de fin du dernier contrôle local, distincte de forecast.generated_at qui mesure l’âge des données.
-   * Un échec met aussi cette date à jour pour ne pas relancer immédiatement une vérification périodique.
+   * Un échec d’actualisation met aussi cette date à jour pour espacer les vérifications périodiques.
    */
   const [lastCheckAt, setLastCheckAt] = useState<number | null>(null);
   const [forecastError, setForecastError] = useState<string | null>(null);

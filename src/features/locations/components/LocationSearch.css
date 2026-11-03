@@ -1,7 +1,7 @@
 /*
  * Formulaire et menu de la recherche de ville.
- * La zone de recherche sert d’ancrage relatif au menu absolu ; son niveau de superposition
- * l’empêche de repousser le tableau de bord lorsqu’une liste de villes s’ouvre.
+ * La zone de recherche sert d’ancrage relatif au menu absolu, qui ne repousse pas le tableau de bord.
+ * Le niveau de superposition maintient les résultats au-dessus du contenu voisin.
  * Le modificateur search-area--compact appartient à cette vue et ne dépend pas des classes de l’en-tête.
  */
 

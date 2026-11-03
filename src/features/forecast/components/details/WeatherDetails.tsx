@@ -1,7 +1,8 @@
 /**
  * Présentation des mesures et sous-notes météo du créneau actif.
  * Les facteurs servent à retrouver les notes par identifiant. Pour les valeurs affichées, la température
- * vient du facteur retenu pour l’activité, tandis que pluie, vent moyen et rafales viennent des conditions brutes.
+ * vient du facteur retenu pour l’activité, tandis que pluie, vent moyen et rafales viennent des mesures
+ * du créneau déjà agrégées par le backend.
  */
 
 import type { ReactNode } from "react";

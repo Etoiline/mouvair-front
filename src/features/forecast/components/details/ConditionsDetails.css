@@ -100,13 +100,14 @@
   pointer-events: none;
 }
 
-/* Le contenu visible détermine la hauteur mobile ; les trois onglets restent tous accessibles sans défilement horizontal. */
+/* Sur mobile, les panneaux inactifs sortent de la grille pour que seul le contenu visible fixe la hauteur. */
 @media (max-width: 800px) {
   .conditions-details__panel--inactive {
     display: none;
   }
 }
 
+/* Trois colonnes égales gardent les onglets côte à côte ; leurs libellés peuvent revenir à la ligne. */
 @media (max-width: 520px) {
   .conditions-details {
     margin-top: var(--space-24);

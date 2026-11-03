@@ -1,5 +1,5 @@
 /**
- * Panneau informatif des concentrations horaires de pollen.
+ * Panneau informatif des concentrations de pollen retenues sur les deux bornes du créneau.
  * Ces mesures sont consultables avec le créneau mais ne participent pas aux notes Mouv’Air.
  * L’absence de toutes les espèces produit un message global ; une absence partielle reste indiquée espèce par espèce.
  */

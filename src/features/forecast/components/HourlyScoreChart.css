@@ -4,7 +4,7 @@
  * Les colonnes de dates et de barres partagent la même grille, y compris dans la zone défilable.
  */
 
-/* Le graphique suit les détails et possède son titre ainsi qu’un rappel de l’activité comparée. */
+/* Le graphique suit la synthèse et précède les détails ; son sous-titre rappelle l’échelle sur 100. */
 .timeline-wrap {
   margin-top: 38px;
 }
@@ -299,7 +299,7 @@
   text-align: center;
 }
 
-/* Le défilement tactile est annoncé uniquement là où le graphique dépasse la largeur disponible. */
+/* Le repère de défilement est activé au seuil mobile ; il ne mesure pas le débordement réel de la grille. */
 .hourly-chart__hint {
   display: none;
 }
