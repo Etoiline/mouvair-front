@@ -163,7 +163,7 @@ export function useLocationSearch(onSearchStart: () => void) {
   }
 
   /**
-   * À la fermeture du champ, annule fetch et invalide aussi les promesses simulées ou déjà résolues.
+   * Au démontage du composant, annule fetch et invalide aussi les promesses simulées ou déjà résolues.
    * Le timer de saisie est retiré par le nettoyage de l’effet qui l’a créé.
    */
   useEffect(() => {

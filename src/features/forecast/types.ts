@@ -113,29 +113,36 @@ export type SportScore = {
 };
 
 /**
- * Mesures météo brutes reçues pour le créneau : températures en °C, précipitations en mm,
- * vent et rafales en km/h, AQI européen sans unité. Les codes météo sont conservés dans le contrat
- * même lorsque le composant courant ne les présente pas directement.
+ * Mesures représentatives du créneau, déjà agrégées par le backend : températures en °C,
+ * précipitations en mm, vent et rafales en km/h, AQI européen sans unité.
+ * Elles restent distinctes des valeurs de calcul propres à l’activité dans weather.factors.
  */
 export type Conditions = {
+  /** Borne thermique la plus pénalisante pour la course tranquille, utilisée dans le résumé commun. */
   apparent_temperature: number | null;
   apparent_temperature_start: number | null;
   apparent_temperature_end: number | null;
+  /** Cumul de l’heure lu à la borne de fin dans les séries fournisseur. */
   precipitation: number | null;
+  /** Maximum des vents moyens aux deux bornes, distinct de la valeur combinant vent et rafales. */
   wind_speed: number | null;
+  /** Rafale maximale de l’heure, fournie à la borne de fin du créneau. */
   wind_gusts: number | null;
+  /** Maximum de l’AQI aux deux bornes ; il n’est pas encore converti en note Mouv’Air. */
   european_aqi: number | null;
+  /** Premier code disponible ; weather_codes conserve les deux bornes, y compris leurs absences. */
   weather_code: number | null;
   weather_codes: Array<number | null>;
 };
 
 /**
- * Concentrations horaires en grains/m³ : 0 est une prévision disponible, null une donnée absente.
+ * Maxima des deux bornes du créneau en grains/m³ : 0 est disponible, null signifie une donnée absente.
  */
 export type PollenForecast = Record<PollenId, number | null>;
 
 /**
  * Créneau délimité par deux horodatages ISO ; le fuseau d’affichage est porté par Forecast.
+ * Les bornes incluent un décalage UTC et couvrent une heure réelle, même au changement d’heure.
  * Le dictionnaire scores permet de changer d’activité sans demander de nouvelles prévisions.
  */
 export type ForecastHour = {

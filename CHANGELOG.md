@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.2 - 2026-11-03
+
+- Align French comments with aggregated forecast data, request lifecycle, chart order, and responsive layout behavior.
+
+- Update pnpm to 12.16.1 and refresh transitive dependencies in the lockfile.
+
 ## 0.4.1 - 2026-11-01
 
 - Automate frontend tests, type checks, and production builds in GitHub Actions with pinned Node and pnpm versions and a shared local check command.

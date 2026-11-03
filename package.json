@@ -1,9 +1,9 @@
 {
   "name": "mouvair-front",
   "private": true,
-  "version": "0.4.1",
+  "version": "0.4.2",
   "type": "module",
-  "packageManager": "pnpm@12.4.1",
+  "packageManager": "pnpm@12.16.1",
   "engines": {
     "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
   },

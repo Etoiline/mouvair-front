@@ -145,6 +145,11 @@ invariant ou une raison de conception plutôt que paraphraser chaque instruction
 absente reste notamment différente de zéro, une note reste différente d’une mesure brute et
 l’heure de récupération reste différente de l’heure du dernier contrôle local.
 
+Les commentaires des contrats indiquent aussi l’origine des mesures : l’API agrège déjà les bornes
+d’un créneau avant leur affichage. Les conditions communes et les facteurs de calcul propres au
+sport ne sont donc pas interchangeables. Les commentaires CSS suivent l’ordre réel des blocs dans
+le DOM et distinguent un seuil responsive fixe d’une détection de débordement.
+
 Les fichiers de configuration et le script de release sont décrits dans le
 [guide de configuration](configuration.md). Les formats stricts ou générés y sont expliqués sans
 ajouter de commentaires qui les rendraient invalides ou qui seraient perdus à la prochaine génération.
