@@ -21,7 +21,7 @@
   box-sizing: border-box;
 }
 
-/* Le seuil de 320 px correspond au plus petit cadre prévu ; la page occupe au minimum la hauteur de la fenêtre. */
+/* Le corps occupe au minimum la hauteur de la fenêtre ; la largeur minimale est levée dans les règles mobiles. */
 body {
   margin: 0;
   min-width: 320px;

@@ -1,5 +1,7 @@
 # Changelog
 
+- Align French comments with aggregated forecast data, request lifecycle, chart order, and responsive layout behavior.
+
 - Update pnpm to 12.16.1 and refresh transitive dependencies in the lockfile.
 
 ## 0.4.1 - 2026-11-01
