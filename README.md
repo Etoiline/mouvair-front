@@ -81,7 +81,8 @@ détails du créneau, actualisation réussie ou échouée, nouvel essai après u
 recherche. Les tests des hooks couvrent aussi les réponses tardives, l’annulation des recherches,
 l’actualisation au changement de créneau, le retour sur un onglet masqué, les données trop anciennes
 et le nettoyage au démontage. Un parcours vérifie la conservation de l’activité et de l’onglet de
-détail lors d’un changement de ville.
+détail lors d’un changement de ville. Les tests vérifient aussi qu’une note de zéro permet une
+recommandation et que le graphique reste utilisable sans note complète ou avec des données anciennes.
 
 ```powershell
 pnpm test

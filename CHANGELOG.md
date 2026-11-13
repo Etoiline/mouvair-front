@@ -1,5 +1,7 @@
 # Changelog
 
+- Test best-slot recommendations for zero scores, missing scores, and stale forecasts.
+
 ## 0.4.2 - 2026-11-03
 
 - Align French comments with aggregated forecast data, request lifecycle, chart order, and responsive layout behavior.

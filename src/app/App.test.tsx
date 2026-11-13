@@ -139,6 +139,65 @@ describe("parcours principal", () => {
     expect(hours[1].getAttribute("aria-pressed")).toBe("true");
   });
 
+  it("recommande un créneau noté zéro quand les autres notes sont indisponibles", async () => {
+    const user = await displayForecast(forecast([null, 0, null]));
+    const timeline = screen.getByRole("region", { name: "Heure par heure" });
+    const hours = within(timeline).getAllByRole("button");
+
+    expect(hours[0].getAttribute("aria-label")).toContain("note indisponible");
+    expect(hours[1].getAttribute("aria-label")).toContain("note 0 sur 100");
+    expect(hours[1].getAttribute("aria-label")).toContain("meilleur créneau");
+
+    const bestButton = screen.getByRole("button", { name: /^Meilleur créneau/ });
+    await user.click(bestButton);
+
+    expect(hours[1].getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getByLabelText("Note globale 0 sur 100")).toBeTruthy();
+  });
+
+  it.each([
+    {
+      scores: [null, null],
+      stale: false,
+      label: "Aucun créneau complet",
+      help: "Aucune note globale n’est disponible.",
+    },
+    {
+      scores: [40, 80],
+      stale: true,
+      label: "Recommandation suspendue",
+      help: "Les données sont trop anciennes.",
+    },
+  ])("désactive le meilleur créneau avec le libellé « $label »", async ({
+    scores,
+    stale,
+    label,
+    help,
+  }) => {
+    const value = forecast(scores);
+    if (stale) {
+      value.data_state = "stale";
+      value.recommendation_available = false;
+    }
+    const user = await displayForecast(value);
+    const timeline = screen.getByRole("region", { name: "Heure par heure" });
+    const hours = within(timeline).getAllByRole("button");
+    const bestButton = screen.getByRole<HTMLButtonElement>("button", {
+      name: /^Meilleur créneau/,
+    });
+
+    expect(bestButton.disabled).toBe(true);
+    expect(within(bestButton).getByText(label)).toBeTruthy();
+    expect(screen.getByText(help)).toBeTruthy();
+    expect(within(timeline).queryByRole("button", { name: /meilleur créneau/i })).toBeNull();
+
+    await user.click(hours[1]);
+    expect(hours[1].getAttribute("aria-pressed")).toBe("true");
+    expect(
+      screen.getByLabelText(stale ? "Note globale 80 sur 100" : "Note globale indisponible"),
+    ).toBeTruthy();
+  });
+
   /**
    * Le scénario combine clic et flèche clavier pour vérifier à la fois le panneau actif et le focus.
    * Les recherches limitées au panneau actif évitent de confondre les contenus gardés montés pour la hauteur.
