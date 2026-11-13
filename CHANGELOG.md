@@ -1,5 +1,7 @@
 # Changelog
 
+## 0.4.3 - 2026-11-13
+
 - Document the frontend tests for location search, slot recommendations, and forecast refreshes.
 
 - Test sport-specific scores, slot selection across forecast refreshes, and recovery from an empty location search.
