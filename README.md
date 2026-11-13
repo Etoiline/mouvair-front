@@ -83,6 +83,8 @@ l’actualisation au changement de créneau, le retour sur un onglet masqué, le
 et le nettoyage au démontage. Un parcours vérifie la conservation de l’activité et de l’onglet de
 détail lors d’un changement de ville. Les tests vérifient aussi qu’une note de zéro permet une
 recommandation et que le graphique reste utilisable sans note complète ou avec des données anciennes.
+La suite couvre aussi la mise à jour des notes et du meilleur créneau au changement d’activité, le
+choix du créneau après actualisation et la correction d’une recherche sans résultat.
 
 ```powershell
 pnpm test

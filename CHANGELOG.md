@@ -1,5 +1,7 @@
 # Changelog
 
+- Test sport-specific scores, slot selection across forecast refreshes, and recovery from an empty location search.
+
 - Test best-slot recommendations for zero scores, missing scores, and stale forecasts.
 
 ## 0.4.2 - 2026-11-03
