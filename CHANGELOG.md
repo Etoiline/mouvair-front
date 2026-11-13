@@ -1,5 +1,7 @@
 # Changelog
 
+- Document the frontend tests for location search, slot recommendations, and forecast refreshes.
+
 - Test sport-specific scores, slot selection across forecast refreshes, and recovery from an empty location search.
 
 - Test best-slot recommendations for zero scores, missing scores, and stale forecasts.
