@@ -1,5 +1,7 @@
 # Changelog
 
+## 0.4.4 - 2026-11-14
+
 - Place the hourly chart before the selected slot summary.
 
 ## 0.4.3 - 2026-11-13
