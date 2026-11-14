@@ -1,5 +1,7 @@
 # Changelog
 
+- Place the hourly chart before the selected slot summary.
+
 ## 0.4.3 - 2026-11-13
 
 - Document the frontend tests for location search, slot recommendations, and forecast refreshes.

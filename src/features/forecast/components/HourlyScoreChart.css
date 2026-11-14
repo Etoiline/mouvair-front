@@ -4,9 +4,9 @@
  * Les colonnes de dates et de barres partagent la même grille, y compris dans la zone défilable.
  */
 
-/* Le graphique suit la synthèse et précède les détails ; son sous-titre rappelle l’échelle sur 100. */
+/* L’espace sous le graphique sépare la sélection horaire des notes du créneau. */
 .timeline-wrap {
-  margin-top: 38px;
+  margin-bottom: 38px;
 }
 
 .timeline-wrap__heading {
@@ -355,7 +355,7 @@
 /* Sur les téléphones étroits, réduit les espacements sans modifier l’ordre de lecture ni les données visibles. */
 @media (max-width: 520px) {
   .timeline-wrap {
-    margin-top: var(--space-26);
+    margin-bottom: var(--space-26);
   }
 
   .timeline-wrap__heading h3 {

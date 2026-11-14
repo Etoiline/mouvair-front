@@ -146,6 +146,14 @@ describe("parcours principal", () => {
     expect(mockedGetForecast).toHaveBeenCalledWith(LOCATION);
   });
 
+  it("affiche le graphique horaire avant la carte du créneau sélectionné", async () => {
+    await displayForecast(forecast([40, 90]));
+    const timeline = screen.getByRole("region", { name: "Heure par heure" });
+    const overallScore = screen.getByRole("region", { name: "Note globale" });
+
+    expect(timeline.compareDocumentPosition(overallScore)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+  });
+
   /**
    * Deux notes maximales identiques rendent observable la règle de départage chronologique.
    * Le clic sur une autre heure puis sur le récapitulatif vérifie que consultation et recommandation restent distinctes.

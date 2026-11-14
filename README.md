@@ -93,10 +93,10 @@ pnpm test:watch
 
 ## Résumé d’un créneau
 
-Le créneau sélectionné présente d’abord sa date, ses horaires locaux et l’activité choisie. La note
-globale apparaît avant les notes météo et qualité de l’air. Une donnée manquante est signalée sans
-masquer les notes disponibles ; les alertes météo restent visibles et « À retenir » présente au
-maximum deux explications météo. Une carte unique regroupe ensuite les détails dans
+Sous le graphique « Heure par heure », la carte du créneau sélectionné présente sa date, ses horaires
+locaux et l’activité choisie. La note globale apparaît avant les notes météo et qualité de l’air.
+Les notes disponibles et les alertes météo restent visibles même si une donnée manque. « À retenir »
+présente au maximum deux explications météo. Une carte unique regroupe ensuite les détails dans
 trois onglets : météo, qualité de l’air et pollens. Leur hauteur reste constante sur grand écran ;
 sur mobile, elle suit le contenu du panneau actif pour éviter les espaces vides. L’onglet météo associe la
 température ressentie, les précipitations, le vent moyen et les rafales à leurs sous-notes
@@ -128,9 +128,9 @@ l’introduction s’efface visuellement et la recherche tient sur une ligne ave
 dont le libellé reste accessible aux lecteurs d’écran. Ce mode compact est conservé pendant les
 recherches suivantes pour éviter les sauts de mise en page.
 
-Le tableau de bord présente l’activité, la note globale puis les deux notes météo et air côte à
-côte. Le graphique horaire précède les détails, afin de choisir un créneau avant d’examiner ses
-mesures ; un repère indique son défilement tactile. Les mesures météo sont regroupées en lignes
+Le tableau de bord présente le sélecteur d’activité, puis le graphique horaire et la carte du créneau
+sélectionné. Un repère indique le défilement tactile du graphique. Dans la carte, les notes météo et
+air sont côte à côte sous la note globale. Les mesures météo sont regroupées en lignes
 avec leurs sous-notes à droite. Les trois onglets de détails restent visibles et seul le panneau
 actif occupe de la hauteur sur petit écran. Les concentrations de pollen conservent deux colonnes.
 
