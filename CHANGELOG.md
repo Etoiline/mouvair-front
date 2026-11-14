@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.4.4 - 2026-11-14
+
+- Place the hourly chart before the selected slot summary.
+
+## 0.4.3 - 2026-11-13
+
+- Document the frontend tests for location search, slot recommendations, and forecast refreshes.
+
+- Test sport-specific scores, slot selection across forecast refreshes, and recovery from an empty location search.
+
+- Test best-slot recommendations for zero scores, missing scores, and stale forecasts.
+
 ## 0.4.2 - 2026-11-03
 
 - Align French comments with aggregated forecast data, request lifecycle, chart order, and responsive layout behavior.

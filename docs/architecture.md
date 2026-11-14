@@ -83,8 +83,8 @@ bas de l’écran lorsque le contenu est court, sur ordinateur comme sur mobile.
 allongent la page, il suit le contenu dans le défilement sans le recouvrir.
 
 Les règles mobiles privilégient une lecture courte : en-tête sans hauteur fixe, recherche compacte,
-notes secondaires côte à côte et mesures météo en lignes. Le graphique suit la synthèse et précède
-les détails dans le DOM pour conserver un ordre de lecture et de navigation cohérent. Les panneaux
+notes secondaires côte à côte et mesures météo en lignes. Dans le DOM, le graphique précède la carte
+du créneau sélectionné et ses détails pour que l’ordre de navigation suive l’affichage. Les panneaux
 de détails inactifs réservent leur place sur grand écran ; à partir du seuil de 800 px vers le bas,
 ils utilisent `display: none` pour que la hauteur corresponde au panneau consulté. Les attributs
 `aria-hidden` et `inert` restent pilotés par le même état d’onglet sur toutes les tailles.

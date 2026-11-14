@@ -54,7 +54,7 @@ function scoreStatus(score: number | null): ScoreStatus {
  * La même note est utilisée pour météo, air et global afin que le scénario contrôle facilement
  * la valeur observée ; les sous-notes conservent malgré tout la forme complète du contrat.
  */
-function sportScore(sport: SportId, score: number | null): SportScore {
+export function sportScore(sport: SportId, score: number | null): SportScore {
   const status = scoreStatus(score);
   return {
     sport,
@@ -95,10 +95,10 @@ function sportScore(sport: SportId, score: number | null): SportScore {
 
 /**
  * Crée un créneau d’une heure avec des mesures connues et aucun pollen disponible par défaut.
- * Malgré le nom easyRunScore, la valeur est réutilisée pour les quatre activités : les tests de
- * sélection d’activité vérifient ici le comportement de l’interface, pas un classement sportif réel.
+ * Le score est commun aux quatre activités par défaut. Un test peut remplacer celui d’une activité
+ * avec sportScore pour vérifier le changement de note ou de recommandation.
  */
-function forecastHour(start: Date, easyRunScore: number | null): ForecastHour {
+function forecastHour(start: Date, score: number | null): ForecastHour {
   const end = new Date(start.getTime() + 60 * 60 * 1000);
   return {
     time: start.toISOString(),
@@ -123,7 +123,7 @@ function forecastHour(start: Date, easyRunScore: number | null): ForecastHour {
       ragweed: null,
     },
     scores: Object.fromEntries(
-      SPORTS.map((sport) => [sport, sportScore(sport, easyRunScore)]),
+      SPORTS.map((sport) => [sport, sportScore(sport, score)]),
     ) as Record<SportId, SportScore>,
   };
 }

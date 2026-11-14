@@ -1,8 +1,8 @@
 /**
  * Tableau de bord des prévisions et état de sélection de l’utilisateur.
- * Les données et l’action d’actualisation viennent du parent ; l’activité, l’onglet de détail et le créneau
- * consulté restent locaux à cette vue. Le graphique précède les détails pour choisir une heure avant
- * d’en consulter les mesures ; les sous-vues reçoivent toutes le même créneau et le même score.
+ * Les données et l’action d’actualisation viennent du parent. L’activité, l’onglet de détail et le
+ * créneau consulté restent locaux à cette vue. Le graphique permet de choisir une heure avant de
+ * consulter ses notes et ses mesures dans les cartes qui suivent.
  * Le sélecteur porte déjà le contexte de l’activité ; le sous-titre du graphique rappelle seulement l’échelle.
  */
 
@@ -178,8 +178,6 @@ export function ForecastDashboard({
         ))}
       </div>
 
-      <ScoreCard hour={selectedHour} score={selectedScore} timeZone={forecast.timezone} />
-
       <section className="timeline-wrap" aria-labelledby="timeline-title">
         <div className="timeline-wrap__heading">
           <h3 id="timeline-title">Heure par heure</h3>
@@ -194,6 +192,8 @@ export function ForecastDashboard({
           onSelect={setSelectedTime}
         />
       </section>
+
+      <ScoreCard hour={selectedHour} score={selectedScore} timeZone={forecast.timezone} />
 
       <ConditionsDetails
         hour={selectedHour}

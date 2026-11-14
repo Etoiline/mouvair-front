@@ -5,7 +5,7 @@
  * interne des composants. Les promesses contrôlées servent aux assertions pendant les chargements.
  */
 
-import { act, render, screen, within } from "@testing-library/react";
+import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -14,7 +14,7 @@ import { getForecast } from "../features/forecast/api";
 import { searchLocations } from "../features/locations/api";
 import type { Forecast } from "../features/forecast/types";
 import type { Location } from "../features/locations/types";
-import { deferred, forecast, LOCATION, UPDATED_LOCATION } from "../test/fixtures";
+import { deferred, forecast, LOCATION, sportScore, UPDATED_LOCATION } from "../test/fixtures";
 
 /**
  * La simulation à la frontière API garde le parcours React réel tout en supprimant la dépendance au backend.
@@ -116,6 +116,45 @@ describe("parcours principal", () => {
   });
 
   /**
+   * Le tableau vide simule une réponse réussie du géocodage. Le même formulaire permet de corriger
+   * la saisie, et seules les prévisions de la ville finalement sélectionnée sont demandées.
+   */
+  it("permet de corriger une recherche sans résultat et de choisir une ville", async () => {
+    const user = userEvent.setup();
+    mockedSearchLocations.mockResolvedValueOnce([]).mockResolvedValueOnce([LOCATION]);
+    mockedGetForecast.mockResolvedValueOnce(forecast([70]));
+    render(<App />);
+
+    const input = screen.getByRole("textbox", { name: "Votre ville" });
+    const submit = screen.getByRole("button", { name: "Voir les conditions" });
+    const noResultsMessage = /Aucune ville trouvée/;
+    await user.type(input, "Lyom");
+    await user.click(submit);
+
+    expect(await screen.findByText(noResultsMessage)).toBeTruthy();
+    expect(screen.queryByLabelText("Résultats de recherche")).toBeNull();
+    expect(mockedGetForecast).not.toHaveBeenCalled();
+
+    await user.clear(input);
+    await user.type(input, "Lyon");
+    await user.click(submit);
+    await user.click(await screen.findByRole("button", { name: /Lyon.*France/ }));
+
+    expect(await screen.findByRole("heading", { name: "Vos conditions sur 24 h" })).toBeTruthy();
+    expect(screen.queryByText(noResultsMessage)).toBeNull();
+    expect(mockedSearchLocations.mock.calls.map(([query]) => query)).toEqual(["Lyom", "Lyon"]);
+    expect(mockedGetForecast).toHaveBeenCalledWith(LOCATION);
+  });
+
+  it("affiche le graphique horaire avant la carte du créneau sélectionné", async () => {
+    await displayForecast(forecast([40, 90]));
+    const timeline = screen.getByRole("region", { name: "Heure par heure" });
+    const overallScore = screen.getByRole("region", { name: "Note globale" });
+
+    expect(timeline.compareDocumentPosition(overallScore)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+  });
+
+  /**
    * Deux notes maximales identiques rendent observable la règle de départage chronologique.
    * Le clic sur une autre heure puis sur le récapitulatif vérifie que consultation et recommandation restent distinctes.
    */
@@ -137,6 +176,103 @@ describe("parcours principal", () => {
     if (bestButton === null) throw new Error("Bouton du meilleur créneau introuvable");
     await user.click(bestButton);
     expect(hours[1].getAttribute("aria-pressed")).toBe("true");
+  });
+
+  /**
+   * Les maxima de la course et du vélo tombent sur des heures différentes. Au changement d’activité,
+   * la note du créneau consulté doit déjà refléter le vélo avant le clic sur la nouvelle recommandation.
+   */
+  it("met à jour le graphique, la note et le meilleur créneau au changement d’activité", async () => {
+    const value = forecast([90, 40]);
+    value.hours[0].scores.cycling = sportScore("cycling", 55);
+    value.hours[1].scores.cycling = sportScore("cycling", 85);
+    const user = await displayForecast(value);
+    const timeline = within(screen.getByRole("region", { name: "Heure par heure" }));
+    const bestButton = screen.getByRole("button", { name: /^Meilleur créneau/ });
+
+    expect(timeline.getByRole("button", { name: /note 90 sur 100.*meilleur créneau/ })).toBeTruthy();
+    expect(within(bestButton).getByText("90/100")).toBeTruthy();
+    expect(screen.getByLabelText("Note globale 90 sur 100")).toBeTruthy();
+
+    await user.click(screen.getByRole("tab", { name: /Vélo$/ }));
+
+    const cyclingBestHour = timeline.getByRole("button", { name: /note 85 sur 100.*meilleur créneau/ });
+    expect(timeline.getByRole("button", { name: /note 55 sur 100/, pressed: true })).toBeTruthy();
+    expect(screen.getByLabelText("Note globale 55 sur 100")).toBeTruthy();
+    expect(within(bestButton).getByText("85/100")).toBeTruthy();
+
+    await user.click(bestButton);
+
+    expect(cyclingBestHour.getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getByLabelText("Note globale 85 sur 100")).toBeTruthy();
+    expect(mockedGetForecast).toHaveBeenCalledTimes(1);
+  });
+
+  /**
+   * Le zéro est la seule note disponible et se trouve sur le deuxième créneau. Le clic sur la
+   * recommandation vérifie que ce zéro a été classé et que la sélection change réellement d’heure.
+   */
+  it("recommande un créneau noté zéro quand les autres notes sont indisponibles", async () => {
+    const user = await displayForecast(forecast([null, 0, null]));
+    const timeline = screen.getByRole("region", { name: "Heure par heure" });
+    const hours = within(timeline).getAllByRole("button");
+
+    expect(hours[0].getAttribute("aria-label")).toContain("note indisponible");
+    expect(hours[1].getAttribute("aria-label")).toContain("note 0 sur 100");
+    expect(hours[1].getAttribute("aria-label")).toContain("meilleur créneau");
+
+    const bestButton = screen.getByRole("button", { name: /^Meilleur créneau/ });
+    await user.click(bestButton);
+
+    expect(hours[1].getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getByLabelText("Note globale 0 sur 100")).toBeTruthy();
+  });
+
+  /**
+   * Le cas des données anciennes conserve des notes valides pour isoler l’effet de la fraîcheur.
+   * Chaque cas vérifie son message et la possibilité de consulter les créneaux malgré la suspension.
+   */
+  it.each([
+    {
+      scores: [null, null],
+      stale: false,
+      label: "Aucun créneau complet",
+      help: "Aucune note globale n’est disponible.",
+    },
+    {
+      scores: [40, 80],
+      stale: true,
+      label: "Recommandation suspendue",
+      help: "Les données sont trop anciennes.",
+    },
+  ])("désactive le meilleur créneau avec le libellé « $label »", async ({
+    scores,
+    stale,
+    label,
+    help,
+  }) => {
+    const value = forecast(scores);
+    if (stale) {
+      value.data_state = "stale";
+      value.recommendation_available = false;
+    }
+    const user = await displayForecast(value);
+    const timeline = screen.getByRole("region", { name: "Heure par heure" });
+    const hours = within(timeline).getAllByRole("button");
+    const bestButton = screen.getByRole<HTMLButtonElement>("button", {
+      name: /^Meilleur créneau/,
+    });
+
+    expect(bestButton.disabled).toBe(true);
+    expect(within(bestButton).getByText(label)).toBeTruthy();
+    expect(screen.getByText(help)).toBeTruthy();
+    expect(within(timeline).queryByRole("button", { name: /meilleur créneau/i })).toBeNull();
+
+    await user.click(hours[1]);
+    expect(hours[1].getAttribute("aria-pressed")).toBe("true");
+    expect(
+      screen.getByLabelText(stale ? "Note globale 80 sur 100" : "Note globale indisponible"),
+    ).toBeTruthy();
   });
 
   /**
@@ -194,6 +330,36 @@ describe("parcours principal", () => {
 
     expect(await screen.findByLabelText("Note globale 85 sur 100")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Actualiser" })).toBeTruthy();
+  });
+
+  /**
+   * Les réponses conservent les horodatages des heures encore présentes. Le créneau choisi change
+   * de rang à la première actualisation, puis disparaît. Le premier créneau restant est alors
+   * sélectionné même si le suivant est mieux noté.
+   */
+  it("conserve le créneau après actualisation puis sélectionne le premier s’il disparaît", async () => {
+    const initial = forecast([40, 60, 70, 50, 90]);
+    const user = await displayForecast(initial);
+    const timeline = within(screen.getByRole("region", { name: "Heure par heure" }));
+
+    await user.click(timeline.getByRole("button", { name: /note 70 sur 100/ }));
+    expect(screen.getByLabelText("Note globale 70 sur 100")).toBeTruthy();
+
+    mockedGetForecast
+      .mockResolvedValueOnce({ ...initial, hours: initial.hours.slice(1) })
+      .mockResolvedValueOnce({ ...initial, hours: initial.hours.slice(3) });
+
+    await user.click(screen.getByRole("button", { name: "Actualiser" }));
+
+    // La note sélectionnée reste à 70. Le nombre de barres confirme que la réponse a été appliquée.
+    await waitFor(() => expect(timeline.getAllByRole("button")).toHaveLength(4));
+    expect(timeline.getByRole("button", { name: /note 70 sur 100/, pressed: true })).toBeTruthy();
+    expect(screen.getByLabelText("Note globale 70 sur 100")).toBeTruthy();
+
+    await user.click(screen.getByRole("button", { name: "Actualiser" }));
+
+    expect(await timeline.findByRole("button", { name: /note 50 sur 100/, pressed: true })).toBeTruthy();
+    expect(screen.getByLabelText("Note globale 50 sur 100")).toBeTruthy();
   });
 
   /**
